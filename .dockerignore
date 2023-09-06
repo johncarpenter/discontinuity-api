@@ -1,0 +1,6 @@
+.env
+terraform/
+__pycache__/
+*.py[cod]
+venv/
+test.db
