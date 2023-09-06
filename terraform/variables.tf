@@ -1,6 +1,6 @@
 variable "project_id" {
   type    = string
-  default = "blacksquare-infrastructure"
+  default = "discontinuity-ai"
 }
 
 variable "docker_name" {
@@ -17,15 +17,6 @@ variable "jwt_secret" {
 }
 
 variable "openai_api_key" {
-  type = string
-}
-
-
-variable "slack_signing_secret" {
-  type = string
-}
-
-variable "slack_bot_token" {
   type = string
 }
 

@@ -9,7 +9,7 @@ from discontinuity_api.models import ApiKey
 default_api_keys = [
     {
         "workspace": {
-            "name": "BlackSquare",
+            "name": "Discontinuity",
             "api_keys": [
                 {
                     "client_id": "8fb4397512a54f88254cad18f08d74ad",
@@ -29,7 +29,9 @@ def seed():
 
     Base.metadata.create_all(engine)
 
-    current = session.query(WorkspaceDb).filter(WorkspaceDb.name == "BlackSquare").all()
+    current = (
+        session.query(WorkspaceDb).filter(WorkspaceDb.name == "Discontinuity").all()
+    )
 
     # Add an admin api key to the database
     for api_key in default_api_keys:

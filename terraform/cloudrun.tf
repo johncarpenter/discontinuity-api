@@ -29,14 +29,6 @@ resource "google_cloud_run_service" "default" {
           value = var.openai_api_key
         }
         env {
-          name  = "SLACK_SIGNING_SECRET"
-          value = var.slack_signing_secret
-        }
-        env {
-          name  = "SLACK_BOT_TOKEN"
-          value = var.slack_bot_token
-        }
-        env {
           name  = "HOST"
           value = var.host
         }
