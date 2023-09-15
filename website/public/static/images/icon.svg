@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
+
+  
+  <defs id="defs618214"/>
+  <linearGradient id="3d_gradient2-logo-BDCF3E21973F454B98CE81CC52EA7E34" x1="30%" y1="120%" x2="-10%" y2="30%" spreadMethod="pad">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="stop618191"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="1" id="stop618193"/>
+  </linearGradient>
+  <linearGradient id="3d_gradient3-logo-BDCF3E21973F454B98CE81CC52EA7E34" x1="30%" y1="120%" x2="-10%" y2="30%" spreadMethod="pad" gradientTransform="rotate(-30)">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="stop618196"/>
+    <stop offset="50%" stop-color="#cccccc" stop-opacity="1" id="stop618198"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="1" id="stop618200"/>
+  </linearGradient>
+  <path style="font-style:normal;font-weight:normal;font-size:medium;line-height:1;font-family:'Brandmark Sans 5 Spectrum';font-variant-ligatures:normal;text-align:center;text-anchor:middle;fill:#dcdcdc;stroke:#dcdcdc;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:2" id="path11" stroke-miterlimit="2" d="M 111.06296,51.062958 H 62.125807 v 97.874062 h 48.937153 c 27.02711,0 48.93703,-21.9098 48.93703,-48.93691 v -2.38e-4 c 0,-27.026877 -21.90992,-48.936914 -48.93703,-48.936914 z" class="c1"/>
+  <rect style="font-style:normal;font-weight:normal;font-size:medium;line-height:1;font-family:'Brandmark Sans 5 Spectrum';font-variant-ligatures:normal;text-align:center;text-anchor:middle;fill:#db5132;stroke:#db5132;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:2" id="rect13" stroke-miterlimit="2" height="48.936676" width="119.99999" class="c3" y="51.063202" x="39.999996"/>
+  <path style="font-style:normal;font-weight:normal;font-size:medium;line-height:1;font-family:'Brandmark Sans 5 Spectrum';font-variant-ligatures:normal;text-align:center;text-anchor:middle;fill:#aca7a6;stroke:#aca7a6;stroke-width:0;stroke-linejoin:miter;stroke-miterlimit:2" id="path15" stroke-miterlimit="2" d="M 111.06296,51.062938 H 62.125807 v 48.937033 h 97.874183 c 0,-27.027114 -21.90992,-48.937033 -48.93703,-48.937033 z" class="c2"/>
+
+</svg>

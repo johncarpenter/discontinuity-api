@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="223.34 249.72 577.33 253.11" xml:space="preserve">
+
+ 
+ <g id="logo-group" stroke-width="0" stroke-miterlimit="2" transform="translate(.12739 .094871) scale(1)">
+  <path id="path12" style="font-variant-ligatures:normal" d="m250.21 365.07h-18.59v37.187h18.593c10.269 0 18.593-8.3245 18.593-18.593v-0.00009c0-10.269-8.3246-18.593-18.593-18.593z" class="c1" fill="#dcdcdc"/>
+  <rect id="rect14" style="font-variant-ligatures:normal" height="18.593" width="45.593" y="365.07" x="223.21" class="c3" fill="#db5132"/>
+  <path id="path16" style="font-variant-ligatures:normal" d="m250.21 365.07h-18.59v18.593h37.187c0-10.269-8.3246-18.593-18.593-18.593z" class="c2" fill="#aca7a6"/>
+  <rect id="rect19" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="275.25" class="c3" fill="#db5132"/>
+  <rect id="rect21" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="275.25" class="c1" fill="#dcdcdc"/>
+  <path id="path24" style="font-variant-ligatures:normal" d="m308.01 365.07c-5.7762 0-10.459 4.6826-10.459 10.459 0 5.7762 4.6826 10.459 10.459 10.459h26.728v-20.92z" class="c3" fill="#db5132"/>
+  <path id="path26" style="font-variant-ligatures:normal" d="m324.28 381.34h-26.728v20.918h26.728c5.7762 0 10.459-4.6826 10.459-10.459 0-5.7762-4.6826-10.459-10.459-10.459z" class="c1" fill="#dcdcdc"/>
+  <path id="path28" style="font-variant-ligatures:normal" d="m324.28 381.34h-24.964c1.8764 2.8022 5.0695 4.6483 8.6951 4.6483h24.964c-1.8764-2.8022-5.0695-4.6483-8.6951-4.6483z" class="c2" fill="#aca7a6"/>
+  <path id="path31" style="font-variant-ligatures:normal" d="m372.79 370.53c-7.2612-7.2612-19.034-7.2612-26.295 0-7.2612 7.2612-7.2612 19.034-0.00004 26.295l13.148-13.148z" class="c1" fill="#dcdcdc"/>
+  <path id="path33" style="font-variant-ligatures:normal" d="m346.5 370.53c-7.2612 7.2612-7.2612 19.034 0 26.295 7.2612 7.2612 19.034 7.2612 26.295 0.00004l-13.148-13.148z" class="c3" fill="#db5132"/>
+  <path id="path35" style="font-variant-ligatures:normal" d="m359.65 383.68-13.147-13.147c-0.90766 0.90765-1.7019 1.8857-2.3826 2.9167-1.0211 1.5465-1.7869 3.212-2.2975 4.9369-1.0211 3.4499-1.0211 7.1377 0 10.588 0.17015 0.57495 0.36873 1.1434 0.59564 1.7029 0.45383 1.1191 1.0211 2.203 1.7018 3.234 0.68073 1.031 1.4749 2.0091 2.3826 2.9168z" class="c2" fill="#aca7a6"/>
+  <circle id="circle38" style="font-variant-ligatures:normal" cy="383.68" cx="394.56" r="18.593" class="c3" fill="#db5132"/>
+  <path id="path40" style="font-variant-ligatures:normal" d="m381.41 396.83c7.2612 7.2612 19.034 7.2611 26.295-0.00004 7.2612-7.2612 7.2612-19.034 0.00002-26.295z" class="c2" fill="#aca7a6"/>
+  <rect id="rect43" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="440.53" class="c3" fill="#db5132"/>
+  <polygon id="polygon45" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 363.21 308.67)" class="c1" points="124.79 124.79 75.209 124.79 75.209 75.209" fill="#dcdcdc"/>
+  <polygon id="polygon47" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 363.21 308.67)" class="c2" points="103.1 124.79 124.79 124.79 103.1 103.1" fill="#aca7a6"/>
+  <rect id="rect50" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="473.57" class="c1" fill="#dcdcdc"/>
+  <rect id="rect52" style="font-variant-ligatures:normal" height="9.2967" width="37.187" y="365.07" x="463.11" class="c3" fill="#db5132"/>
+  <rect id="rect54" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="473.57" class="c2" fill="#aca7a6"/>
+  <rect id="rect57" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="506.61" class="c3" fill="#db5132"/>
+  <rect id="rect59" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="506.61" class="c1" fill="#dcdcdc"/>
+  <rect id="rect62" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="549.83" class="c3" fill="#db5132"/>
+  <polygon id="polygon64" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 472.51 308.67)" class="c1" points="124.79 124.79 75.209 124.79 75.209 75.209" fill="#dcdcdc"/>
+  <polygon id="polygon66" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 472.51 308.67)" class="c2" points="103.1 124.79 124.79 124.79 103.1 103.1" fill="#aca7a6"/>
+  <path id="path69" style="font-variant-ligatures:normal" d="m572.42 365.07v18.593c0 10.269 8.3245 18.593 18.593 18.593 10.269 0 18.593-8.3245 18.593-18.593v-18.59z" class="c1" fill="#dcdcdc"/>
+  <rect id="rect72" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="615.92" class="c3" fill="#db5132"/>
+  <rect id="rect74" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="615.92" class="c1" fill="#dcdcdc"/>
+  <rect id="rect77" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="648.68" class="c1" fill="#dcdcdc"/>
+  <rect id="rect79" style="font-variant-ligatures:normal" height="9.2967" width="37.187" y="365.07" x="638.22" class="c3" fill="#db5132"/>
+  <rect id="rect81" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="648.68" class="c2" fill="#aca7a6"/>
+  <rect id="rect84" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.13" x="692.18" class="c3" fill="#db5132"/>
+  <path id="path86" style="font-variant-ligatures:normal" d="m681.72 365.13v9.2967c0 10.269 8.3245 18.593 18.593 18.593 10.269 0 18.593-8.3245 18.593-18.593v-9.3z" class="c1" fill="#dcdcdc"/>
+  <path id="path88" style="font-variant-ligatures:normal" d="m692.18 391.15c2.4574 1.1976 5.217 1.8712 8.1346 1.8712h0.00009c2.9175 0 5.6773-0.67355 8.1346-1.8712v-26.019h-16.269z" class="c2" fill="#aca7a6"/>
+  <rect id="rect91" style="font-variant-ligatures:normal" height="9.6923" width="9.6923" y="393.04" x="725.22" class="c1" fill="#dcdcdc"/>
+  <polygon id="polygon94" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 684.36 308.67)" class="c1" points="124.79 124.79 100 75.209 75.209 124.79" fill="#dcdcdc"/>
+  <rect id="rect97" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="784.27" class="c3" fill="#db5132"/>
+  <rect id="rect99" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="784.27" class="c1" fill="#dcdcdc"/>
+ </g>
+
+</svg>

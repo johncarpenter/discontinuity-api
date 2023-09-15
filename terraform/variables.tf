@@ -3,10 +3,16 @@ variable "project_id" {
   default = "discontinuity-ai"
 }
 
+variable "cluster_name" {
+  type    = string
+  default = "discontinuity-cluster"
+}
+
 variable "docker_name" {
   type    = string
   default = "discontinuity-api"
 }
+
 
 variable "postgres_password" {
   type = string
@@ -24,6 +30,11 @@ variable "host" {
   type    = string
   default = "http://localhost:8000"
 
+}
+
+variable "region" {
+  type    = string
+  default = "europe-west1"
 }
 
 
