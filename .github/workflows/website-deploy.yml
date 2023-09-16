@@ -1,0 +1,38 @@
+name: website-docker-build
+on:
+  push:
+    paths:
+      - "website/**"
+    branches:
+      - main
+defaults:
+  run:
+    working-directory: ./website
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      # Setup gcloud CLI
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+      - uses: google-github-actions/setup-gcloud@v1
+
+      # Configure Docker with Credentials
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker
+
+      # Build the Docker image
+      - name: Build & Publish
+        run: |
+          gcloud config set project ${{ secrets.GCP_PROJECT }}
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:latest

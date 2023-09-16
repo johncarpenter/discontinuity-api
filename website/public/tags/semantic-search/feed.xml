@@ -1,0 +1,24 @@
+
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+      <title>discontinuity.ai</title>
+      <link>https://discontinuity.ai/blog</link>
+      <description>Making AI more human</description>
+      <language>en-us</language>
+      <managingEditor>hello@2linessoftware.com (John Carpenter)</managingEditor>
+      <webMaster>hello@2linessoftware.com (John Carpenter)</webMaster>
+      <lastBuildDate>Mon, 24 Oct 2022 01:45:41 GMT</lastBuildDate>
+      <atom:link href="https://discontinuity.ai/tags/semantic-search/feed.xml" rel="self" type="application/rss+xml"/>
+      
+  <item>
+    <guid>https://discontinuity.ai/blog/discontinuity-website-semantic-search</guid>
+    <title>Discontinuity Website Semantic Search</title>
+    <link>https://discontinuity.ai/blog/discontinuity-website-semantic-search</link>
+    <description>Discontinuity Website Semantic Search</description>
+    <pubDate>Mon, 24 Oct 2022 01:45:41 GMT</pubDate>
+    <author>hello@2linessoftware.com (John Carpenter)</author>
+    <category>Vector Embeddings</category><category>Vector Database</category><category>Semantic Search</category>
+  </item>
+
+    </channel>
+  </rss>
