@@ -36,3 +36,13 @@ jobs:
         run: |
           gcloud config set project ${{ secrets.GCP_PROJECT }}
           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest
+
+      # Deploy the Docker image to the GKE cluster
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials discontinuity-cluster --project ${{ secrets.GCP_PROJECT }}
+
+      - name: Deploy
+        run: |
+          kubectl set image deployment/discontinuity-website discontinuity-website=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest
+          kubectl rollout status deployment/discontinuity-website
