@@ -44,11 +44,17 @@ jobs:
     name: Deploy to Cluster
     runs-on: ubuntu-latest
     steps:
+      - uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          export_default_credentials: true
+
       - uses: google-github-actions/get-gke-credentials@v1.0.2
         with:
           cluster_name: discontinuity-cluster
           location: europe-west1
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          project_id: ${{ secrets.GCP_PROJECT }}
 
         # Deploy the Docker image to the GKE cluster
       - name: Configure kubectl
