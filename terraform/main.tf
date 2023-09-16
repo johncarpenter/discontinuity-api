@@ -94,6 +94,56 @@ resource "google_compute_managed_ssl_certificate" "lb_default" {
   name = "discontinuity-cert"
 
   managed {
-    domains = ["api.discontinuity.ai"]
+    domains = ["api.discontinuity.ai", "discontinuity.ai", "www.discontinuity.ai", "app.discontinuity.ai"]
+  }
+}
+
+
+
+resource "kubernetes_ingress_v1" "api-ingress" {
+
+  metadata {
+    annotations = {
+      #    "cloud.google.com/load-balancer-type"       = "External"
+      "kubernetes.io/ingress.class"               = "gce"
+      "ingress.gcp.kubernetes.io/pre-shared-cert" = google_compute_managed_ssl_certificate.lb_default.name
+    }
+    name      = "api-ingress"
+    namespace = kubernetes_namespace.api_namespace.metadata.0.name
+  }
+  spec {
+    rule {
+      host = "api.discontinuity.ai"
+      http {
+        path {
+          backend {
+            service {
+              name = kubernetes_service.api_service.metadata.0.name
+              port {
+                number = 80
+              }
+            }
+          }
+          path = "/*"
+        }
+      }
+    }
+    rule {
+      host = "discontinuity.ai"
+      http {
+        path {
+          backend {
+            service {
+              name = kubernetes_service.website_service.metadata.0.name
+              port {
+                number = 80
+              }
+            }
+          }
+          path = "/*"
+        }
+      }
+    }
+
   }
 }

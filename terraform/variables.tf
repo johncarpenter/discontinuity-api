@@ -8,11 +8,6 @@ variable "cluster_name" {
   default = "discontinuity-cluster"
 }
 
-variable "docker_name" {
-  type    = string
-  default = "discontinuity-api"
-}
-
 
 variable "postgres_password" {
   type = string

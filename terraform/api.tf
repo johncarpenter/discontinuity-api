@@ -35,7 +35,7 @@ resource "kubernetes_deployment" "api_deployment" {
       }
       spec {
         container {
-          image = "gcr.io/${var.project_id}/${var.docker_name}:latest"
+          image = "gcr.io/${var.project_id}/discontinuity-api:latest"
           name  = "api"
 
           env {
@@ -99,36 +99,4 @@ resource "kubernetes_service" "api_service" {
 }
 
 
-resource "kubernetes_ingress_v1" "api-ingress" {
-
-  metadata {
-    annotations = {
-      #    "cloud.google.com/load-balancer-type"       = "External"
-      "kubernetes.io/ingress.class"               = "gce"
-      "ingress.gcp.kubernetes.io/pre-shared-cert" = google_compute_managed_ssl_certificate.lb_default.name
-    }
-    name      = "api-ingress"
-    namespace = kubernetes_namespace.api_namespace.metadata.0.name
-    labels = {
-      app = "api"
-    }
-  }
-  spec {
-    rule {
-      http {
-        path {
-          backend {
-            service {
-              name = kubernetes_service.api_service.metadata.0.name
-              port {
-                number = 80
-              }
-            }
-          }
-          path = "/*"
-        }
-      }
-    }
-  }
-}
 
