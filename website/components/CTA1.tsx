@@ -16,7 +16,7 @@ export default function CTA1() {
             Our AI agents are a new type of automation tool that uses natural language to analyze
             patterns and take actions. Our AI agents can be customized to suit the specific needs of
             a business and can automate tasks, optimize processes, and ultimately enhance customer
-            experience and business performance...
+            experience and business performance..
           </p>
           
             
