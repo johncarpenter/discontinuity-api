@@ -47,6 +47,11 @@ jobs:
           location: europe-west1
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
+        # Deploy the Docker image to the GKE cluster
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials discontinuity-cluster  --location europe-west1 --project ${{ secrets.GCP_PROJECT }}
+
       - name: Deploy
         run: |
           kubectl set image deployment/discontinuity-website-deployment website=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest -n api
