@@ -30,12 +30,6 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT }}
           export_default_credentials: true
 
-      - uses: google-github-actions/get-gke-credentials@v0.2.1
-        with:
-          cluster_name: discontinuity-cluster
-          location: europe-west1
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
-
       # Configure Docker with Credentials
       - name: Configure Docker
         run: |
@@ -47,10 +41,11 @@ jobs:
           gcloud config set project ${{ secrets.GCP_PROJECT }}
           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest
 
-      # Deploy the Docker image to the GKE cluster
-      - name: Configure kubectl
-        run: |
-          gcloud container clusters get-credentials discontinuity-cluster --location europe-west1 --project ${{ secrets.GCP_PROJECT }}
+      - uses: google-github-actions/get-gke-credentials@v0.2.1
+        with:
+          cluster_name: discontinuity-cluster
+          location: europe-west1
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Deploy
         run: |
