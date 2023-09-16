@@ -56,5 +56,5 @@ jobs:
 
       - name: Deploy
         run: |
-          kubectl set image deployment/discontinuity-website-deployment website=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest -n api
-          kubectl rollout status deployment/discontinuity-website-deployment
+          kubectl set image deployment/discontinuity-website-deployment -n=api website=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest 
+          kubectl rollout status deployment/discontinuity-website-deployment -n=api
