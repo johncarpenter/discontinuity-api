@@ -12,8 +12,6 @@ from fastapi import APIRouter, HTTPException
 import os
 
 ## Refresh tokens aren't implemented yet
-
-
 router = APIRouter(prefix="/admin", tags=["admin"], include_in_schema=False)
 
 
