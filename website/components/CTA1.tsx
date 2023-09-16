@@ -9,14 +9,14 @@ export default function CTA1() {
         <SectionContainer>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-4xl">
             We build agents that connect the best foundation models{' '}
-            <span className="text-secondary-500">with your</span> data and documents.
+            <span className="text-secondary-500">with your</span> data and documents..
             <br />
           </h2>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-gray-800 dark:text-gray-300">
             Our AI agents are a new type of automation tool that uses natural language to analyze
             patterns and take actions. Our AI agents can be customized to suit the specific needs of
             a business and can automate tasks, optimize processes, and ultimately enhance customer
-            experience and business performance...for work
+            experience and business performance
           </p>
           
             
