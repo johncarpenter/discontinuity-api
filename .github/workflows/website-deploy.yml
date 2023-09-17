@@ -9,7 +9,7 @@ defaults:
   run:
     working-directory: ./website
 jobs:
-  setup-build-publish-deploy:
+  setup-build-publish:
     name: Setup, Build, Publish API
     runs-on: ubuntu-latest
     steps:
