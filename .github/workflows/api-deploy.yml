@@ -49,6 +49,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+      - uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          export_default_credentials: true
+
       - uses: google-github-actions/get-gke-credentials@v1.0.2
         with:
           cluster_name: discontinuity-cluster
