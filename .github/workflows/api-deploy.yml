@@ -9,7 +9,7 @@ defaults:
   run:
     working-directory: ./api
 jobs:
-  setup-build-publish-deploy:
+  setup-build-publish:
     name: Setup, Build, Publish API
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +24,11 @@ jobs:
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
-      - uses: google-github-actions/setup-gcloud@v1
+      - uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          export_default_credentials: true
 
       # Configure Docker with Credentials
       - name: Configure Docker
@@ -35,13 +39,30 @@ jobs:
       - name: Build & Publish
         run: |
           gcloud config set project ${{ secrets.GCP_PROJECT }}
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:latest
-      # Deploy the Docker image to the GKE cluster
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:${{ github.sha }}
+
+  deploy:
+    name: Deploy and Rollout
+    needs: setup-build-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - uses: google-github-actions/get-gke-credentials@v1.0.2
+        with:
+          cluster_name: discontinuity-cluster
+          location: europe-west1
+          project_id: ${{ secrets.GCP_PROJECT }}
+
+        # Deploy the Docker image to the GKE cluster
       - name: Configure kubectl
         run: |
+          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+          gcloud components install gke-gcloud-auth-plugin
           gcloud container clusters get-credentials discontinuity-cluster  --location europe-west1 --project ${{ secrets.GCP_PROJECT }}
 
       - name: Deploy
         run: |
-          kubectl set image deployment/discontinuity-website discontinuity-website=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest
-          kubectl rollout status deployment/discontinuity-website
+          kubectl set image deployment/discontinuity-api-deployment -n=api website=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:${{ github.sha }} 
+          kubectl rollout status deployment/discontinuity-api-deployment -n=api
