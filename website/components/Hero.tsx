@@ -12,7 +12,7 @@ export default function Hero() {
           <span className="text-secondary-500">Artificial Intelligence</span> will Transform the Workplace. 
           </h1>
           <p className="mt-6 text-lg leading-8 text-grey-700 dark:text-gray-300">
-            Are You Prepared for the Coming Shift? We build the tools to help you get there.
+            Are You Prepared for the Coming Shift? We build the <span className="">tools</span>  to help you get there.
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <a
