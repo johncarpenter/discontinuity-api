@@ -39,7 +39,9 @@ jobs:
       - name: Build & Publish
         run: |
           gcloud config set project ${{ secrets.GCP_PROJECT }}
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:${{ github.sha }} --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:latest
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api
+          gcloud artifacts docker tags add gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api   ${{ github.sha }} 
+          gcloud artifacts docker tags add gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api   latest
 
   deploy:
     name: Deploy and Rollout
