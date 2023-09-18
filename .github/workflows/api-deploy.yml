@@ -39,9 +39,7 @@ jobs:
       - name: Build & Publish
         run: |
           gcloud config set project ${{ secrets.GCP_PROJECT }}
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api
-          gcloud artifacts docker tags add gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api   ${{ github.sha }} 
-          gcloud artifacts docker tags add gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api   latest
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:${{ github.sha }}, gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:latest
 
   deploy:
     name: Deploy and Rollout
@@ -79,4 +77,4 @@ jobs:
       - name: Deploy
         run: |
           kubectl set image deployment/discontinuity-api-deployment -n=api website=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:${{ github.sha }}
-        # kubectl rollout status deployment/discontinuity-api-deployment -n=api
+          kubectl rollout status deployment/discontinuity-api-deployment -n=api
