@@ -94,7 +94,7 @@ resource "google_compute_managed_ssl_certificate" "lb_default" {
   name = "discontinuity-cert"
 
   managed {
-    domains = ["api.discontinuity.ai", "discontinuity.ai", "www.discontinuity.ai", "app.discontinuity.ai"]
+    domains = ["api.discontinuity.ai", "discontinuity.ai", "app.discontinuity.ai"]
   }
 }
 
