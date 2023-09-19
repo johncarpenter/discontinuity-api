@@ -1,17 +1,18 @@
-from langchain.document_loaders import UnstructuredPDFLoader
+from langchain.document_loaders import UnstructuredPDFLoader, UnstructuredMarkdownLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 from discontinuity_api.vector import get_faiss_vector_db, add_document
 
 
-# These can only run locally
-#
-def design_pdf_loading():
-    loader = UnstructuredPDFLoader(file_path="./storage/docs/wf.pdf")
+def website_md_loading():
+    loader = UnstructuredMarkdownLoader(
+        file_path="./storage/website.md",
+        metadata={"url": "https://discontinuity.ai/"},
+    )
     documents = loader.load()
 
-    db = get_faiss_vector_db(table_name="winefolly", embeddings=OpenAIEmbeddings())
+    db = get_faiss_vector_db(table_name="discontinuity", embeddings=OpenAIEmbeddings())
 
     add_document(index=db, documents=documents)
 
-    db.save_local(folder_path="./storage/winefolly")
+    db.save_local(folder_path="./storage/discontinuity")

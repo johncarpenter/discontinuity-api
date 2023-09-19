@@ -6,7 +6,6 @@ from discontinuity_api.database import get_db
 from discontinuity_api.utils import JWTBearer, hasPermission
 from sqlalchemy.orm import Session
 
-
 from typing import List
 from fastapi import APIRouter, HTTPException
 import os

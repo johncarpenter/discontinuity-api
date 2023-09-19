@@ -15,10 +15,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_422_UNPROCESSABLE_ENTITY
 from fastapi.middleware.cors import CORSMiddleware
 
-from discontinuity_api.routes import (
-    auth_router,
-    admin_router,
-)
+from discontinuity_api.routes import auth_router, admin_router, discontinuity_router
 from discontinuity_api.vector import load_local_vector_db
 
 from dotenv import load_dotenv
@@ -82,3 +79,6 @@ app.include_router(router=auth_router)
 
 # Admin routes
 app.include_router(router=admin_router)
+
+# Discontinuity routes
+app.include_router(router=discontinuity_router)

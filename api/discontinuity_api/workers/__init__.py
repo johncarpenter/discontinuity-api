@@ -1,4 +1,4 @@
-from .loaders import design_pdf_loading
+from .loaders import website_md_loading
 from .chains import retrieval_qa
 
-__all__ = [ "design_pdf_loading", "retrieval_qa" ]
+__all__ = ["website_md_loading", "retrieval_qa"]
