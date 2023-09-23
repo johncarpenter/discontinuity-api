@@ -36,11 +36,15 @@ jobs:
           gcloud auth configure-docker
 
       # Build the Docker image
-      #--tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:${{ github.sha }}
+      #gcloud builds submit  --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:${{ github.sha }}
       - name: Build & Publish
         run: |
           gcloud config set project ${{ secrets.GCP_PROJECT }}
-          gcloud builds submit --config cloudbuild.yaml --substitutions=_DATABASE_URL=${{ secrets.DATABASE_URL }}
+          docker build \
+            --build-arg DATABASE_URL=${{secrets.DATABASE_URL}} \
+            -t gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:${{ github.sha }} \
+            -f .
+          docker push gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:${{ github.sha }}
           gcloud container images add-tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:${{ github.sha }} gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-website:latest --quiet
 
   deploy:
