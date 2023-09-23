@@ -32,7 +32,7 @@ export default function About() {
             <div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
               <h1 className="text-4xl font-bold tracking-tight text-gray-800 dark:text-gray-300 sm:text-6xl">
                 We’re creating a world where AI agents work alongside humans to
-                enhance productivity, creativity, and innovation......
+                enhance productivity, creativity, and innovation.......
               </h1>
               <p className="relative mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400 sm:max-w-md lg:max-w-none">
                 We believe that by building intelligent agents that can learn
