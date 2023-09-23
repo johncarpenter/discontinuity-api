@@ -12,7 +12,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': API_KEY,
     },
     body: JSON.stringify({ q: `${req.query.q}` }),
   })

@@ -1,12 +1,12 @@
 ## Create the alchemy models for the database. ApiKey, and Workspace with many ApiKeys
 import os
+import datetime
 from typing import List
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 
 SQLALCHEMY_DATABASE_URL = os.getenv("POSTGRES_URL")
 
@@ -15,6 +15,7 @@ SessionLocal = sessionmaker(bind=engine)
 
 Base = declarative_base()
 
+
 def get_db():
     try:
         db = SessionLocal()
@@ -22,27 +23,31 @@ def get_db():
     finally:
         db.close()
 
+
 # Define the Workspace model
 class WorkspaceDb(Base):
-    __tablename__ = 'workspace'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, unique=True, nullable=False)
-    
-    api_keys = relationship("ApiKeyDb", back_populates="workspace")
+    # __table__ = Table("workspaces", Base.metadata, autoload_with=engine)
+    __tablename__ = "workspaces"
+    id = Column(String, primary_key=True)
+    workspaceCode = Column(String, unique=True)
+    inviteCode = Column(String)
+    name = Column(String)
+    slug = Column(String)
+    createdAt = Column(DateTime, default=datetime.datetime.utcnow)
+    deletedAt = Column(DateTime)
+    updatedAt = Column(DateTime)
+
 
 # Define the ApiKey model
 class ApiKeyDb(Base):
-    __tablename__ = 'api_key'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    client_id = Column(String, unique=True, nullable=False)
-    client_secret = Column(String, nullable=False)
-    permissions = Column(String, default="access")  # csv of permissions
+    # __table__ = Table("apikeys", Base.metadata, autoload_with=engine)
+    # workspace = relationship("WorkspaceDb")
 
-    workspace_id = Column(Integer, ForeignKey('workspace.id'))
-    workspace = relationship("WorkspaceDb", back_populates="api_keys")
+    __tablename__ = "apikeys"
+    id = Column(String, primary_key=True)
+    client_id = Column(String)
+    client_secret = Column(String)
+    permissions = Column(String)
+    workspaceId = Column(Integer, ForeignKey("workspaces.id"))
 
-
-
-
+    workspace = relationship("WorkspaceDb")

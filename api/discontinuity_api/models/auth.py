@@ -7,7 +7,7 @@ class ApiKey(BaseModel):
     This is the user that is authenticated by the API Key
     """
 
-    id: int = None
+    id: str = None
     client_id: str = Field(description="Client ID from the API Console")
     client_secret: Optional[str] = None
     permissions: list[str] = Field(
@@ -20,7 +20,7 @@ class Workspace(BaseModel):
     This is the workspace that the user is a part of. This will be used to determine what the user has access to.
     """
 
-    id: int = None
+    id: str = None
     name: str = None
     api_keys: Optional[list[ApiKey]] = None
 
