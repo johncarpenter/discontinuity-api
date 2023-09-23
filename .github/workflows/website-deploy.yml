@@ -2,12 +2,12 @@ name: website-docker-build
 on:
   push:
     paths:
-      - "website/**"
+      - "app/**"
     branches:
       - main
 defaults:
   run:
-    working-directory: ./website
+    working-directory: ./app
 jobs:
   setup-build-publish:
     name: Setup, Build, Publish API

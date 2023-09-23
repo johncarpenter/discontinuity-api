@@ -39,8 +39,7 @@ resource "kubernetes_deployment" "api_deployment" {
           name  = "api"
 
           env {
-            name = "POSTGRES_URL"
-            # value = "postgresql+psycopg2://postgres:${var.postgres_password}@/discontinuity-api-db?host=/cloudsql/${google_sql_database_instance.default.connection_name}"
+            name  = "POSTGRES_URL"
             value = "postgresql+psycopg2://postgres:${var.postgres_password}@34.34.179.242/discontinuity-api-db"
 
           }
@@ -54,7 +53,8 @@ resource "kubernetes_deployment" "api_deployment" {
           }
           env {
             name  = "VECTORDB_URL"
-            value = "postgresql+psycopg2://postgres:${var.postgres_password}@/discontinuity-api-db?host=/cloudsql/${google_sql_database_instance.default.connection_name}"
+            value = "postgresql+psycopg2://postgres:${var.postgres_password}@34.34.179.242/discontinuity-api-db"
+
           }
           env {
             name  = "OPENAI_API_KEY"

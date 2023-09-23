@@ -1,0 +1,101 @@
+<svg version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="223.34 249.72 577.33 253.11" xml:space="preserve">
+<style>
+#logo-glitch{
+animation: glitch 6s forwards;
+}
+
+#flash{
+animation: glitch-flash 6s forwards;
+}
+
+@keyframes glitch {
+   0% {
+       transform: matrix(1, 0, 0, -1, 0, 600);
+       clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%);
+   } 2% {
+       clip-path: polygon(0 33%, 100% 33%, 
+100% 33%, 0 33%);
+   } 4% {
+       clip-path: polygon(0 44%, 100% 44%, 
+100% 44%, 0 44%);
+   }
+   5% {
+       clip-path: polygon(0 50%, 100% 50%, 
+100% 20%, 0 20%);
+   } 6% {
+       clip-path: polygon(0 70%, 100% 70%, 
+100% 70%, 0 70%);
+   } 7% {
+       clip-path: polygon(0 80%, 100% 80%, 
+100% 80%, 0 80%);
+   }  8% {
+       clip-path: polygon(0 50%, 100% 50%, 
+100% 55%, 0 55%);
+   }
+   9% {
+       clip-path: polygon(0 70%, 100% 70%, 
+100% 80%, 0 80%);
+   } 9.9% {
+       transform:  matrix(1, 0, 0, -1, 0, 768);
+   } 10%, 100% {
+       transform: matrix(1, 0, 0, 1, 0, 0);
+       clip-path: polygon(0 0, 100% 0, 100% 
+100%, 0% 100%);
+   }
+}
+
+@keyframes glitch-flash {
+   0%, 5% {
+       opacity: 0.2;
+       transform: translate3d(10, 10, 0);
+   } 5.5%, 100% {
+       opacity: 0;
+       transform: translate3d(0, 0, 0);
+} }
+</style>
+<g id="logo-glitch">
+
+ 
+ <g id="logo-group" stroke-width="0" stroke-miterlimit="2" transform="translate(.12739 .094871) scale(1)">
+  <path id="path12" style="font-variant-ligatures:normal" d="m250.21 365.07h-18.59v37.187h18.593c10.269 0 18.593-8.3245 18.593-18.593v-0.00009c0-10.269-8.3246-18.593-18.593-18.593z" class="c1" fill="#dcdcdc"/>
+  <rect id="rect14" style="font-variant-ligatures:normal" height="18.593" width="45.593" y="365.07" x="223.21" class="c3" fill="#db5132"/>
+  <path id="path16" style="font-variant-ligatures:normal" d="m250.21 365.07h-18.59v18.593h37.187c0-10.269-8.3246-18.593-18.593-18.593z" class="c2" fill="#aca7a6"/>
+  <rect id="rect19" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="275.25" class="c3" fill="#db5132"/>
+  <rect id="rect21" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="275.25" class="c1" fill="#dcdcdc"/>
+  <path id="path24" style="font-variant-ligatures:normal" d="m308.01 365.07c-5.7762 0-10.459 4.6826-10.459 10.459 0 5.7762 4.6826 10.459 10.459 10.459h26.728v-20.92z" class="c3" fill="#db5132"/>
+  <path id="path26" style="font-variant-ligatures:normal" d="m324.28 381.34h-26.728v20.918h26.728c5.7762 0 10.459-4.6826 10.459-10.459 0-5.7762-4.6826-10.459-10.459-10.459z" class="c1" fill="#dcdcdc"/>
+  <path id="path28" style="font-variant-ligatures:normal" d="m324.28 381.34h-24.964c1.8764 2.8022 5.0695 4.6483 8.6951 4.6483h24.964c-1.8764-2.8022-5.0695-4.6483-8.6951-4.6483z" class="c2" fill="#aca7a6"/>
+  <path id="path31" style="font-variant-ligatures:normal" d="m372.79 370.53c-7.2612-7.2612-19.034-7.2612-26.295 0-7.2612 7.2612-7.2612 19.034-0.00004 26.295l13.148-13.148z" class="c1" fill="#dcdcdc"/>
+  <path id="path33" style="font-variant-ligatures:normal" d="m346.5 370.53c-7.2612 7.2612-7.2612 19.034 0 26.295 7.2612 7.2612 19.034 7.2612 26.295 0.00004l-13.148-13.148z" class="c3" fill="#db5132"/>
+  <path id="path35" style="font-variant-ligatures:normal" d="m359.65 383.68-13.147-13.147c-0.90766 0.90765-1.7019 1.8857-2.3826 2.9167-1.0211 1.5465-1.7869 3.212-2.2975 4.9369-1.0211 3.4499-1.0211 7.1377 0 10.588 0.17015 0.57495 0.36873 1.1434 0.59564 1.7029 0.45383 1.1191 1.0211 2.203 1.7018 3.234 0.68073 1.031 1.4749 2.0091 2.3826 2.9168z" class="c2" fill="#aca7a6"/>
+  <circle id="circle38" style="font-variant-ligatures:normal" cy="383.68" cx="394.56" r="18.593" class="c3" fill="#db5132"/>
+  <path id="path40" style="font-variant-ligatures:normal" d="m381.41 396.83c7.2612 7.2612 19.034 7.2611 26.295-0.00004 7.2612-7.2612 7.2612-19.034 0.00002-26.295z" class="c2" fill="#aca7a6"/>
+  <rect id="rect43" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="440.53" class="c3" fill="#db5132"/>
+  <polygon id="polygon45" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 363.21 308.67)" class="c1" points="124.79 124.79 75.209 124.79 75.209 75.209" fill="#dcdcdc"/>
+  <polygon id="polygon47" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 363.21 308.67)" class="c2" points="103.1 124.79 124.79 124.79 103.1 103.1" fill="#aca7a6"/>
+  <rect id="rect50" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="473.57" class="c1" fill="#dcdcdc"/>
+  <rect id="rect52" style="font-variant-ligatures:normal" height="9.2967" width="37.187" y="365.07" x="463.11" class="c3" fill="#db5132"/>
+  <rect id="rect54" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="473.57" class="c2" fill="#aca7a6"/>
+  <rect id="rect57" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="506.61" class="c3" fill="#db5132"/>
+  <rect id="rect59" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="506.61" class="c1" fill="#dcdcdc"/>
+  <rect id="rect62" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="549.83" class="c3" fill="#db5132"/>
+  <polygon id="polygon64" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 472.51 308.67)" class="c1" points="124.79 124.79 75.209 124.79 75.209 75.209" fill="#dcdcdc"/>
+  <polygon id="polygon66" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 472.51 308.67)" class="c2" points="103.1 124.79 124.79 124.79 103.1 103.1" fill="#aca7a6"/>
+  <path id="path69" style="font-variant-ligatures:normal" d="m572.42 365.07v18.593c0 10.269 8.3245 18.593 18.593 18.593 10.269 0 18.593-8.3245 18.593-18.593v-18.59z" class="c1" fill="#dcdcdc"/>
+  <rect id="rect72" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="615.92" class="c3" fill="#db5132"/>
+  <rect id="rect74" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="615.92" class="c1" fill="#dcdcdc"/>
+  <rect id="rect77" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.07" x="648.68" class="c1" fill="#dcdcdc"/>
+  <rect id="rect79" style="font-variant-ligatures:normal" height="9.2967" width="37.187" y="365.07" x="638.22" class="c3" fill="#db5132"/>
+  <rect id="rect81" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="648.68" class="c2" fill="#aca7a6"/>
+  <rect id="rect84" style="font-variant-ligatures:normal" height="37.187" width="16.269" y="365.13" x="692.18" class="c3" fill="#db5132"/>
+  <path id="path86" style="font-variant-ligatures:normal" d="m681.72 365.13v9.2967c0 10.269 8.3245 18.593 18.593 18.593 10.269 0 18.593-8.3245 18.593-18.593v-9.3z" class="c1" fill="#dcdcdc"/>
+  <path id="path88" style="font-variant-ligatures:normal" d="m692.18 391.15c2.4574 1.1976 5.217 1.8712 8.1346 1.8712h0.00009c2.9175 0 5.6773-0.67355 8.1346-1.8712v-26.019h-16.269z" class="c2" fill="#aca7a6"/>
+  <rect id="rect91" style="font-variant-ligatures:normal" height="9.6923" width="9.6923" y="393.04" x="725.22" class="c1" fill="#dcdcdc"/>
+  <polygon id="polygon94" style="font-variant-ligatures:normal" transform="matrix(.75 0 0 .75 684.36 308.67)" class="c1" points="124.79 124.79 100 75.209 75.209 124.79" fill="#dcdcdc"/>
+  <rect id="rect97" style="font-variant-ligatures:normal" height="9.2967" width="16.269" y="365.07" x="784.27" class="c3" fill="#db5132"/>
+  <rect id="rect99" style="font-variant-ligatures:normal" height="23.242" width="16.269" y="379.02" x="784.27" class="c1" fill="#dcdcdc"/>
+ </g>
+
+</g>
+<path id="flash" d="m223.34 365.17v18.594h8.4062v18.594h18.594c10.269 0 18.594-8.3249 18.594-18.594v-18.594zm52.043 0v9.2969h16.27v-9.2969zm32.76 0c-5.7762 0-10.459 4.6828-10.459 10.459 0 2.1504 0.6509 4.1485 1.7637 5.8106h-1.7637v20.918h26.729c5.7762 0 10.459-4.6827 10.459-10.459 0-2.1503-0.65095-4.1485-1.7637-5.8105h1.7637v-20.918zm111.6 0v37.188h37.188v-37.188h-16.27v20.918zm43.5 0v9.2969h10.459v27.891h16.27v-27.891h10.459v-9.2969zm43.5 0v9.2969h16.27v-9.2969zm22.301 0v37.188h37.188v-37.188h-16.27v20.918zm43.5 0v18.594c0 10.269 8.3249 18.594 18.594 18.594s18.594-8.325 18.594-18.594v-18.594zm43.5 0v9.2969h16.27v-9.2969zm22.301 0v9.2969h10.459v27.891h16.27v-27.891h10.459v-9.2969zm121.14 0-18.594 37.188h37.188zm24.906 0v9.2969h16.27v-9.2969zm-424.62 0.0137c-4.7585 0-9.5179 1.8148-13.148 5.4453-0.90766 0.90765-1.7021 1.887-2.3828 2.918-0.14902 0.2257-0.28959 0.45301-0.42774 0.68359-0.0495 0.0827-0.0964 0.16672-0.14453 0.25-0.006 0.01-0.0119 0.0194-0.0176 0.0293-0.0986 0.17129-0.19442 0.34389-0.28711 0.51758-0.0285 0.0534-0.058 0.10652-0.0859 0.16016-0.003 0.005-0.005 0.0104-0.008 0.0156-0.25459 0.48975-0.48725 0.98812-0.69531 1.4941-0.0327 0.0796-0.0623 0.16024-0.0937 0.24024-0.005 0.0136-0.0103 0.0274-0.0156 0.041-0.0656 0.16735-0.13081 0.33509-0.19141 0.50391-0.0264 0.0735-0.0527 0.14697-0.0781 0.2207-0.0892 0.25882-0.17448 0.51753-0.25196 0.7793-0.0749 0.253-0.14313 0.5083-0.20703 0.76367-0.026 0.10384-0.0481 0.20831-0.0723 0.3125-0.003 0.0131-0.007 0.026-0.01 0.0391-0.0321 0.13979-0.063 0.27957-0.0918 0.41992-0.0214 0.10411-0.0429 0.20812-0.0625 0.3125-0.00023 0.001 0.00024 0.003 0 0.004-0.0993 0.52989-0.17546 1.0624-0.22851 1.5977-0.006 0.0631-0.012 0.12627-0.0176 0.18945-0.018 0.20281-0.0316 0.40617-0.043 0.60937-0.004 0.0788-0.0103 0.15752-0.0137 0.23633-0.0234 0.53961-0.0234 1.0795 0 1.6191 0.003 0.0789 0.009 0.1575 0.0137 0.23633 0.00055 0.01 0.00095 0.0195 0.002 0.0293 0.0111 0.19341 0.0239 0.38702 0.041 0.58008 0.006 0.0632 0.0113 0.12632 0.0176 0.18945 0.00038 0.004-0.00039 0.008 0 0.0117 0.0531 0.5326 0.12954 1.0626 0.22851 1.5898 0.0196 0.10439 0.0411 0.2084 0.0625 0.3125 0.0322 0.15652 0.0673 0.31295 0.10352 0.46875 0.0226 0.0971 0.0442 0.19421 0.0684 0.29102 0.001 0.005 0.003 0.0104 0.004 0.0156 0.0637 0.2545 0.13046 0.50763 0.20508 0.75977 0.17015 0.57495 0.3688 1.1436 0.59571 1.7031 0.45383 1.1191 1.0205 2.2034 1.7012 3.2344 0.68073 1.031 1.4752 2.0084 2.3828 2.916 7.2612 7.2612 19.034 7.2612 26.295 0l-13.146-13.146 13.146-13.148c-3.6306-3.6306-8.388-5.4453-13.146-5.4453zm34.916 0a18.593 18.593 0 0 0 -18.594 18.594 18.593 18.593 0 0 0 5.4805 13.113l-0.0332 0.0332c0.30089 0.3009 0.61199 0.58538 0.92773 0.86133a18.593 18.593 0 0 0 0.0977 0.084c6.9597 5.9987 17.303 5.9948 24.258-0.0117a18.593 18.593 0 0 0 0.0703 -0.0606c0.32048-0.27955 0.63621-0.56784 0.94141-0.87305 0.29658-0.29658 0.5753-0.60304 0.84766-0.91406a18.593 18.593 0 0 0 0.11132 -0.1289c3.193-3.7139 4.6848-8.3867 4.4648-12.996a18.593 18.593 0 0 0 -0.0645 -0.89062c-0.001-0.013-0.003-0.026-0.004-0.0391a18.593 18.593 0 0 0 -0.0234 -0.18945c-0.0258-0.23872-0.0528-0.47903-0.0879-0.7168a18.593 18.593 0 0 0 -0.002 -0.0156c-0.4385-2.9555-1.591-5.8248-3.4551-8.332a18.593 18.593 0 0 0 -0.11133 -0.14258c-0.14729-0.19415-0.29523-0.38857-0.45117-0.57813a18.593 18.593 0 0 0 -0.19531 -0.22656c-0.13185-0.15516-0.26263-0.31111-0.40039-0.46289a18.593 18.593 0 0 0 -13.777 -6.1074zm287.15 0.041v9.2969c0 7.3509 4.2678 13.703 10.459 16.721v11.168h16.27v-11.168c6.1911-3.0178 10.459-9.3698 10.459-16.721v-9.2969zm-406.46 13.891v23.242h16.27v-23.242zm231.36 0v23.242h16.27v-23.242zm109.3 0v23.242h16.27v-23.242zm168.35 0v23.242h16.27v-23.242zm-59.051 14.027v9.6914h9.6934v-9.6914z" fill="#973b26" />
+</svg>
