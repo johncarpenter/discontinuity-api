@@ -45,6 +45,10 @@ resource "kubernetes_deployment" "website_deployment" {
             name  = "HUBSPOT_TOKEN"
             value = "pat-na1-240b638c-51d1-4f6d-b81a-f3b8d7b90c33"
           }
+          env {
+            name  = "DATABASE_URL"
+            value = "postgresql+psycopg2://postgres:${var.postgres_password}@34.34.179.242/discontinuity-api-db"
+          }
         }
       }
     }
