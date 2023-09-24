@@ -9,8 +9,9 @@ WORKDIR /app
 
 # install the dependencies and packages in the requirements file
 RUN apt-get update \
-    && apt-get -y install libpq-dev gcc git\
+    && apt-get -y install libpq-dev gcc git  build-essential\
     && pip install psycopg2
+
 
 RUN pip install -r requirements.txt
 
