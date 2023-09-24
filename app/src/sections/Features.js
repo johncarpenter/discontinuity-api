@@ -3,7 +3,7 @@ const Features = () => {
   return (
     <div className="w-full py-10">
       <div className="relative flex flex-col w-3/4 mx-auto space-y-5">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center space-y-5">
           <h6 className="font-bold text-center text-secondary-600 uppercase">
             Getting Started
           </h6>
@@ -14,9 +14,10 @@ const Features = () => {
           </h2>
           <p className="text-center text-xl  text-gray-600">
             Our rapid prototyping service is designed to help you validate your
-            AI concept in just one week. Allowing you the time and data to make
-            an informed decision on whether to invest in a full-scale AI
-            solution.
+            AI concept in as little as{" "}
+            <span className="text-secondary-500">just one week.</span> Allowing
+            you the time and data to make an informed decision on whether to
+            invest in a full-scale AI solution.
           </p>
         </div>
         <div className="flex flex-col py-10 space-x-0 space-y-10 md:space-y-0 md:space-x-5 md:flex-row">

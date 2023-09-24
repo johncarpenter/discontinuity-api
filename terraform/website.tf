@@ -49,6 +49,18 @@ resource "kubernetes_deployment" "website_deployment" {
             name  = "DATABASE_URL"
             value = "postgresql+psycopg2://postgres:${var.postgres_password}@34.34.179.242/discontinuity-api-db"
           }
+          env {
+            name  = "GOOGLE_CLIENT_ID"
+            value = var.google_client_id
+          }
+          env {
+            name  = "GOOGLE_CLIENT_SECRET"
+            value = var.google_client_secret
+          }
+          env {
+            name  = "APP_URL"
+            value = "https://discontinuity.ai"
+          }
         }
       }
     }

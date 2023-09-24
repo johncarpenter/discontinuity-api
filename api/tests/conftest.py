@@ -21,19 +21,16 @@ def seed_database():
 
     Base.metadata.create_all(engine)
 
+
+
     workspace = WorkspaceDb(name="testing")
-    workspace.api_keys = []
-    workspace.api_keys.append(
-        ApiKeyDb(client_id="testing", client_secret="testing", permissions="test_scope")
-    )
+    workspace.id = "testing"
+    workspace.slug = "test"
     session.add(workspace)
 
-    workspace = WorkspaceDb(name="admin")
-    workspace.api_keys = []
-    workspace.api_keys.append(
-        ApiKeyDb(client_id="admin", client_secret="admin", permissions="admin")
-    )
-    session.add(workspace)
+    session.add(ApiKeyDb(id="testkey",client_id="testing", client_secret="testing", permissions="test_scope", workspace=workspace))
+
+    session.add(ApiKeyDb(id="adminkey", client_id="admin", client_secret="admin", permissions="admin", workspace=workspace))
 
     session.commit()
     session.close()

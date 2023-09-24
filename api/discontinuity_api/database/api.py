@@ -33,14 +33,13 @@ def get_workspace(session: Session, api_key_id: int) -> Workspace:
         .first()
     )
 
-    print(apikey.__dict__)
-
     if apikey is None or apikey.workspace is None:
         return None
 
     return Workspace(
         id=apikey.workspace.id,
         name=apikey.workspace.name,
+        slug=apikey.workspace.slug,
         api_keys=[
             ApiKey(
                 id=apikey.id,

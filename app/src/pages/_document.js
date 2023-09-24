@@ -76,7 +76,7 @@ class MyDocument extends Document {
             rel="stylesheet"
           ></link>
         </Head>
-        <body className="bg-hero-pattern-light bg-contain bg-fixed bg-no-repeat text-black antialiased dark:text-white ">
+        <body className="bg-contain bg-fixed bg-no-repeat text-black antialiased dark:text-white ">
           <Main />
           <NextScript />
         </body>

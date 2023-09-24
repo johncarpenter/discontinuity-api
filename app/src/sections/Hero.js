@@ -4,40 +4,49 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 
-const Hero = () => {
-  const { status: sessionStatus } = useSession();
-  const [showMenu, setMenuVisibility] = useState(false);
-
-  const toggleMenu = () => setMenuVisibility(!showMenu);
-
+export function Hero() {
   return (
-    <div className="w-full py-10">
-      <div className="relative flex flex-col px-10 mx-auto space-y-5 md:w-3/4">
-        <div>
-          <div className="flex flex-col items-center justify-center pt-10 mx-auto ">
-            <h1 className="text-6xl font-extrabold text-center">
-              <span className="block">Turn Your AI/ML vision into reality</span>
-              <span className="block text-secondary-500">in just 7 days.</span>
+    <div className="relative isolate overflow-hidden ">
+      <div className="mx-auto max-w-7xl lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8">
+        <div className="px-6 pb-10 sm:pb-12 lg:col-span-7 lg:px-0 lg:pb-20 lg:pt-8 xl:col-span-6">
+          <div className="mx-auto max-w-2xl lg:mx-0">
+            <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-6xl">
+              <span className="text-secondary-500">
+                Is AI right for your enterprise?
+              </span>{" "}
+              Fast-track your AI initiatives with our rapid prototyping service.
             </h1>
-            <h2>
-              <p className="mt-5 text-3xl text-center text-gray-800">
-                Fast-track your AI initiatives with our rapid prototyping
-                service. Affordable, Quick, Proven.
-              </p>
-            </h2>
+            <p className="mt-6 text-lg leading-8 text-grey-700 dark:text-gray-300">
+              Prove the value of AI by testing, refining and validating your
+              ideas before making investments. We make that happen.
+            </p>
+            <div className="mt-10 flex items-center gap-x-6">
+              <a
+                href="#contact"
+                className="rounded-md dark:bg-primary-700/90 bg-primary-600/90 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
+              >
+                Get started
+              </a>
+              <a
+                href="/demo"
+                className="text-sm font-semibold leading-6 text-white"
+              >
+                Learn more <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
-          <div className="flex items-center justify-center space-x-5">
-            <a className="px-10 py-3 text-center text-white bg-primary-600 rounded shadow hover:bg-primary-500">
-              Get Started
-            </a>
-            <a className="px-10 py-3 text-center text-primary-600 rounded shadow hover:bg-primary-50">
-              Live Demo
-            </a>
-          </div>
+        </div>
+        <div className="relative lg:col-span-5 lg:-mr-8 xl:absolute xl:inset-0 xl:left-1/2 xl:mr-0">
+          <Image
+            className="aspect-[3/2] w-full object-cover object-top lg:absolute lg:inset-0 lg:aspect-auto lg:h-full  rounded-xl"
+            src="/static/images/hero.png"
+            alt="Stylized self-portrait of Van Gogh holding a phone taking a selfie."
+            fill
+          />
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Hero;

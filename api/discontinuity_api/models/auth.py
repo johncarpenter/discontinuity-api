@@ -22,6 +22,7 @@ class Workspace(BaseModel):
 
     id: str = None
     name: str = None
+    slug: str = None
     api_keys: Optional[list[ApiKey]] = None
 
 

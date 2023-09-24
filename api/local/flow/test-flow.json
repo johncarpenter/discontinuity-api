@@ -1,0 +1,513 @@
+{
+    "description": "Simplest possible chat model",
+    "name": "test",
+    "data": {
+        "nodes": [
+            {
+                "width": 384,
+                "height": 641,
+                "id": "ChatOpenAI-7XhUp",
+                "type": "genericNode",
+                "position": {
+                    "x": -22.39529883003695,
+                    "y": 418.52239436055106
+                },
+                "data": {
+                    "type": "ChatOpenAI",
+                    "node": {
+                        "template": {
+                            "callbacks": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "callbacks",
+                                "advanced": false,
+                                "info": "",
+                                "type": "langchain.callbacks.base.BaseCallbackHandler",
+                                "list": true
+                            },
+                            "cache": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "cache",
+                                "advanced": false,
+                                "info": "",
+                                "type": "bool",
+                                "list": false
+                            },
+                            "client": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "client",
+                                "advanced": false,
+                                "info": "",
+                                "type": "Any",
+                                "list": false
+                            },
+                            "max_retries": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "value": 6,
+                                "password": false,
+                                "name": "max_retries",
+                                "advanced": false,
+                                "info": "",
+                                "type": "int",
+                                "list": false
+                            },
+                            "max_tokens": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "password": true,
+                                "name": "max_tokens",
+                                "advanced": false,
+                                "info": "",
+                                "type": "int",
+                                "list": false,
+                                "value": "1024"
+                            },
+                            "metadata": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "metadata",
+                                "advanced": false,
+                                "info": "",
+                                "type": "code",
+                                "list": false
+                            },
+                            "model_kwargs": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "password": false,
+                                "name": "model_kwargs",
+                                "advanced": true,
+                                "info": "",
+                                "type": "code",
+                                "list": false
+                            },
+                            "model_name": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "value": "gpt-4-0613",
+                                "password": false,
+                                "options": [
+                                    "gpt-3.5-turbo-0613",
+                                    "gpt-3.5-turbo",
+                                    "gpt-3.5-turbo-16k-0613",
+                                    "gpt-3.5-turbo-16k",
+                                    "gpt-4-0613",
+                                    "gpt-4-32k-0613",
+                                    "gpt-4",
+                                    "gpt-4-32k"
+                                ],
+                                "name": "model_name",
+                                "advanced": false,
+                                "info": "",
+                                "type": "str",
+                                "list": true
+                            },
+                            "n": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "value": 1,
+                                "password": false,
+                                "name": "n",
+                                "advanced": false,
+                                "info": "",
+                                "type": "int",
+                                "list": false
+                            },
+                            "openai_api_base": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "password": false,
+                                "name": "openai_api_base",
+                                "display_name": "OpenAI API Base",
+                                "advanced": false,
+                                "info": "\nThe base URL of the OpenAI API. Defaults to https://api.openai.com/v1.\n\nYou can change this to use other APIs like JinaChat, LocalAI and Prem.\n",
+                                "type": "str",
+                                "list": false,
+                                "value": ""
+                            },
+                            "openai_api_key": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "value": "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",
+                                "password": true,
+                                "name": "openai_api_key",
+                                "display_name": "OpenAI API Key",
+                                "advanced": false,
+                                "info": "",
+                                "type": "str",
+                                "list": false
+                            },
+                            "openai_organization": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "openai_organization",
+                                "display_name": "OpenAI Organization",
+                                "advanced": false,
+                                "info": "",
+                                "type": "str",
+                                "list": false
+                            },
+                            "openai_proxy": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "openai_proxy",
+                                "display_name": "OpenAI Proxy",
+                                "advanced": false,
+                                "info": "",
+                                "type": "str",
+                                "list": false
+                            },
+                            "request_timeout": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "request_timeout",
+                                "advanced": false,
+                                "info": "",
+                                "type": "float",
+                                "list": false,
+                                "value": 60
+                            },
+                            "streaming": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "value": false,
+                                "password": false,
+                                "name": "streaming",
+                                "advanced": false,
+                                "info": "",
+                                "type": "bool",
+                                "list": false
+                            },
+                            "tags": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "tags",
+                                "advanced": false,
+                                "info": "",
+                                "type": "str",
+                                "list": true
+                            },
+                            "temperature": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "value": 0.7,
+                                "password": false,
+                                "name": "temperature",
+                                "advanced": false,
+                                "info": "",
+                                "type": "float",
+                                "list": false
+                            },
+                            "tiktoken_model_name": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "tiktoken_model_name",
+                                "advanced": false,
+                                "info": "",
+                                "type": "str",
+                                "list": false
+                            },
+                            "verbose": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "value": false,
+                                "password": false,
+                                "name": "verbose",
+                                "advanced": false,
+                                "info": "",
+                                "type": "bool",
+                                "list": false
+                            },
+                            "_type": "ChatOpenAI"
+                        },
+                        "description": "Wrapper around OpenAI Chat large language models.",
+                        "base_classes": [
+                            "ChatOpenAI",
+                            "BaseLanguageModel",
+                            "BaseChatModel",
+                            "BaseLLM"
+                        ],
+                        "display_name": "ChatOpenAI",
+                        "documentation": "https://python.langchain.com/docs/modules/model_io/models/chat/integrations/openai"
+                    },
+                    "id": "ChatOpenAI-7XhUp",
+                    "value": null
+                },
+                "selected": false,
+                "dragging": false,
+                "positionAbsolute": {
+                    "x": -22.39529883003695,
+                    "y": 418.52239436055106
+                }
+            },
+            {
+                "width": 384,
+                "height": 287,
+                "id": "ConversationChain-bpfPg",
+                "type": "genericNode",
+                "position": {
+                    "x": 806,
+                    "y": 554
+                },
+                "data": {
+                    "type": "ConversationChain",
+                    "node": {
+                        "template": {
+                            "callbacks": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "callbacks",
+                                "advanced": false,
+                                "info": "",
+                                "type": "langchain.callbacks.base.BaseCallbackHandler",
+                                "list": true
+                            },
+                            "llm": {
+                                "required": true,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "password": false,
+                                "name": "llm",
+                                "advanced": false,
+                                "info": "",
+                                "type": "BaseLanguageModel",
+                                "list": false
+                            },
+                            "memory": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "password": false,
+                                "name": "memory",
+                                "advanced": false,
+                                "info": "",
+                                "type": "BaseMemory",
+                                "list": false
+                            },
+                            "output_parser": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "value": {
+                                    "_type": "default"
+                                },
+                                "password": false,
+                                "name": "output_parser",
+                                "advanced": false,
+                                "info": "",
+                                "type": "BaseLLMOutputParser",
+                                "list": false
+                            },
+                            "prompt": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "value": {
+                                    "input_variables": [
+                                        "history",
+                                        "input"
+                                    ],
+                                    "output_parser": null,
+                                    "partial_variables": {},
+                                    "template": "The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.\n\nCurrent conversation:\n{history}\nHuman: {input}\nAI:",
+                                    "template_format": "f-string",
+                                    "validate_template": true,
+                                    "_type": "prompt"
+                                },
+                                "password": false,
+                                "name": "prompt",
+                                "advanced": false,
+                                "info": "",
+                                "type": "BasePromptTemplate",
+                                "list": false
+                            },
+                            "input_key": {
+                                "required": true,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "value": "input",
+                                "password": false,
+                                "name": "input_key",
+                                "advanced": true,
+                                "info": "",
+                                "type": "str",
+                                "list": false
+                            },
+                            "llm_kwargs": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "llm_kwargs",
+                                "advanced": false,
+                                "info": "",
+                                "type": "code",
+                                "list": false
+                            },
+                            "metadata": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "metadata",
+                                "advanced": false,
+                                "info": "",
+                                "type": "code",
+                                "list": false
+                            },
+                            "output_key": {
+                                "required": true,
+                                "placeholder": "",
+                                "show": true,
+                                "multiline": false,
+                                "value": "response",
+                                "password": false,
+                                "name": "output_key",
+                                "advanced": true,
+                                "info": "",
+                                "type": "str",
+                                "list": false
+                            },
+                            "return_final_only": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "value": true,
+                                "password": false,
+                                "name": "return_final_only",
+                                "advanced": false,
+                                "info": "",
+                                "type": "bool",
+                                "list": false
+                            },
+                            "tags": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "tags",
+                                "advanced": false,
+                                "info": "",
+                                "type": "str",
+                                "list": true
+                            },
+                            "verbose": {
+                                "required": false,
+                                "placeholder": "",
+                                "show": false,
+                                "multiline": false,
+                                "password": false,
+                                "name": "verbose",
+                                "advanced": true,
+                                "info": "",
+                                "type": "bool",
+                                "list": false
+                            },
+                            "_type": "ConversationChain"
+                        },
+                        "description": "Chain to have a conversation and load context from memory.",
+                        "base_classes": [
+                            "Chain",
+                            "LLMChain",
+                            "ConversationChain",
+                            "function"
+                        ],
+                        "display_name": "ConversationChain",
+                        "documentation": ""
+                    },
+                    "id": "ConversationChain-bpfPg",
+                    "value": null
+                },
+                "selected": false,
+                "dragging": false,
+                "positionAbsolute": {
+                    "x": 806,
+                    "y": 554
+                }
+            }
+        ],
+        "edges": [
+            {
+                "source": "ChatOpenAI-7XhUp",
+                "sourceHandle": "ChatOpenAI|ChatOpenAI-7XhUp|ChatOpenAI|BaseLanguageModel|BaseChatModel|BaseLLM",
+                "target": "ConversationChain-bpfPg",
+                "targetHandle": "BaseLanguageModel|llm|ConversationChain-bpfPg",
+                "className": "",
+                "id": "reactflow__edge-ChatOpenAI-7XhUpChatOpenAI|ChatOpenAI-7XhUp|ChatOpenAI|BaseLanguageModel|BaseChatModel|BaseLLM-ConversationChain-bpfPgBaseLanguageModel|llm|ConversationChain-bpfPg",
+                "animated": false,
+                "style": {
+                    "stroke": "#555"
+                },
+                "selected": false
+            }
+        ],
+        "viewport": {
+            "x": 206.19097879554158,
+            "y": -113.37963068956788,
+            "zoom": 0.8238197319820695
+        }
+    },
+    "id": "1c713dfe-3937-41a0-b602-8d092d1c9aea"
+}
