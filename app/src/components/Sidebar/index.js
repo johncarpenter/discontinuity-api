@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
-import Actions from './actions';
-import Menu from './menu';
-import sidebarMenu from '@/config/menu/sidebar-static';
-import { useWorkspaces } from '@/hooks/data';
-import { useWorkspace } from '@/providers/workspace';
-import { Bars3Icon } from '@heroicons/react/24/outline';
+import Actions from "./actions";
+import Menu from "./menu";
+import sidebarMenu from "@/config/menu/sidebar-static";
+import { useWorkspaces } from "@/hooks/data";
+import { useWorkspace } from "@/providers/workspace";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 
 const staticMenu = sidebarMenu();
 
@@ -41,7 +42,13 @@ const Sidebar = ({ menu }) => {
     <aside className="sticky z-40 flex flex-col space-y-5 text-white bg-gray-800 dark:bg-gray-900 md:overflow-y-auto md:w-1/4 md:h-screen overscroll-contain">
       <div className="relative flex items-center justify-center p-5 text-center border-b border-b-gray-900">
         <Link href="/" className="flex-grow text-2xl font-bold">
-          Nextacular
+          <Image
+            priority
+            src="/static/images/white.svg"
+            height={90}
+            width={300}
+            alt="Discontinuity AI"
+          />
         </Link>
         <button className="absolute right-0 p-5 md:hidden" onClick={toggleMenu}>
           <Bars3Icon className="w-6 h-6" />
@@ -49,11 +56,11 @@ const Sidebar = ({ menu }) => {
       </div>
       <div
         className={[
-          'flex-col space-y-5 md:flex md:relative md:top-0',
+          "flex-col space-y-5 md:flex md:relative md:top-0",
           showMenu
-            ? 'absolute top-12 bg-gray-800 right-0 left-0 h-screen'
-            : 'hidden',
-        ].join(' ')}
+            ? "absolute top-12 bg-gray-800 right-0 left-0 h-screen"
+            : "hidden",
+        ].join(" ")}
       >
         <Actions />
         <div className="flex flex-col p-5 space-y-10">

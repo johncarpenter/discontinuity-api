@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
-import Button from '@/components/Button/index';
-import Card from '@/components/Card/index';
-import Content from '@/components/Content/index';
-import Meta from '@/components/Meta/index';
-import { useInvitations, useWorkspaces } from '@/hooks/data/index';
-import { AccountLayout } from '@/layouts/index';
-import api from '@/lib/common/api';
-import { useWorkspace } from '@/providers/workspace';
+import Button from "@/components/Button/index";
+import Card from "@/components/Card/index";
+import Content from "@/components/Content/index";
+import Meta from "@/components/Meta/index";
+import { useInvitations, useWorkspaces } from "@/hooks/data/index";
+import { AccountLayout } from "@/layouts/index";
+import api from "@/lib/common/api";
+import { useWorkspace } from "@/providers/workspace";
 
 const Welcome = () => {
   const router = useRouter();
@@ -24,7 +24,7 @@ const Welcome = () => {
     setSubmittingState(true);
     api(`/api/workspace/team/accept`, {
       body: { memberId },
-      method: 'PUT',
+      method: "PUT",
     }).then((response) => {
       setSubmittingState(false);
 
@@ -33,7 +33,7 @@ const Welcome = () => {
           toast.error(response.errors[error].msg)
         );
       } else {
-        toast.success('Accepted invitation!');
+        toast.success("Accepted invitation!");
       }
     });
   };
@@ -42,7 +42,7 @@ const Welcome = () => {
     setSubmittingState(true);
     api(`/api/workspace/team/decline`, {
       body: { memberId },
-      method: 'PUT',
+      method: "PUT",
     }).then((response) => {
       setSubmittingState(false);
 
@@ -51,7 +51,7 @@ const Welcome = () => {
           toast.error(response.errors[error].msg)
         );
       } else {
-        toast.success('Declined invitation!');
+        toast.success("Declined invitation!");
       }
     });
   };
@@ -64,10 +64,7 @@ const Welcome = () => {
   return (
     <AccountLayout>
       <Meta title="Nextacular - Dashboard" />
-      <Content.Title
-        title="Nextacular Dashboard"
-        subtitle="Start building SaaS platforms in a day"
-      />
+      <Content.Title title="Dashboard" subtitle="Manage your AI projects" />
       <Content.Divider />
       <Content.Container>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">

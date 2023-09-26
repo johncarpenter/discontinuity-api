@@ -41,12 +41,13 @@ export const authOptions = {
         const { host } = new URL(url);
         await sendMail({
           html: html({ email, url }),
-          subject: `[Nextacular] Sign in to ${host}`,
+          subject: `[Discontinuity.AI] Sign in to ${host}`,
           text: text({ email, url }),
           to: email,
         });
       },
     }),
+
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
