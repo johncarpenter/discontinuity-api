@@ -77,5 +77,5 @@ jobs:
 
       - name: Deploy
         run: |
-          kubectl set image deployment/discontinuity-flow-deployment -n=flow flow=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }}
-          kubectl rollout status deployment/discontinuity-flow-deployment -n=flow
+          kubectl set image deployment/discontinuity-flow-deployment -n=api flow=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }}
+          kubectl rollout status deployment/discontinuity-flow-deployment -n=api
