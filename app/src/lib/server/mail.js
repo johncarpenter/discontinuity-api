@@ -1,14 +1,15 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
+import mg from "nodemailer-mailgun-transport";
 
 export const emailConfig = {
   auth: {
-    user: process.env.EMAIL_SERVER_USER,
-    pass: process.env.EMAIL_SERVER_PASSWORD,
+    api_key: process.env.EMAIL_SERVER_API_KEY,
+    domain: "discontinuity.ai",
   },
-  service: process.env.EMAIL_SERVICE,
 };
 
-const transporter = nodemailer.createTransport(emailConfig);
+//const transporter = nodemailer.createTransport(emailConfig);
+const transporter = nodemailer.createTransport(mg(emailConfig));
 
 export const sendMail = async ({ from, html, subject, text, to }) => {
   const data = {
@@ -19,9 +20,9 @@ export const sendMail = async ({ from, html, subject, text, to }) => {
     html,
   };
 
-  process.env.NODE_ENV === 'production'
-    ? await transporter.sendMail(data)
-    : console.log(data);
+  //process.env.NODE_ENV === 'production'
+  await transporter.sendMail(data);
+  //: console.log(data);
 };
 
 export default transporter;

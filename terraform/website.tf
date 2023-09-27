@@ -2,14 +2,6 @@
 # Creates the website service
 #
 
-resource "kubernetes_namespace" "website_namespace" {
-  metadata {
-    labels = {
-      app = "website"
-    }
-    name = "website"
-  }
-}
 
 resource "kubernetes_deployment" "website_deployment" {
   metadata {
@@ -60,6 +52,22 @@ resource "kubernetes_deployment" "website_deployment" {
           env {
             name  = "APP_URL"
             value = "https://discontinuity.ai"
+          }
+          env {
+            name  = "EMAIL_FROM"
+            value = var.email_from
+          }
+          env {
+            name  = "EMAIL_SERVER_API_KEY"
+            value = var.email_server_api_key
+          }
+          env {
+            name  = "NEXT_PUBLIC_PUBLISHABLE_KEY"
+            value = var.next_public_publishable_key
+          }
+          env {
+            name  = "PAYMENTS_SECRET_KEY"
+            value = var.payments_secret_key
           }
         }
       }

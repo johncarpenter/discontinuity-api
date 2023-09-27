@@ -40,6 +40,20 @@ variable "google_client_secret" {
   type = string
 }
 
+variable "email_from" {
+  type = string
+}
 
+variable "email_server_api_key" {
+  type = string
+}
+
+variable "next_public_publishable_key" {
+  type = string
+}
+
+variable "payments_secret_key" {
+  type = string
+}
 
 

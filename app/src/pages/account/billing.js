@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import formatDistance from 'date-fns/formatDistance';
-import Link from 'next/link';
-import { getSession } from 'next-auth/react';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import formatDistance from "date-fns/formatDistance";
+import Link from "next/link";
+import { getSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
-import Button from '@/components/Button/index';
-import Card from '@/components/Card/index';
-import Content from '@/components/Content/index';
-import Meta from '@/components/Meta/index';
-import Modal from '@/components/Modal/index';
-import { AccountLayout } from '@/layouts/index';
-import api from '@/lib/common/api';
-import { redirectToCheckout } from '@/lib/client/stripe';
-import { getInvoices, getProducts } from '@/lib/server/stripe';
-import { getPayment } from '@/prisma/services/customer';
+import Button from "@/components/Button/index";
+import Card from "@/components/Card/index";
+import Content from "@/components/Content/index";
+import Meta from "@/components/Meta/index";
+import Modal from "@/components/Modal/index";
+import { AccountLayout } from "@/layouts/index";
+import api from "@/lib/common/api";
+import { redirectToCheckout } from "@/lib/client/stripe";
+import { getInvoices, getProducts } from "@/lib/server/stripe";
+import { getPayment } from "@/prisma/services/customer";
 
 const Billing = ({ invoices, products }) => {
   const [isSubmitting, setSubmittingState] = useState(false);
@@ -22,7 +22,7 @@ const Billing = ({ invoices, products }) => {
   const subscribe = (priceId) => {
     setSubmittingState(true);
     api(`/api/payments/subscription/${priceId}`, {
-      method: 'POST',
+      method: "POST",
     }).then((response) => {
       setSubmittingState(false);
 
@@ -40,7 +40,7 @@ const Billing = ({ invoices, products }) => {
 
   return (
     <AccountLayout>
-      <Meta title="Nextacular - Billing" />
+      <Meta title="Discontinuity - Billing" />
       <Content.Title
         title="Billing"
         subtitle="Manage your billing and preferences"
@@ -76,6 +76,7 @@ const Billing = ({ invoices, products }) => {
         >
           <div className="space-y-0 text-sm text-gray-600">
             <p>You are currently under the FREE plan</p>
+            {JSON.stringify(products)}
           </div>
           <div className="flex space-x-5">
             {products.map((product, index) => (
@@ -92,7 +93,7 @@ const Billing = ({ invoices, products }) => {
                     onClick={() => subscribe(product.prices.id)}
                   >
                     {isSubmitting
-                      ? 'Redirecting...'
+                      ? "Redirecting..."
                       : `Upgrade to ${product.name}`}
                   </Button>
                 </Card.Footer>
@@ -156,8 +157,8 @@ const Billing = ({ invoices, products }) => {
         </Content.Container>
       ) : (
         <Content.Empty>
-          Once you&apos;ve paid for something on Nextacular, invoices will show
-          up here
+          Once you&apos;ve paid for something on Discontinuity.AI, invoices will
+          show up here
         </Content.Empty>
       )}
     </AccountLayout>
@@ -171,6 +172,7 @@ export const getServerSideProps = async (context) => {
     getInvoices(customerPayment?.paymentId),
     getProducts(),
   ]);
+
   return {
     props: {
       invoices,

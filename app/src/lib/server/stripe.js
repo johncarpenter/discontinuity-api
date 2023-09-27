@@ -1,4 +1,4 @@
-import initStripe from 'stripe';
+import initStripe from "stripe";
 
 const stripe = initStripe(process.env.PAYMENTS_SECRET_KEY);
 
@@ -14,9 +14,10 @@ export const getInvoices = async (customer) => {
 
 export const getProducts = async () => {
   const [products, prices] = await Promise.all([
-    stripe.products.list(),
+    stripe.products.list({ type: "service", active: "true" }),
     stripe.prices.list(),
   ]);
+  console.log(products);
   const productPrices = {};
   prices?.data.map((price) => (productPrices[price.product] = price));
   products?.data.map((product) => (product.prices = productPrices[product.id]));

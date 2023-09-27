@@ -1,11 +1,11 @@
-import { validateSession } from '@/config/api-validation';
-import stripe from '@/lib/server/stripe';
-import { getPayment } from '@/prisma/services/customer';
+import { validateSession } from "@/config/api-validation";
+import stripe from "@/lib/server/stripe";
+import { getPayment } from "@/prisma/services/customer";
 
 const handler = async (req, res) => {
   const { method } = req;
 
-  if (method === 'POST') {
+  if (method === "POST") {
     const session = await validateSession(req, res);
     const { priceId } = req.query;
     const [customerPayment, price] = await Promise.all([
@@ -21,8 +21,8 @@ const handler = async (req, res) => {
     ];
     const paymentSession = await stripe.checkout.sessions.create({
       customer: customerPayment.paymentId,
-      mode: 'subscription',
-      payment_method_types: ['card'],
+      mode: "payment",
+      payment_method_types: ["card"],
       line_items: lineItems,
       success_url: `${process.env.APP_URL}/account/payment?status=success`,
       cancel_url: `${process.env.APP_URL}/account/payment?status=cancelled`,

@@ -12,13 +12,15 @@ export function Hero() {
           <div className="mx-auto max-w-2xl lg:mx-0">
             <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-6xl">
               <span className="text-secondary-500">
-                Is AI right for your enterprise?
+                Have an AI idea but don&apos;t know where to start?
               </span>{" "}
               Fast-track your AI initiatives with our rapid prototyping service.
             </h1>
             <p className="mt-6 text-lg leading-8 text-grey-700 dark:text-gray-300">
               Prove the value of AI by testing, refining and validating your
-              ideas before making investments. We make that happen.
+              ideas before making investments. We will help you build a custom
+              AI prototype usually in less than a week. Faster time to market,
+              lower risk, and lower cost.
             </p>
             <div className="mt-10 flex items-center gap-x-6">
               <a
