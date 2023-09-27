@@ -1,4 +1,4 @@
-name: api-docker-build
+name: flow-docker-build
 on:
   push:
     paths:
