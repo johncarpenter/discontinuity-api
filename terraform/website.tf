@@ -39,7 +39,7 @@ resource "kubernetes_deployment" "website_deployment" {
           }
           env {
             name  = "DATABASE_URL"
-            value = "postgresql+psycopg2://postgres:${var.postgres_password}@34.34.179.242/discontinuity-api-db"
+            value = "postgresql://postgres:${var.postgres_password}@34.34.179.242/discontinuity-api-db"
           }
           env {
             name  = "GOOGLE_CLIENT_ID"
