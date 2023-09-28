@@ -59,7 +59,7 @@ export default function ContactForm() {
       <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2 ">
         <div className="relative px-6 pb-10 pt-4 sm:pt-14 lg:static lg:px-8 lg:py-4">
           <div className="mx-auto max-w-4xl lg:mx-0 lg:max-w-lg">
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center space-y-5">
               <h6 className="font-bold text-center text-blue-600 uppercase">
                 Need Something Else?
               </h6>
