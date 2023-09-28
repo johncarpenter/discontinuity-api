@@ -6,10 +6,15 @@ RUN useradd -m -u 1000 user
 ENV HOME=/home/user \
     PATH=/home/user/.local/bin:$PATH
 
+ENV LANGFLOW_PORT=7860
+ENV LANGFLOW_HOST=0.0.0.0
+ENV LANGFLOW_REMOVE_API_KEYS=true
+
 WORKDIR $HOME/app
 
 COPY --chown=user . $HOME/app
 
 # Update to 0.50 when it's released for the auth updates -U --user
 RUN pip install langflow==0.5.0a1
-CMD langflow --port 7860
+
+CMD langflow
