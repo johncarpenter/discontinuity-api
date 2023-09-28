@@ -12,4 +12,4 @@ COPY --chown=user . $HOME/app
 
 # Update to 0.50 when it's released for the auth updates -U --user
 RUN pip install langflow==0.5.0a1
-CMD langflow --host 0.0.0.0 --port 7860
+CMD langflow --port 7860
