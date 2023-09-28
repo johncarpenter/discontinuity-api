@@ -24,7 +24,7 @@ resource "kubernetes_ingress_v1" "flow-ingress" {
         path {
           backend {
             service {
-              name = kubernetes_service.api_service.metadata.0.name
+              name = kubernetes_service.flow_service.metadata.0.name
               port {
                 number = 80
               }
