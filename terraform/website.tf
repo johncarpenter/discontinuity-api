@@ -69,6 +69,11 @@ resource "kubernetes_deployment" "website_deployment" {
             name  = "PAYMENTS_SECRET_KEY"
             value = var.payments_secret_key
           }
+          env {
+            name  = "NEXTAUTH_SECRET"
+            value = var.nextauth_secret
+          }
+
         }
       }
     }

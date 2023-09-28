@@ -56,4 +56,8 @@ variable "payments_secret_key" {
   type = string
 }
 
+variable "nextauth_secret" {
+  type = string
+}
+
 
