@@ -14,6 +14,7 @@ const Workspace = () => {
           title={workspace.name}
           subtitle="This is your project's workspace"
         />
+        Projects go here. add.remove
         <Content.Divider />
         <Content.Container />
       </AccountLayout>

@@ -9,6 +9,9 @@ import ContactForm from "./ContactForm";
 import AboutUs from "./AboutUs";
 import TeamSection from "./TeamSection";
 import Header from "./Header";
+import FeatureTypes from "./FeatureTypes";
+import Advisory from "./Advisory";
+import Training from "./Training";
 
 export {
   Header,
@@ -22,4 +25,7 @@ export {
   Pricing,
   Testimonial,
   ContactForm,
+  FeatureTypes,
+  Advisory,
+  Training,
 };

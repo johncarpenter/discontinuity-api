@@ -57,42 +57,6 @@ const ApiKeys = ({ isTeamOwner, workspace }) => {
     });
   };
 
-  const refresh = (apikey, verified) => {
-    setSubmittingState(true);
-
-    api(`/api/workspace/${workspace.slug}/apikey`, {
-      body: { permissions: "user" },
-      method: "POST",
-    }).then((response) => {
-      setSubmittingState(false);
-
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          toast.error(response.errors[error].msg)
-        );
-      } else {
-        toast.success("apikey successfully verified!");
-      }
-    });
-
-    return verified;
-  };
-
-  const remove = (apikey) => {
-    api(`/api/workspace/${workspace.slug}/apikey`, {
-      body: { id: apikey.id },
-      method: "DELETE",
-    }).then((response) => {
-      if (response.errors) {
-        Object.keys(response.errors).forEach((error) =>
-          toast.error(response.errors[error].msg)
-        );
-      } else {
-        toast.success("apikey successfully deleted from workspace!");
-      }
-    });
-  };
-
   return (
     <AccountLayout>
       <Meta title={`${workspace.name} | API Keys`} />

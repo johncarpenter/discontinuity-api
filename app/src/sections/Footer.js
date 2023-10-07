@@ -4,20 +4,17 @@ import Image from "next/image";
 
 const navigation = {
   solutions: [
-    { name: "Prototyping", href: "/" },
-    { name: "Advisory", href: "#" },
-    { name: "Training", href: "#" },
-    { name: "Services", href: "#" },
+    { name: "Prototyping", href: "/solutions#prototyping" },
+    { name: "Advisory", href: "/solutions#advisory" },
+    { name: "Training", href: "/solutions#training" },
   ],
   support: [
-    { name: "Pricing", href: "#" },
-    { name: "Documentation", href: "#" },
-    { name: "Guides", href: "#" },
+    { name: "Pricing", href: "/#pricing" },
+    { name: "Guides", href: "/#guides" },
     { name: "API Status", href: "#" },
   ],
   company: [
     { name: "About", href: "about" },
-    { name: "Claim", href: "#" },
     { name: "Privacy", href: "#" },
     { name: "Terms", href: "#" },
   ],

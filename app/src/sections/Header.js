@@ -41,9 +41,24 @@ const Hero = () => {
             ].join(" ")}
           >
             <nav className="flex flex-col w-full space-x-0 space-y-3 text-center md:space-y-0 md:space-x-3 md:flex-row">
-              <a className="px-5 py-2 rounded hover:bg-gray-100">Guides</a>
-              <a className="px-5 py-2 rounded hover:bg-gray-100">Pricing</a>
-              <a className="px-5 py-2 rounded hover:bg-gray-100">Blog</a>
+              <Link
+                href="solutions"
+                className="px-5 py-2 rounded hover:bg-gray-100"
+              >
+                Services
+              </Link>
+              <Link
+                href="about"
+                className="px-5 py-2 rounded hover:bg-gray-100"
+              >
+                About
+              </Link>
+              <Link
+                href="#contact"
+                className="px-5 py-2 rounded hover:bg-gray-100"
+              >
+                Contact
+              </Link>
             </nav>
             <Link
               href={

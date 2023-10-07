@@ -11,11 +11,11 @@ const Guides = (props) => {
             Guides
           </h6>
           <h2 className="text-4xl font-bold text-center">
-            <span className="block">Samples of Works</span>
+            <span className="block">Need Some Inspiration?</span>
           </h2>
           <p className="text-center text-gray-600">
-            AI is fantastically flexible, here are some examples of how it can
-            be used.
+            AI is fantastically flexible, here are some examples of how other
+            clients have leveraged the AI infrastructure by Discontinuity.ai
           </p>
         </div>
         <div className="grid grid-cols-1 gap-10 py-10 md:grid-cols-3">

@@ -10,6 +10,7 @@ import {
   Pricing,
   Testimonial,
   ContactForm,
+  FeatureTypes,
 } from "@/sections/index";
 
 const Home = ({ articles }) => {
@@ -22,10 +23,13 @@ const Home = ({ articles }) => {
       <Header />
       <Hero />
       <Features />
+      <div id="pricing" />
       <Pricing />
+      <div id="guides" />
       <Guides articles={articles} />
       <Testimonial />
-      <CallToAction />
+      <FeatureTypes />
+      <div id="contact" />
       <ContactForm />
       <Footer />
     </LandingLayout>

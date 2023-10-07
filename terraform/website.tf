@@ -51,7 +51,7 @@ resource "kubernetes_deployment" "website_deployment" {
           }
           env {
             name  = "APP_URL"
-            value = "https://discontinuity.ai"
+            value = var.host
           }
           env {
             name  = "EMAIL_FROM"
@@ -72,6 +72,10 @@ resource "kubernetes_deployment" "website_deployment" {
           env {
             name  = "NEXTAUTH_SECRET"
             value = var.nextauth_secret
+          }
+          env {
+            name  = "NEXTAUTH_URL"
+            value = var.host
           }
 
         }
