@@ -6,6 +6,7 @@ import prisma from "@/prisma/index";
 import { html, text } from "@/config/email-templates/signin";
 import { emailConfig, sendMail } from "@/lib/server/mail";
 import { createPaymentAccount, getPayment } from "@/prisma/services/customer";
+import { getUserByEmail } from "@/prisma/services/user";
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -21,6 +22,12 @@ export const authOptions = {
       }
 
       return session;
+    },
+    signIn: async ({ user }) => {
+      console.log(`Logging in user ${JSON.stringify(user)}...`);
+      // Don't allow new signups
+      const userAccount = await getUserByEmail(user.email);
+      if (!userAccount) return false;
     },
   },
   debug: !(process.env.NODE_ENV === "production"),

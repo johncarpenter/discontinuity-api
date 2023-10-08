@@ -6,6 +6,7 @@ import {
 import React, { useRef, useState } from "react";
 
 export default function ContactForm() {
+  const [enabled, setEnabled] = useState(true);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const [state, setState] = useState({
@@ -26,8 +27,8 @@ export default function ContactForm() {
 
   const submit = async (e) => {
     e.preventDefault();
-
-    const res = await fetch(`/api/hubspot`, {
+    setEnabled(false);
+    const res = await fetch(`/api/main/contact`, {
       body: JSON.stringify({
         email: state.email,
         first: state.first,
@@ -199,6 +200,7 @@ export default function ContactForm() {
             </div>
             <div className="mt-8 flex justify-end">
               <button
+                disabled={!enabled}
                 type="submit"
                 className="rounded-md bg-primary-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >

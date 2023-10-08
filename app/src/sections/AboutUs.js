@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -31,21 +32,23 @@ export default function About() {
           <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
             <div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
               <h1 className="text-4xl font-bold tracking-tight text-gray-800 dark:text-gray-300 sm:text-6xl">
-                We’re creating a world where AI agents work alongside humans to
-                enhance productivity, creativity, and innovation.......
+                We’re creating a world where AI works alongside humans to
+                enhance productivity, creativity, and innovation.{""}
               </h1>
               <p className="relative mt-6 text-lg leading-8 text-gray-600 dark:text-gray-400 sm:max-w-md lg:max-w-none">
                 We believe that by building intelligent agents that can learn
                 and adapt to changing business needs, we can help companies
                 achieve greater efficiency, profitability, and growth, while
-                also improving the quality of life for workers and customers
-                alike.
+                also improving the quality of life for workers, customers and
+                the scary place we live in.
               </p>
             </div>
             <div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
               <div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
                 <div className="relative">
-                  <img
+                  <Image
+                    width={300}
+                    height={400}
                     src="/static/images/robo_dalle.jpeg"
                     alt="Illustration of a face that is half Salvador Dali and half robot."
                     className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -55,7 +58,9 @@ export default function About() {
               </div>
               <div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
                 <div className="relative">
-                  <img
+                  <Image
+                    width={300}
+                    height={400}
                     src="/static/images/image_2.jpg"
                     alt=""
                     className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -63,7 +68,9 @@ export default function About() {
                   <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                 </div>
                 <div className="relative">
-                  <img
+                  <Image
+                    width={300}
+                    height={400}
                     src="/static/images/image_3.jpg"
                     alt=""
                     className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -73,7 +80,9 @@ export default function About() {
               </div>
               <div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
                 <div className="relative">
-                  <img
+                  <Image
+                    width={300}
+                    height={400}
                     src="/static/images/image_4.png"
                     alt=""
                     className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -81,7 +90,9 @@ export default function About() {
                   <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
                 </div>
                 <div className="relative">
-                  <img
+                  <Image
+                    width={300}
+                    height={400}
                     src="/static/images/image_1.jpg"
                     alt=""
                     className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"

@@ -1,6 +1,6 @@
-import { html, text } from '@/config/email-templates/email-update';
-import { sendMail } from '@/lib/server/mail';
-import prisma from '@/prisma/index';
+import { html, text } from "@/config/email-templates/email-update";
+import { sendMail } from "@/lib/server/mail";
+import prisma from "@/prisma/index";
 
 export const deactivate = async (id) =>
   await prisma.user.update({
@@ -16,6 +16,16 @@ export const getUser = async (id) =>
       userCode: true,
     },
     where: { id },
+  });
+
+export const getUserByEmail = async (email) =>
+  await prisma.user.findUnique({
+    select: {
+      email: true,
+      name: true,
+      userCode: true,
+    },
+    where: { email },
   });
 
 export const updateEmail = async (id, email, previousEmail) => {

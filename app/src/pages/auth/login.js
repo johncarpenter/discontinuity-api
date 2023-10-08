@@ -27,6 +27,13 @@ const Login = () => {
         duration: 5000,
       });
       setEmail("");
+    } else {
+      toast.success(
+        `We aren't taking new accounts yet, but if you would like to be part of the bet please email hello@discontinuity.ai and we can set one up`,
+        {
+          duration: 5000,
+        }
+      );
     }
 
     setSubmittingState(false);
@@ -53,7 +60,7 @@ const Login = () => {
     <AuthLayout>
       <Meta
         title="Discontinuity.AI - Login"
-        description="Access to your applications and services."
+        description="Login to Manage your AI projects and account"
       />
       <div className="flex flex-col items-center justify-center p-5 m-auto space-y-5 rounded shadow-lg md:p-10 md:w-1/3">
         <div>
@@ -68,10 +75,10 @@ const Login = () => {
           </Link>
         </div>
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Sign in with your email</h1>
+          <h1 className="text-2xl font-bold">Log into your account</h1>
           <h2 className="text-gray-600">
-            We&apos;ll send a magic link to your inbox to confirm your email
-            address and sign you in.
+            Enter your email address for your account and we will email you a
+            link to log into your account.
           </h2>
         </div>
         <form className="flex flex-col w-full space-y-3">

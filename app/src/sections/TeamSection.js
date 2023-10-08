@@ -1,10 +1,11 @@
 import { EnvelopeIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 const people = [
   {
     name: "John Carpenter",
     role: "Meat-Based Technical Partner",
-    imageUrl: "/static/images/image_author.jpg",
+    imageUrl: "/static/images/image_author.png",
     bio: "John is committed to driving innovation and growth through the development of intelligent, adaptable, and user-friendly AI agents. His visionary leadership and technical expertise are helping to shape the future of work, and create a world where humans and machines can work together seamlessly and efficiently.",
     twitterUrl: "https://twitter.com/johncarpenter",
     linkedinUrl: "https://www.linkedin.com/in/johncarpenter2/",
@@ -41,8 +42,10 @@ export default function TeamSection() {
               key={person.name}
               className="flex flex-col gap-10 pt-12 sm:flex-row"
             >
-              <img
+              <Image
                 className="aspect-[4/5] w-52 flex-none rounded-2xl object-cover"
+                width={208}
+                height={256}
                 src={person.imageUrl}
                 alt=""
               />
