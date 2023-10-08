@@ -1,4 +1,3 @@
-import CallToAction from "./CallToAction";
 import Features from "./Features";
 import Footer from "./Footer";
 import Guides from "./Guides";
@@ -18,7 +17,6 @@ export {
   Header,
   TeamSection,
   AboutUs,
-  CallToAction,
   Features,
   Footer,
   Guides,
