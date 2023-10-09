@@ -64,7 +64,24 @@ resource "kubernetes_deployment" "flow_deployment" {
         container {
           image = "gcr.io/${var.project_id}/discontinuity-flow:latest"
           name  = "flow"
+          env {
+            name  = "LANGFLOW_SUPERUSER"
+            value = "discontinuity"
+          }
+          env {
+            name  = "LANGFLOW_SUPERUSER_PASSWORD"
+            value = "whd2eud2jcn8XQG_vhm"
+          }
+          env {
+            name  = "LANGFLOW_SECRET_KEY"
+            value = "A+FT1fIf8SKBDtnzBeqsfxf7eplJzhVPq45S4HdEhTg="
+          }
+          env {
+            name  = "LANGFLOW_AUTO_LOGIN"
+            value = "False"
+          }
         }
+
       }
     }
   }
