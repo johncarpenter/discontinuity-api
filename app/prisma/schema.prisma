@@ -175,3 +175,23 @@ model ApiKey {
 
   @@map("apikeys")
 }
+
+
+model FileUpload {
+  id            String @id @default(cuid())  
+  workspaceId   String
+  name          String?
+  createdAt     DateTime? @default(now())
+  fileUrl
+  fileName
+
+
+
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@map("apikeys")
+
+}
+
+

@@ -38,14 +38,14 @@ const Home = ({ articles }) => {
 
 export const getServerSideProps = async (context) => {
   // Pull in the articles from the Medium feed
-
-  const res = await fetch(
-    `https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@john_53682`
-  );
-
-  const data = await res.json();
-
-  const articles = data.items;
+  let articles = [];
+  try {
+    const res = await fetch(
+      `https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@john_53682`
+    );
+    const data = await res.json();
+    articles = data.items;
+  } catch (e) {}
 
   return {
     props: {

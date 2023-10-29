@@ -12,6 +12,7 @@ import FeatureTypes from "./FeatureTypes";
 import Advisory from "./Advisory";
 import Training from "./Training";
 import Legal from "./Legal";
+import GettingStarted from "./GettingStarted";
 
 export {
   Header,
@@ -28,4 +29,5 @@ export {
   Advisory,
   Training,
   Legal,
+  GettingStarted,
 };
