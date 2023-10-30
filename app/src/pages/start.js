@@ -20,6 +20,7 @@ const About = ({ articles }) => {
       />
       <Header />
       <GettingStarted />
+      <div id="contact" />
       <ContactForm />
       <Footer />
     </LandingLayout>

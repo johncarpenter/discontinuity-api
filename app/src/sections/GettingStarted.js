@@ -2,6 +2,7 @@ import {
   CheckCircleIcon,
   InformationCircleIcon,
 } from "@heroicons/react/20/solid";
+import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 export default function GettingStarted() {
@@ -81,6 +82,11 @@ export default function GettingStarted() {
                     soon) Zapier integration. We want to help make AI useful,
                     and that means making Discontinuity.AI part of your
                     workflow.
+                    <span className="mt-16 font-semibold">
+                      <ChatBubbleBottomCenterIcon className="h-6 w-6 text-blue-500" />{" "}
+                      Chatbots like the one on this page, are included in each
+                      of the packages and are a simple easy way to get started.
+                    </span>
                   </li>
                 </ul>
               </span>

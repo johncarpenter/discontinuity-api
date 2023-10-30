@@ -21,6 +21,7 @@
     "crypto": "^1.0.1",
     "date-fns": "^2.29.3",
     "express-validator": "^6.14.2",
+    "flowise-embed-react": "^1.0.2",
     "micro": "^9.4.1",
     "next": "^13.1.0",
     "next-auth": "^4.12.3",

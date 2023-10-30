@@ -88,8 +88,10 @@ resource "kubernetes_deployment" "flow_deployment" {
             name  = "FLOWISE_PASSWORD"
             value = "whd2eud2jcn8XQG_vhm"
           }
-
-
+          env {
+            name  = "PORT"
+            value = "3000"
+          }
         }
 
       }
@@ -112,7 +114,7 @@ resource "kubernetes_service" "flow_service" {
     port {
       name        = "flow"
       port        = 80
-      target_port = 7860
+      target_port = 3000
     }
     selector = {
       app = "flow"
