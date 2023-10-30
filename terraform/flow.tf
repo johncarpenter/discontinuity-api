@@ -80,6 +80,16 @@ resource "kubernetes_deployment" "flow_deployment" {
             name  = "LANGFLOW_AUTO_LOGIN"
             value = "False"
           }
+          env {
+            name  = "FLOWISE_USERNAME"
+            value = "discontinuity"
+          }
+          env {
+            name  = "FLOWISE_PASSWORD"
+            value = "whd2eud2jcn8XQG_vhm"
+          }
+
+
         }
 
       }
