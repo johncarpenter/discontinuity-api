@@ -92,6 +92,10 @@ resource "kubernetes_deployment" "flow_deployment" {
             name  = "PORT"
             value = "3000"
           }
+          env {
+            name  = "DATABASE_PASSWORD"
+            value = var.flow_postgres_password
+          }
         }
 
       }

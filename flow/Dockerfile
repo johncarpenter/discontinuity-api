@@ -34,6 +34,12 @@ RUN apk add --no-cache chromium
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+ENV DATABASE_TYPE=postgres
+ENV DATABASE_PORT=5432
+ENV DATABASE_HOST=34.34.179.242
+ENV DATABASE_NAME=discontinuity-api-db
+ENV DATABASE_USER=flow
+ENV OVERRIDE_DATABASE=false
 
 # You can install a specific version like: flowise@1.0.0
 RUN npm install -g flowise

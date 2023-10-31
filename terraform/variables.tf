@@ -13,6 +13,10 @@ variable "postgres_password" {
   type = string
 }
 
+variable "flow_postgres_password" {
+  type = string
+}
+
 variable "jwt_secret" {
   type = string
 }

@@ -23,6 +23,7 @@ const About = ({ articles }) => {
       <div id="training" />
       <div id="advisory" />
       <Training />
+      <div id="contact" />
       <ContactForm />
       <Footer />
     </LandingLayout>

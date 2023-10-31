@@ -18,6 +18,7 @@ const About = ({ articles }) => {
       />
       <Header />
       <Legal />
+      <div id="contact" />
       <ContactForm />
       <Footer />
     </LandingLayout>
