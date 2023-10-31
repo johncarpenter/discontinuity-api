@@ -40,6 +40,8 @@ resource "google_sql_user" "vectordb_user" {
   password = var.flow_postgres_password
 }
 
+
+
 # IAM Service Account that can access the database within GCP
 resource "google_service_account" "service_account" {
   account_id   = "discontinuity-cluster"
