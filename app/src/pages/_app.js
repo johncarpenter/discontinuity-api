@@ -47,7 +47,7 @@ const App = ({ Component, pageProps }) => {
           <WorkspaceProvider>
             {progress && <TopBarProgress />}
             <BubbleChat
-              chatflowid="e218508c-da24-4b2b-a23f-2ae9f91347b8"
+              chatflowid="f4deb3b6-5885-4aac-839c-470dfe872554"
               apiHost="https://flow.discontinuity.ai"
               theme={{
                 chatWindow: {
