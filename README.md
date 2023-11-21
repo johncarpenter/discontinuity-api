@@ -3,6 +3,6 @@
 ## Getting Started
 
 gcloud auth application-default login
-gcloud config set project discontinuity-ai
+gcloud config set project Discontinuity-ai
 
-gcloud container clusters get-credentials api --region europe-west1
+gcloud container clusters get-credentials api --location europe-west1
