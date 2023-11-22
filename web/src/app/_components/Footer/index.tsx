@@ -6,11 +6,7 @@ const navigation = {
     { name: 'Advisory', href: '/solutions#advisory' },
     { name: 'Training', href: '/solutions#training' },
   ],
-  support: [
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Guides', href: '/pricing' },
-    { name: 'API', href: 'https://api.insightplatform.ai' },
-  ],
+  support: [{ name: 'API', href: 'https://api.insightplatform.ai' }],
   company: [
     { name: 'About', href: '/about' },
     { name: 'Privacy', href: '/legal' },
