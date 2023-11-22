@@ -1,10 +1,9 @@
 'use client'
-import { BuildingOffice2Icon, EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline'
-import React, { useRef, useState } from 'react'
+import { EnvelopeIcon } from '@heroicons/react/24/outline'
+import React, { useState } from 'react'
 
 export default function ContactForm() {
   const [enabled, setEnabled] = useState(true)
-  const [error, setError] = useState(false)
   const [message, setMessage] = useState('')
   const [state, setState] = useState({
     first: '',
@@ -41,12 +40,10 @@ export default function ContactForm() {
 
     const { error } = await res.json()
     if (error) {
-      setError(true)
       setMessage('We are Sorry Something Went Wrong. Please contact us at hello@discontinuity.ai')
       return
     }
 
-    setError(false)
     setMessage('Thanks. One of our team will be in touch soon!')
   }
 
@@ -158,7 +155,7 @@ export default function ContactForm() {
                     type="text"
                     name="company"
                     id="company"
-                    autoComplete="company"
+                    autoComplete="organization"
                     onChange={handleChange}
                     value={state.company}
                     className="block w-full rounded-md border-0 bg-slate-100/80 px-3.5 py-2 text-gray-800 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:bg-slate-700/80 dark:text-gray-300 sm:text-sm sm:leading-6"

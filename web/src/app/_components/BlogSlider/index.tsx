@@ -21,8 +21,9 @@ const BlogSlider = async () => {
       const data = await res.json()
       if (data.items.length > 3) data.items = data.items.slice(0, 3)
       articles = data.items
-      console.log(articles)
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+    }
 
     return {
       articles,
@@ -44,18 +45,18 @@ const BlogSlider = async () => {
         <div className="grid grid-cols-1 gap-10 py-10 md:grid-cols-3">
           {articles.map((article, index) => (
             <Link href={article.link} key={index}>
-              <div className="p-5 space-y-5 transition rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-2">
-                <div className="relative w-full bg-gray-400 rounded-lg h-48">
+              <div className="grid grid-col-1 h-full p-5 space-y-5 transition rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-2">
+                <div className="relative w-full rounded-lg h-48">
                   <Image
                     priority
                     src={article.thumbnail}
-                    className="rounded-lg"
+                    className="rounded-lg bg-gray-100"
                     fill
-                    style={{ objectFit: 'contain' }}
+                    style={{ objectFit: 'contain', borderRadius: '0.5rem' }}
                     alt={article.title}
                   />
                 </div>
-                <div className="h-16 flex flex-col">
+                <div className="flex flex-col">
                   <h4 className="text-lg text-gray-500 flex-1">{article.title}</h4>
                   <h6 className="text-gray-400 text-md">
                     {moment(article.pubDate).format('DD MMM YYYY')}

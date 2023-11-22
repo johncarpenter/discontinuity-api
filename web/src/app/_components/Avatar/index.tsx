@@ -1,6 +1,6 @@
 'use client'
 
-import { useOrganization, useUser } from '@clerk/nextjs'
+import { useUser } from '@clerk/nextjs'
 import { useClerk } from '@clerk/clerk-react'
 import { useRouter } from 'next/navigation'
 
@@ -12,16 +12,19 @@ import {
   UserPlusIcon,
   XCircleIcon,
 } from '@heroicons/react/20/solid'
+import Image from 'next/image'
 
 export function AvatarImage() {
   const { user } = useUser()
   return (
     <div className="flex items-center">
       <div>
-        <img
+        <Image
           className="inline-block h-9 w-9 rounded-full ring-1 ring-primary-200"
-          src={user?.imageUrl}
-          alt="User profile image"
+          src={user?.imageUrl ?? '/images/avatar.svg'}
+          alt="User profile"
+          width={36}
+          height={36}
         />
       </div>
       <div className="ml-3">
@@ -37,7 +40,6 @@ export default function Avatar() {
   const { signOut } = useClerk()
   const router = useRouter()
   const { user } = useUser()
-  const { organization, membership } = useOrganization()
 
   const menuItems = [
     {

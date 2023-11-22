@@ -1,5 +1,5 @@
 import { authMiddleware, redirectToSignIn } from '@clerk/nextjs'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 // This example protects all routes including api/trpc routes
 // Please edit this to allow other routes to be public as needed.
@@ -15,13 +15,35 @@ export default authMiddleware({
     '/legal',
     '/api/contact',
   ],
-  afterAuth(auth, req, evt) {
+  afterAuth(auth, req) {
     const url = req.nextUrl.clone()
     const { pathname } = req.nextUrl
 
     // handle users who aren't authenticated
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url })
+    }
+    // redirect them to organization selection page
+    if (auth.userId && !auth.orgId && pathname !== '/org-selection') {
+      const orgSelection = new URL('/org-selection', req.url)
+      return NextResponse.redirect(orgSelection)
+    }
+
+    const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
+    const inPaths = ignorePaths.some((path) => pathname.startsWith(path)) || pathname === '/'
+
+    if (!inPaths) {
+      const currentHost = auth.orgSlug
+
+      if (currentHost === null || currentHost === undefined || currentHost === '') {
+        url.pathname = `${pathname}`
+      } else {
+        url.pathname = `/site/${currentHost}${pathname}`
+      }
+
+      console.log(`Redirecting to ${url.toString()}`)
+
+      return NextResponse.rewrite(url)
     }
   },
 })

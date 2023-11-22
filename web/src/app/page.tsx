@@ -2,7 +2,6 @@ import Hero from './_components/Hero'
 import MarketingLayout from '@/layouts/MarketingLayout'
 import ContactForm from '@/components/ContactForm'
 import FeatureSection from '@/components/FeatureSection'
-import Testimonial from './_components/Testimonial'
 import FeatureTechnicalSection from './_components/FeatureTechnicalSection'
 import BlogSlider from './_components/BlogSlider'
 

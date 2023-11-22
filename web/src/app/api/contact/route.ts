@@ -1,7 +1,6 @@
 import { sendMail } from '@/app/_lib/server/mail'
 import { contactFormSchema } from '@/lib/server/validator'
-import { auth } from '@clerk/nextjs'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 
 const html = ({
   name,

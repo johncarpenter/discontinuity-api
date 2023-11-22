@@ -8,9 +8,10 @@ import {
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, PhoneIcon } from '@heroicons/react/20/solid'
 import { classNames } from '@/utils/classnames'
 import Image from 'next/image'
+import { useUser } from '@clerk/nextjs'
 
 const products = [
   {
@@ -36,6 +37,8 @@ const callsToAction = [{ name: 'Contact sales', href: '/about#contact', icon: Ph
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const { isSignedIn } = useUser()
 
   return (
     <header className="bg-white">
@@ -136,16 +139,22 @@ export default function NavBar() {
           </a>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="/sign-in" className="text-sm font-semibold leading-6 text-secondary-300">
-            Log in <span aria-hidden="true"></span>
-          </a>
+          {!isSignedIn ? (
+            <a href="/sign-in" className="text-sm font-semibold leading-6 text-secondary-300">
+              Log in <span aria-hidden="true"></span>
+            </a>
+          ) : (
+            <a href="/home" className="text-sm font-semibold leading-6 text-secondary-300">
+              Dashboard
+            </a>
+          )}
         </div>
       </nav>
       <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <div className="fixed inset-0 z-10" />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <a href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">discontinuity.ai</span>
               <Image
                 priority

@@ -19,10 +19,7 @@ export default async function LicenseCard() {
             <dt className="text-sm font-medium text-gray-500">Licensee</dt>
             <dd className="mt-1 text-sm text-gray-900">{organization.name}</dd>
           </div>
-          <div className="sm:col-span-1">
-            <dt className="text-sm font-medium text-gray-500">Account Manager</dt>
-            <dd className="mt-1 text-sm text-gray-900">{organization.am}</dd>
-          </div>
+
           <div className="sm:col-span-1">
             <dt className="text-sm font-medium text-gray-500">Support Contact</dt>
             <dd className="mt-1 text-sm text-gray-900">

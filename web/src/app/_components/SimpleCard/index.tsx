@@ -1,4 +1,3 @@
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import { classNames } from '@/app/_lib/utils/classnames'
 
 export interface SimpleCardProps {

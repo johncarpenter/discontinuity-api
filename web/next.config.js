@@ -7,6 +7,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.medium.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.clerk.com',
+      },
     ],
   },
 }

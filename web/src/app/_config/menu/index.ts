@@ -1,12 +1,10 @@
 import {
   ChartPieIcon,
-  DocumentDuplicateIcon,
   FolderIcon,
   HomeIcon,
   LightBulbIcon,
   RectangleStackIcon,
   ServerStackIcon,
-  NewspaperIcon,
 } from '@heroicons/react/24/outline'
 
 export const workspaceMenu = () => [
@@ -35,21 +33,27 @@ export const workspaceMenu = () => [
     name: 'Data',
     menuItems: [
       {
-        name: 'Dashboards',
-        href: '/dashboards',
+        name: 'Analytics',
+        href: '/',
         description: 'Dashboards',
         enabled: true,
         visible: true,
         Icon: ChartPieIcon,
       },
+    ],
+  },
+  {
+    name: 'Applications',
+    menuItems: [
       {
-        name: 'Data Catalog',
-        href: '/catalog',
+        name: 'Applications',
+        href: '/reports',
         description: 'Main Page',
         enabled: true,
         visible: true,
-        Icon: DocumentDuplicateIcon,
+        Icon: RectangleStackIcon,
       },
+
       {
         name: 'Reports',
         href: '/reports',
@@ -57,19 +61,6 @@ export const workspaceMenu = () => [
         enabled: true,
         visible: true,
         Icon: FolderIcon,
-      },
-    ],
-  },
-  {
-    name: 'Automate',
-    menuItems: [
-      {
-        name: 'Integrations',
-        href: '/integrations',
-        description: 'Main Page',
-        enabled: true,
-        visible: true,
-        Icon: RectangleStackIcon,
       },
     ],
   },

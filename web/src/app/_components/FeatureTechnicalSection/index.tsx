@@ -1,36 +1,5 @@
-import {
-  CircleStackIcon,
-  DocumentChartBarIcon,
-  InboxIcon,
-  ListBulletIcon,
-  RocketLaunchIcon,
-  TrashIcon,
-  UsersIcon,
-} from '@heroicons/react/24/outline'
+import { CircleStackIcon, ListBulletIcon, RocketLaunchIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
-const features = [
-  {
-    name: 'Data Lake',
-    description:
-      "Cloud-based, Petabyte-scale, compliant, secure and independent data lake. It's your data, you own it. ",
-    href: '#',
-    icon: InboxIcon,
-  },
-  {
-    name: 'Automation Layer',
-    description:
-      'Execute any code in a secure, scalable, and compliant environment. Allows you to build, test and deploy automation code without impacting your production environment.',
-    href: '#',
-    icon: UsersIcon,
-  },
-  {
-    name: 'AI/ML Engine',
-    description:
-      'Data + Automation + Vector Data = AI/ML. insight: has built a proprietary AI/ML engine that allows you to build and deploy AI/ML models in a fraction of the time and cost of other solutions. All included without major investment.',
-    href: '#',
-    icon: TrashIcon,
-  },
-]
 
 export default function FeatureTechnicalSection() {
   return (
@@ -44,11 +13,12 @@ export default function FeatureTechnicalSection() {
           </h2>
 
           {/* Image section */}
-          <div className="mt-16 sm:mt-18 xl:mx-auto xl:max-w-7xl xl:px-8">
-            <img
+          <div className="relative h-full overflow-hidden rounded-3xl bg-gray-900 px-6 pb-12 pt-64 shadow-2xl sm:px-12 lg:px-8 lg:pb-8 xl:px-10 xl:pb-10 ">
+            <Image
               src="/images/hero_2.png"
-              alt=""
-              className="aspect-[5/2] w-full object-cover xl:rounded-3xl"
+              alt="abstract image of ocean waves in sunset"
+              className="aspect-[5/2] xl:rounded-3xl object-cover"
+              layout="fill"
             />
           </div>
           <p className="mt-6 text-lg leading-8 text-gray-600">

@@ -1,16 +1,7 @@
 'use client'
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import {
-  Bars3Icon,
-  CalendarIcon,
-  ChartPieIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { classNames } from '@/utils/classnames'
 import Avatar from '../Avatar'
 import { workspaceMenu } from '@/config/menu'
@@ -93,9 +84,9 @@ export default function Sidebar() {
                       </div>
                     </div>
                     <nav className="flex flex-1 flex-col">
-                      <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                      <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
-                          <ul role="list" className="-mx-2 space-y-1">
+                          <ul className="-mx-2 space-y-1">
                             {workspaceMenu().map((menu, index) => (
                               <div key={index}>
                                 <span className="text-xs uppercase text-gray-500 ">
@@ -148,9 +139,9 @@ export default function Sidebar() {
               <div className="ml-3 text-sm font-semibold leading-6 text-white">insight:</div>
             </div>
             <nav className="flex flex-1 flex-col">
-              <ul role="list" className="flex flex-1 flex-col gap-y-7">
+              <ul className="flex flex-1 flex-col gap-y-7">
                 <li>
-                  <ul role="list" className="-mx-2 space-y-1">
+                  <ul className="-mx-2 space-y-1">
                     {workspaceMenu().map((menu, index) => (
                       <div key={index}>
                         <span className="text-xs uppercase text-gray-500 ">{menu.name}</span>

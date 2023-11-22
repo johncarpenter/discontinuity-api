@@ -1,4 +1,4 @@
-import { CheckCircleIcon, InformationCircleIcon } from '@heroicons/react/20/solid'
+import { CheckCircleIcon } from '@heroicons/react/20/solid'
 import { ChatBubbleBottomCenterIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
@@ -19,7 +19,7 @@ export default function GettingStarted() {
             and creating software experiences, Discontinuity.AI has distilled this down to a simple
             3 step process.
           </p>
-          <ul role="list" className="mt-8 max-w-xl space-y-8 text-gray-600">
+          <ul className="mt-8 max-w-xl space-y-8 text-gray-600">
             <li className="flex gap-x-3">
               <CheckCircleIcon
                 className="mt-1 h-5 w-5 flex-none text-primary-600"
