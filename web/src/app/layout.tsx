@@ -15,13 +15,29 @@ const poppins = Libre_Franklin({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.discontinuity.ai'),
   title: 'Discontinuity.ai | Rapid AI for your Business',
   description: 'Rapid product development for your business using AI',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
-  manifest: '/site.webmanifest',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: '/',
+    title: 'Discontinuity.ai | Rapid AI for your Business',
+    description: 'Rapid product development for your business using AI',
+    images: [
+      {
+        url: '/images/grove.png',
+        width: 1024,
+        height: 1024,
+        alt: 'Discontinuity.ai | Rapid AI for your Business',
+      },
+    ],
+  },
+  manifest: '/manifest.json',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

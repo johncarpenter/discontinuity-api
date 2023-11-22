@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /site/, /api/
+
+Sitemap: https://www.discontinuity.ai/sitemap.xml

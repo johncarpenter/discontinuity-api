@@ -4,6 +4,13 @@ import ContactForm from '@/components/ContactForm'
 import FeatureSection from '@/components/FeatureSection'
 import FeatureTechnicalSection from './_components/FeatureTechnicalSection'
 import BlogSlider from './_components/BlogSlider'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://discontinuity.ai',
+  },
+}
 
 export default function Home() {
   return (
