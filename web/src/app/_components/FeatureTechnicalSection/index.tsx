@@ -18,7 +18,7 @@ export default function FeatureTechnicalSection() {
               src="/images/hero_2.png"
               alt="abstract image of ocean waves in sunset"
               className="aspect-[5/2] xl:rounded-3xl object-cover"
-              layout="fill"
+              fill
             />
           </div>
           <p className="mt-6 text-lg leading-8 text-gray-600">
