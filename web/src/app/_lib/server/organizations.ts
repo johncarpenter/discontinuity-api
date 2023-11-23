@@ -23,7 +23,14 @@ const testOrganizations: Organization[] = [
  *
  * These are the production organizations
  */
-const organizations: Organization[] = []
+const organizations: Organization[] = [
+  {
+    id: 'org_2Yay5YzIlTNWcLBEHdFHSQkYJvr',
+    name: 'Discontinuity Demo',
+    slug: 'discontinuity-demo',
+    edition: 'ENTERPRISE',
+  },
+]
 
 export const getOrganization = (orgId: string) => {
   if (process.env.NODE_ENV === 'development') {

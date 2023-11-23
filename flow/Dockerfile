@@ -41,9 +41,6 @@ ENV DATABASE_NAME=flowise
 ENV DATABASE_USER=flow
 #ENV OVERRIDE_DATABASE=false
 
-ENV FLOWISE_SECRETKEY_OVERWRITE=myencryptionkey
-ENV SECRETKEY_PATH=/data/keys
-
 # You can install a specific version like: flowise@1.0.0
 RUN npm install -g flowise
 
