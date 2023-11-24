@@ -16,7 +16,7 @@ export default authMiddleware({
     '/api/contact',
   ],
   afterAuth(auth, req) {
-    const url = req.nextUrl.clone()
+    const url = req.nextUrl
     const { pathname } = req.nextUrl
 
     // handle users who aren't authenticated
@@ -35,7 +35,7 @@ export default authMiddleware({
     }
 
     const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
-    const inPaths = ignorePaths.some((path) => pathname.startsWith(path))
+    const inPaths = ignorePaths.some((path) => pathname.startsWith(path)) || pathname === '/'
 
     if (!inPaths) {
       const currentHost = auth.orgSlug
