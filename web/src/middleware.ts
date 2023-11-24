@@ -23,6 +23,11 @@ export default authMiddleware({
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url })
     }
+
+    if (auth.isPublicRoute) {
+      return NextResponse.next()
+    }
+
     // redirect them to organization selection page
     if (auth.userId && !auth.orgSlug && pathname !== '/org-selection') {
       const orgSelection = new URL('/org-selection', req.url)
