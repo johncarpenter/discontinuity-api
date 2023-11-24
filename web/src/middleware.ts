@@ -48,7 +48,9 @@ export default authMiddleware({
 
       console.log(`Redirecting to ${url.toString()}`)
 
-      return NextResponse.rewrite(new URL(`{basePath}${url.pathname}}`, req.nextUrl.origin))
+      return NextResponse.rewrite(
+        new URL(`${basePath}${url.pathname}}`, req.nextUrl.origin).toString()
+      )
     }
   },
 })
