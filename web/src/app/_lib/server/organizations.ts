@@ -27,15 +27,17 @@ const organizations: Organization[] = [
   {
     id: 'org_2Yay5YzIlTNWcLBEHdFHSQkYJvr',
     name: 'Discontinuity Demo',
-    slug: 'discontinuity-demo',
+    slug: 'demo',
     edition: 'ENTERPRISE',
   },
 ]
 
 export const getOrganization = (orgId: string) => {
   if (process.env.NODE_ENV === 'development') {
+    console.log('test getOrganization', orgId)
     return testOrganizations.filter((org) => org.id === orgId)[0]
   }
 
+  console.log('getOrganization', orgId)
   return organizations.filter((org) => org.id === orgId)[0]
 }
