@@ -34,7 +34,6 @@ test.db
 __pycache__
 .pytest_cache
 dist
-site
 .netlify
 test.db
 log.txt
