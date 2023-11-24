@@ -24,7 +24,7 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url })
     }
     // redirect them to organization selection page
-    if (auth.userId && !auth.orgId && pathname !== '/org-selection') {
+    if (auth.userId && !auth.orgSlug && pathname !== '/org-selection') {
       const orgSelection = new URL('/org-selection', req.url)
       return NextResponse.redirect(orgSelection)
     }
@@ -36,7 +36,7 @@ export default authMiddleware({
       const currentHost = auth.orgSlug
 
       if (currentHost === null || currentHost === undefined || currentHost === '') {
-        url.pathname = `${pathname}/org-selection`
+        url.pathname = `${pathname}`
       } else {
         url.pathname = `/site/${currentHost}${pathname}`
       }
