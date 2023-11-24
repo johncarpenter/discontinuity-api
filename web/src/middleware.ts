@@ -29,7 +29,7 @@ export default authMiddleware({
       return NextResponse.redirect(orgSelection)
     }
 
-    const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
+    const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection', '/sign-in']
     const inPaths = ignorePaths.some((path) => pathname.startsWith(path)) || pathname === '/'
 
     if (!inPaths) {
