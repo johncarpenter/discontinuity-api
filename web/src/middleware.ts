@@ -46,7 +46,6 @@ export default authMiddleware({
       return NextResponse.rewrite(url)*/
 
     //}
-    return NextResponse.next()
   },
 })
 
