@@ -30,7 +30,7 @@ export default authMiddleware({
     }
 
     const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
-    const inPaths = ignorePaths.some((path) => pathname.startsWith(path)) || pathname === '/'
+    const inPaths = ignorePaths.some((path) => pathname.startsWith(path))
 
     if (!inPaths) {
       const currentHost = auth.orgSlug
