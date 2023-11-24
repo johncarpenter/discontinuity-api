@@ -13,7 +13,7 @@ export const workspaceMenu = () => [
     menuItems: [
       {
         name: 'Home',
-        href: `/`,
+        href: `/site`,
         description: 'Home Page',
         enabled: true,
         visible: true,
@@ -21,7 +21,7 @@ export const workspaceMenu = () => [
       },
       {
         name: 'Support',
-        href: `/support`,
+        href: `/site/support`,
         description: 'Status and Monitoring',
         enabled: true,
         visible: true,
@@ -34,7 +34,7 @@ export const workspaceMenu = () => [
     menuItems: [
       {
         name: 'Analytics',
-        href: '/',
+        href: '/site',
         description: 'Dashboards',
         enabled: true,
         visible: true,
@@ -47,7 +47,7 @@ export const workspaceMenu = () => [
     menuItems: [
       {
         name: 'Applications',
-        href: '/reports',
+        href: '/site/reports',
         description: 'Main Page',
         enabled: true,
         visible: true,
@@ -56,7 +56,7 @@ export const workspaceMenu = () => [
 
       {
         name: 'Reports',
-        href: '/reports',
+        href: '/site/reports',
         description: 'Analysis and Reporting',
         enabled: true,
         visible: true,
@@ -69,7 +69,7 @@ export const workspaceMenu = () => [
     menuItems: [
       {
         name: 'Research and Insights',
-        href: '/research',
+        href: '/site/research',
         description: 'Main Page',
         enabled: true,
         visible: true,

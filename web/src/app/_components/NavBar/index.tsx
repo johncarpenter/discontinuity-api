@@ -144,7 +144,7 @@ export default function NavBar() {
               Log in <span aria-hidden="true"></span>
             </a>
           ) : (
-            <a href="/home" className="text-sm font-semibold leading-6 text-secondary-300">
+            <a href="/site" className="text-sm font-semibold leading-6 text-secondary-300">
               Dashboard
             </a>
           )}
@@ -221,12 +221,21 @@ export default function NavBar() {
                 </a>
               </div>
               <div className="py-6">
-                <a
-                  href="/sign-in"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
+                {!isSignedIn ? (
+                  <a
+                    href="/sign-in"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  >
+                    Log in <span aria-hidden="true"></span>
+                  </a>
+                ) : (
+                  <a
+                    href="/site"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  >
+                    Dashboard
+                  </a>
+                )}
               </div>
             </div>
           </div>

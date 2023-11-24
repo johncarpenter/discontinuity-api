@@ -30,7 +30,7 @@ export default authMiddleware({
       return NextResponse.redirect(orgSelection)
     }
 
-    const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
+    /*const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
     const inPaths = ignorePaths.some((path) => pathname.startsWith(path)) || pathname === '/'
 
     if (!inPaths) {
@@ -44,8 +44,10 @@ export default authMiddleware({
 
       console.log(`Redirecting to ${url.toString()}`)
 
-      return NextResponse.rewrite(url)
-    }
+      return NextResponse.rewrite(url)*/
+
+    //}
+    return NextResponse.next()
   },
 })
 
