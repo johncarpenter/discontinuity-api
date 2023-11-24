@@ -46,9 +46,10 @@ export default authMiddleware({
       return NextResponse.rewrite(url)*/
 
     //}
+    return NextResponse.next()
   },
 })
 
 export const config = {
-  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: ['/((?!api|_next/static|favicon.ico).*)'],
 }
