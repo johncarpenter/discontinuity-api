@@ -29,14 +29,14 @@ export default authMiddleware({
       return NextResponse.redirect(orgSelection)
     }
 
-    const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
+    const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection', 'sign-in']
     const inPaths = ignorePaths.some((path) => pathname.startsWith(path))
 
     if (!inPaths) {
       const currentHost = auth.orgSlug
 
       if (currentHost === null || currentHost === undefined || currentHost === '') {
-        url.pathname = `${pathname}`
+        url.pathname = `${pathname}/org-selection`
       } else {
         url.pathname = `/site/${currentHost}${pathname}`
       }
