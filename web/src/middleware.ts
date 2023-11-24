@@ -16,7 +16,6 @@ export default authMiddleware({
     '/api/contact',
   ],
   afterAuth(auth, req) {
-    const url = req.nextUrl
     const { pathname } = req.nextUrl
 
     // handle users who aren't authenticated
