@@ -5,7 +5,8 @@ resource "google_cloud_run_v2_service" "flow" {
 
   template {
     scaling {
-      max_instance_count = 2
+      max_instance_count = 1
+      min_instance_count = 1
     }
 
     volumes {

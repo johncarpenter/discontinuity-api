@@ -42,40 +42,40 @@ jobs:
           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }} 
           gcloud container images add-tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }} gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:latest --quiet
 
-  deploy:
-    name: Deploy and Rollout
-    needs: setup-build-publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
+  # deploy:
+  #   name: Deploy and Rollout
+  #   needs: setup-build-publish
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v1
 
-      - id: "auth"
-        name: "Authenticate to Google Cloud"
-        uses: "google-github-actions/auth@v1"
-        with:
-          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+  #     - id: "auth"
+  #       name: "Authenticate to Google Cloud"
+  #       uses: "google-github-actions/auth@v1"
+  #       with:
+  #         credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
-      - uses: google-github-actions/setup-gcloud@v0.2.0
-        with:
-          service_account_key: ${{ secrets.GCP_CREDENTIALS }}
-          project_id: ${{ secrets.GCP_PROJECT }}
-          export_default_credentials: true
+  #     - uses: google-github-actions/setup-gcloud@v0.2.0
+  #       with:
+  #         service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+  #         project_id: ${{ secrets.GCP_PROJECT }}
+  #         export_default_credentials: true
 
-      - uses: google-github-actions/get-gke-credentials@v1.0.2
-        with:
-          cluster_name: discontinuity-cluster
-          location: europe-west1
-          project_id: ${{ secrets.GCP_PROJECT }}
+  #     - uses: google-github-actions/get-gke-credentials@v1.0.2
+  #       with:
+  #         cluster_name: discontinuity-cluster
+  #         location: europe-west1
+  #         project_id: ${{ secrets.GCP_PROJECT }}
 
-        # Deploy the Docker image to the GKE cluster
-      - name: Configure kubectl
-        run: |
-          export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-          gcloud components install gke-gcloud-auth-plugin
-          gcloud container clusters get-credentials discontinuity-cluster  --location europe-west1 --project ${{ secrets.GCP_PROJECT }}
+  #       # Deploy the Docker image to the GKE cluster
+  #     - name: Configure kubectl
+  #       run: |
+  #         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+  #         gcloud components install gke-gcloud-auth-plugin
+  #         gcloud container clusters get-credentials discontinuity-cluster  --location europe-west1 --project ${{ secrets.GCP_PROJECT }}
 
-      - name: Deploy
-        run: |
-          kubectl set image deployment/discontinuity-flow-deployment -n=api flow=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }}
-          kubectl rollout status deployment/discontinuity-flow-deployment -n=api
+  #     - name: Deploy
+  #       run: |
+  #         kubectl set image deployment/discontinuity-flow-deployment -n=api flow=gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }}
+  #         kubectl rollout status deployment/discontinuity-flow-deployment -n=api
