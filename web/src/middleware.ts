@@ -17,15 +17,11 @@ export default authMiddleware({
   ],
   afterAuth(auth, req) {
     const url = req.nextUrl
-    const { pathname, basePath } = req.nextUrl
+    const { pathname } = req.nextUrl
 
     // handle users who aren't authenticated
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url })
-    }
-
-    if (auth.isPublicRoute) {
-      return NextResponse.next()
     }
 
     // redirect them to organization selection page
@@ -48,7 +44,7 @@ export default authMiddleware({
 
       console.log(`Redirecting to ${url.toString()}`)
 
-      return NextResponse.rewrite(new URL(`${basePath}${url.pathname}}`, req.url))
+      return NextResponse.rewrite(url)
     }
   },
 })
