@@ -17,7 +17,7 @@ export default authMiddleware({
   ],
   afterAuth(auth, req) {
     const url = req.nextUrl
-    const { pathname } = req.nextUrl
+    const { pathname, basePath } = req.nextUrl
 
     // handle users who aren't authenticated
     if (!auth.userId && !auth.isPublicRoute) {
@@ -48,7 +48,7 @@ export default authMiddleware({
 
       console.log(`Redirecting to ${url.toString()}`)
 
-      return NextResponse.rewrite(url)
+      return NextResponse.rewrite(new URL(`{basePath}${url.pathname}}`, req.nextUrl.origin))
     }
   },
 })
