@@ -7,7 +7,7 @@ export interface ContentProps {
 }
 
 const Container = ({ children }: ContentProps) => {
-  return <div className="flex flex-col space-y-2 pb-10">{children}</div>
+  return <div className="flex flex-col space-y-2 pb-10 ">{children}</div>
 }
 
 Container.displayName = 'Container'

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Source_Code_Pro, Libre_Franklin } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
+import { SWRProvider } from '@/lib/client/swr-provider'
 
 const inter = Source_Code_Pro({
   subsets: ['latin'],
@@ -42,10 +43,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`${inter.variable} ${poppins.variable}`}>{children}</body>
-      </html>
-    </ClerkProvider>
+    <SWRProvider>
+      <ClerkProvider>
+        <html lang="en">
+          <body className={`${inter.variable} ${poppins.variable}`}>{children}</body>
+        </html>
+      </ClerkProvider>
+    </SWRProvider>
   )
 }

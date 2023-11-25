@@ -72,15 +72,15 @@ export default function Sidebar() {
                   {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
                     <div className="flex h-16 shrink-0 items-center">
-                      <Image
-                        width="24"
-                        height="24"
-                        className="h-8 w-8"
-                        src="/logos/icon-white.svg"
-                        alt="insight by BlackSquare"
-                      />
-                      <div className="ml-3 text-sm font-semibold leading-6 text-white">
-                        insight:
+                      <span className="sr-only">discontinuity.ai</span>
+                      <div className="mr-3">
+                        <Image
+                          priority
+                          src="/images/glitch.svg"
+                          height={90}
+                          width={300}
+                          alt="Discontinuity AI"
+                        />
                       </div>
                     </div>
                     <nav className="flex flex-1 flex-col">
@@ -129,14 +129,16 @@ export default function Sidebar() {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
             <div className="flex h-16 shrink-0 items-center">
-              <Image
-                width="24"
-                height="24"
-                className="h-8 w-8"
-                src="/logos/icon-white.svg"
-                alt="insight by BlackSquare"
-              />
-              <div className="ml-3 text-sm font-semibold leading-6 text-white">insight:</div>
+              <span className="sr-only">discontinuity.ai</span>
+              <div className="mr-3">
+                <Image
+                  priority
+                  src="/images/glitch.svg"
+                  height={90}
+                  width={300}
+                  alt="Discontinuity AI"
+                />
+              </div>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul className="flex flex-1 flex-col gap-y-7">

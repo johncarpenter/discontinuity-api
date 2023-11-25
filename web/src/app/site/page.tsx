@@ -1,8 +1,8 @@
 import Container from '@/components/Container'
-import Card from '@/components/Card'
 import PageHeader from '@/components/PageHeader'
 import { Organization } from '@/lib/server/organizations'
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
+import ChatContainer from '@/components/ChatContainer'
 
 export default async function SiteHome() {
   const organization: Organization = await useCurrentOrganization()
@@ -11,9 +11,7 @@ export default async function SiteHome() {
     <>
       <Container>
         <PageHeader title={`${organization.name}`} breadcrumbs={[]} />
-        <Card>home</Card>
-
-        <Container.Title title="At A Glance" subtitle="" />
+        <ChatContainer assistant_id="asst_mutXMkuuGI8YUQjhgnbsfiVW" />
       </Container>
     </>
   )
