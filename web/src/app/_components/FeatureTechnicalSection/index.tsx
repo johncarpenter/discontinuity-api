@@ -6,7 +6,7 @@ export default function FeatureTechnicalSection() {
     <div className="py-16 sm:py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-7xl lg:mx-0">
-          <h6 className=" text-secondary-600 uppercase">Invest in ideas, not tools</h6>
+          <span className=" text-secondary-600 uppercase">Invest in ideas, not tools</span>
 
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pt-4">
             Why Discontinuity.ai?
@@ -30,10 +30,12 @@ export default function FeatureTechnicalSection() {
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
             <div className="flex flex-col">
-              <h3 className="text-secondary-600 flex flex-row">
-                <ListBulletIcon className="mx-2 h-8 w-8" aria-hidden="true" />
-                Data Pipeline and Lake
-              </h3>
+              <dt>
+                <h3 className="text-secondary-600 flex flex-row">
+                  <ListBulletIcon className="mx-2 h-8 w-8" aria-hidden="true" />
+                  Data Pipeline and Lake
+                </h3>
+              </dt>
               <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
                 <p className="flex-auto">
                   Getting your data into a usable format is the first step in any AI/ML project. We
@@ -44,10 +46,12 @@ export default function FeatureTechnicalSection() {
               </dd>
             </div>
             <div className="flex flex-col">
-              <h3 className="text-secondary-600 flex flex-row">
-                <CircleStackIcon className="mx-2 h-8 w-8" aria-hidden="true" />
-                Vector Database(s)
-              </h3>
+              <dt>
+                <h3 className="text-secondary-600 flex flex-row">
+                  <CircleStackIcon className="mx-2 h-8 w-8" aria-hidden="true" />
+                  Vector Database(s)
+                </h3>
+              </dt>
               <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
                 <p className="flex-auto">
                   AI/ML require data stored in a way that allows them understand the context of the
@@ -58,10 +62,12 @@ export default function FeatureTechnicalSection() {
               </dd>
             </div>
             <div className="flex flex-col">
-              <h3 className="text-secondary-600 flex flex-row">
-                <RocketLaunchIcon className="mx-2 h-8 w-8" aria-hidden="true" />
-                High-Performance Compute
-              </h3>
+              <dt>
+                <h3 className="text-secondary-600 flex flex-row">
+                  <RocketLaunchIcon className="mx-2 h-8 w-8" aria-hidden="true" />
+                  High-Performance Compute
+                </h3>
+              </dt>
               <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
                 <p className="flex-auto">
                   AI/ML apps are resource intensive. We sandbox your applications within a secure

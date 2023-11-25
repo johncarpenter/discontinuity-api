@@ -5,7 +5,7 @@ const Features = () => {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="relative flex flex-col space-y-5">
           <div className="flex flex-col  space-y-5">
-            <h6 className=" text-secondary-600 uppercase">Getting Started</h6>
+            <span className=" text-secondary-600 uppercase">Getting Started</span>
             <h2 className="text-4xl font-bold ">
               <span className="block">Bringing your AI concept to life has never been easier.</span>
             </h2>

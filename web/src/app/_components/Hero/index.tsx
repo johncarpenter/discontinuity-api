@@ -5,7 +5,7 @@ export default function Hero() {
     <div className="relative isolate overflow-hidden ">
       <div className="mx-auto max-w-7xl lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8">
         <div className="px-6 sm:pb-12 lg:col-span-7 lg:px-0 lg:pb-20 lg:pt-8 xl:col-span-6">
-          <h6 className=" text-secondary-600 uppercase">Not sure about adopting ai?</h6>
+          <span className=" text-secondary-600 uppercase">Not sure about adopting ai?</span>
           <h1 className="mt-10 text-6xl font-bold tracking-normal text-gray-900">
             Fast-track your AI initiatives with our rapid prototyping service.
           </h1>

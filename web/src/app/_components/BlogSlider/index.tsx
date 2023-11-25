@@ -33,7 +33,7 @@ const BlogSlider = async () => {
     <div className="w-full py-10">
       <div className="relative flex flex-col px-5 mx-auto space-y-5 md:w-3/4">
         <div className="flex flex-col  space-y-5">
-          <h6 className="font-bold  text-secondary-600 uppercase">More Reading</h6>
+          <span className="font-bold  text-secondary-600 uppercase">More Reading</span>
           <h2 className="text-4xl font-bold ">
             <span className="block">Need Some Inspiration?</span>
           </h2>
@@ -57,10 +57,10 @@ const BlogSlider = async () => {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <h4 className="text-lg text-gray-500 flex-1">{article.title}</h4>
-                  <h6 className="text-gray-400 text-md">
+                  <span className="text-sm text-gray-700 flex-1">{article.title}</span>
+                  <span className="text-gray-500 text-xs py-2">
                     {moment(article.pubDate).format('DD MMM YYYY')}
-                  </h6>
+                  </span>
                 </div>
               </div>
             </Link>
