@@ -11,7 +11,7 @@ import {
 import { ChevronDownIcon, PhoneIcon } from '@heroicons/react/20/solid'
 import { classNames } from '@/utils/classnames'
 import Image from 'next/image'
-import { useUser } from '@clerk/nextjs'
+//import { useUser } from '@clerk/nextjs'
 
 const products = [
   {
