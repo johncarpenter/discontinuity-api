@@ -24,6 +24,7 @@ module.exports = {
       fontFamily: {
         libre: `var(--font-libre-franklin)`,
         source: `var(--font-source-code-pro)`,
+        serif: `var(--font-dm-serif-display)`,
       },
       colors: {
         primary: {

@@ -70,7 +70,7 @@ export default function NavBar() {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <Popover.Group className="hidden lg:flex lg:gap-x-12">
+        <Popover.Group className="hidden ml-16 lg:flex lg:gap-x-12">
           <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900 border-none">
               Solutions
@@ -139,6 +139,7 @@ export default function NavBar() {
           </a>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          {/*
           {!isSignedIn ? (
             <a href="/sign-in" className="text-sm font-semibold leading-6 text-secondary-300">
               Log in <span aria-hidden="true"></span>
@@ -147,7 +148,7 @@ export default function NavBar() {
             <a href="/site" className="text-sm font-semibold leading-6 text-secondary-300">
               Dashboard
             </a>
-          )}
+          )}*/}
         </div>
       </nav>
       <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -220,6 +221,7 @@ export default function NavBar() {
                   Contact
                 </a>
               </div>
+              {/*
               <div className="py-6">
                 {!isSignedIn ? (
                   <a
@@ -237,6 +239,7 @@ export default function NavBar() {
                   </a>
                 )}
               </div>
+              */}
             </div>
           </div>
         </Dialog.Panel>

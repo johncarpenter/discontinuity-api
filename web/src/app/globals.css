@@ -8,11 +8,11 @@
 
 @layer base {
   h1 {
-    @apply font-libre text-2xl font-bold md:text-4xl;
+    @apply font-serif text-2xl font-bold md:text-4xl;
   }
 
   h2 {
-    @apply font-libre text-xl font-bold md:text-3xl;
+    @apply font-serif text-xl font-bold md:text-3xl;
   }
 
   h3 {
@@ -24,7 +24,7 @@
   }
 
   body {
-    @apply font-source text-sm md:text-base;
+    @apply font-libre text-sm md:text-base;
   }
 }
 

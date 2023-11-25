@@ -34,7 +34,7 @@ export default function FeatureTechnicalSection() {
                 <ListBulletIcon className="mx-2 h-8 w-8" aria-hidden="true" />
                 Data Pipeline and Lake
               </h3>
-              <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-600">
+              <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
                 <p className="flex-auto">
                   Getting your data into a usable format is the first step in any AI/ML project. We
                   run a compliant, secure cloud-data lake and pipeline that can easily bring your
@@ -48,7 +48,7 @@ export default function FeatureTechnicalSection() {
                 <CircleStackIcon className="mx-2 h-8 w-8" aria-hidden="true" />
                 Vector Database(s)
               </h3>
-              <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-600">
+              <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
                 <p className="flex-auto">
                   AI/ML require data stored in a way that allows them understand the context of the
                   data. Our high-performance vector databases can dramatically improve the
@@ -62,7 +62,7 @@ export default function FeatureTechnicalSection() {
                 <RocketLaunchIcon className="mx-2 h-8 w-8" aria-hidden="true" />
                 High-Performance Compute
               </h3>
-              <dd className="mt-1 flex flex-auto flex-col text-base leading-7 text-gray-600">
+              <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600">
                 <p className="flex-auto">
                   AI/ML apps are resource intensive. We sandbox your applications within a secure
                   container and once you are ready for production, those containers can quickly be

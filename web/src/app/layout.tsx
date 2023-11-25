@@ -1,18 +1,23 @@
 import type { Metadata } from 'next'
-import { Source_Code_Pro, Libre_Franklin } from 'next/font/google'
+import { Source_Code_Pro, Libre_Franklin, DM_Serif_Display } from 'next/font/google'
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import { SWRProvider } from '@/lib/client/swr-provider'
 
-const inter = Source_Code_Pro({
+const source = Source_Code_Pro({
   subsets: ['latin'],
   weight: ['300', '400', '700'],
   variable: '--font-source-code-pro',
 })
-const poppins = Libre_Franklin({
+const libre = Libre_Franklin({
   subsets: ['latin'],
   weight: ['300', '400', '700'],
   variable: '--font-libre-franklin',
+})
+const serif = DM_Serif_Display({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-dm-serif-display',
 })
 
 export const metadata: Metadata = {
@@ -46,7 +51,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <SWRProvider>
       <ClerkProvider>
         <html lang="en">
-          <body className={`${inter.variable} ${poppins.variable}`}>{children}</body>
+          <body className={`${source.variable} ${libre.variable} ${serif.variable}`}>
+            {children}
+          </body>
         </html>
       </ClerkProvider>
     </SWRProvider>
