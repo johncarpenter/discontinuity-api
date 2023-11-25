@@ -38,7 +38,7 @@ const callsToAction = [{ name: 'Contact sales', href: '/about#contact', icon: Ph
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const { isSignedIn } = useUser()
+  //const { isSignedIn } = useUser()
 
   return (
     <header className="bg-white">
