@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-
 export interface ChatMessageProps {
   text: string
   assistant_id: string

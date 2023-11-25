@@ -2,7 +2,7 @@
 import useSWR from 'swr'
 
 export default function useMessagePolling(run?: string, thread?: string) {
-  const { data, error, isLoading } = useSWR(run ? `/api/ai/assist/${thread}/${run}` : null, {
+  const { data, error } = useSWR(run ? `/api/ai/assist/${thread}/${run}` : null, {
     refreshInterval: 1000,
     revalidateOnFocus: false,
   })
