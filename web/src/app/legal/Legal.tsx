@@ -27,8 +27,9 @@ export default function Legal() {
               </h1>
               <div className="max-w-xl">
                 <p className="mt-6">
-                  Website - This one is easy. We don&apos;t collect any data. No trackers, cookie,
-                  analytics whatever. If you want to let us know you visited, send us an{' '}
+                  Website - This one is easy. I use GA4, just live everyone. I should probably use
+                  something else but thats the easiest. If you want to let us know you visited, send
+                  us an{' '}
                   <Link className="text-secondary" href="mailto:hello@discontinuity.ai">
                     email.
                   </Link>{' '}

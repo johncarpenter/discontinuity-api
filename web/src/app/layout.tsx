@@ -3,6 +3,7 @@ import { Source_Code_Pro, Libre_Franklin, DM_Serif_Display } from 'next/font/goo
 import './globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
 import { SWRProvider } from '@/lib/client/swr-provider'
+import Analytics from '@/components/Analytics'
 
 const source = Source_Code_Pro({
   subsets: ['latin'],
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <ClerkProvider>
         <html lang="en">
           <body className={`${source.variable} ${libre.variable} ${serif.variable}`}>
+            {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && <Analytics />}
             {children}
           </body>
         </html>
