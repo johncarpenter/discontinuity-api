@@ -1,6 +1,7 @@
 'use client'
 import { EnvelopeIcon } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
+import { event } from '@/lib/client/gtag'
 
 export default function ContactForm() {
   const [enabled, setEnabled] = useState(true)
@@ -43,6 +44,7 @@ export default function ContactForm() {
       setMessage('We are Sorry Something Went Wrong. Please contact us at hello@discontinuity.ai')
       return
     }
+    event('generate_lead', {})
 
     setMessage('Thanks. One of our team will be in touch soon!')
   }
