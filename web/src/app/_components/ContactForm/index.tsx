@@ -44,7 +44,7 @@ export default function ContactForm() {
       setMessage('We are Sorry Something Went Wrong. Please contact us at hello@discontinuity.ai')
       return
     }
-    event('generate_lead', {})
+    event('generate_lead', { currency: 'CAD', value: 50 })
 
     setMessage('Thanks. One of our team will be in touch soon!')
   }
