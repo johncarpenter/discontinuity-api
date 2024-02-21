@@ -1,45 +1,6 @@
-#  Cloud build .googleapis need to be enabled on the project
-#
-# gcloud config set project ${{ secrets.GCP_PROJECT }}
-# gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_APPLICATION }}
-
-resource "google_project_service" "run_api" {
-  service = "run.googleapis.com"
-
-  disable_on_destroy = true
-}
-
-resource "google_project_service" "sql_admin_api" {
-  service = "sqladmin.googleapis.com"
-
-  disable_on_destroy = true
-}
-
-resource "google_project_service" "cloud_tasks_api" {
-  service = "cloudtasks.googleapis.com"
-
-  disable_on_destroy = true
-}
-
-
-# VPC
-resource "google_compute_network" "vpc" {
-  name                    = "${var.project_id}-vpc"
-  auto_create_subnetworks = "false"
-}
-
-# Subnet
-resource "google_compute_subnetwork" "subnet" {
-  name          = "${var.project_id}-subnet"
-  region        = var.region
-  network       = google_compute_network.vpc.name
-  ip_cidr_range = "10.10.0.0/24"
-}
-
-
 resource "google_container_cluster" "primary" {
   name                     = var.cluster_name
-  location                 = var.region
+  location                 = "europe-west1-b"
   remove_default_node_pool = true
   initial_node_count       = 1
 
@@ -54,18 +15,20 @@ resource "google_container_cluster" "primary" {
 
 
 resource "google_container_node_pool" "primary" {
-  name       = "discontinuity-node-pool"
-  location   = var.region
-  cluster    = google_container_cluster.primary.name
-  initial_node_count = 1
+  name               = "discontinuity-node-pool"
+  location           = "europe-west1-b"
+  cluster            = google_container_cluster.primary.name
+  initial_node_count = 0
   autoscaling {
-    min_node_count = 1
+    min_node_count = 0
     max_node_count = 3
   }
 
   management {
-    auto_repair = true
+    auto_repair  = true
+    auto_upgrade = true
   }
+
 
 
   node_config {
@@ -74,7 +37,8 @@ resource "google_container_node_pool" "primary" {
     }
     service_account = google_service_account.service_account.email
     machine_type    = "n1-standard-1"
-    preemptible  = true # Preemptible needs to be true
+
+    preemptible = true # Preemptible needs to be true
     oauth_scopes = [
       "https://www.googleapis.com/auth/logging.write",
       "https://www.googleapis.com/auth/monitoring",
