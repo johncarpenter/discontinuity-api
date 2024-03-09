@@ -1,5 +1,18 @@
 # Running Locally
 
+## Running Tests
+
+```bash
+pytest 
+```
+
+## Running the API
+
+```bash
+uvicorn main:app --reload
+```
+
+
 ## Prerequisites
 
 Install Cloud Proxy to connect to Cloud SQL

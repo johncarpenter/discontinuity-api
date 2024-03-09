@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker
 import pytest
+from discontinuity_api.vector.base import get_faiss_vector_db
 from app import app
 from fastapi.testclient import TestClient
 from discontinuity_api.database import Base, ApiKeyDb, WorkspaceDb, get_db
@@ -65,3 +66,8 @@ def get_valid_bearer_token_admin():
     )
     assert response.status_code == 200
     return response.json()["access_token"]
+
+@pytest.fixture
+def get_postgres_vector_db():
+    print("get_postgres_vector_db reroute to get_faiss_vector_db")
+    return get_faiss_vector_db("test")

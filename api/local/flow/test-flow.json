@@ -157,7 +157,7 @@
                                 "placeholder": "",
                                 "show": true,
                                 "multiline": false,
-                                "value": "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",
+                                "value": "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",
                                 "password": true,
                                 "name": "openai_api_key",
                                 "display_name": "OpenAI API Key",

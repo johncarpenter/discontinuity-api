@@ -16,3 +16,5 @@ def website_md_loading():
     add_document(index=db, documents=documents)
 
     db.save_local(folder_path="./storage/discontinuity")
+
+
