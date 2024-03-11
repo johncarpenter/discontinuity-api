@@ -1,0 +1,74 @@
+service: discontinuity-rag
+frameworkVersion: '3'
+
+
+# Uncomment this line to read the env variables from a .env local file. This is used for deploying just this
+# component to a test account
+#useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-1
+  stage: ${opt:stage}
+  timeout: 30
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:PutObject
+      Resource: "arn:aws:s3:::my-langchain-bucket/*"
+
+  apiGateway:
+    apiKeys:
+      - name: api-development
+        value: b2e8aca8-3df8-43cd-a2fe-dc10cdfbc242
+      - name: api-production
+        value: 35e3a46f-2fd9-4ce7-835e-e3472c705983
+      usagePlan:
+        quota:
+          limit: 1000
+          offset: 2
+          period: MONTH
+        throttle:
+          burstLimit: 10
+          rateLimit: 1
+
+package:
+  exclude:
+    - node_modules/**
+    - coverage/**
+    - .idea
+    - .gitignore
+    - src/**
+    - test/**
+    - dist/**.map
+    - tsconfig.json
+    - package.json
+    - package-lock.json
+
+plugins:
+  - serverless-esbuild
+
+functions:
+  query:
+    handler: dist/query.handler
+    events:
+      - http:
+          path: /
+          method: any
+          private: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          private: true
+
+  embedding:
+    handler: dist/embedding.handler
+    events:
+      - s3:
+          bucket: my-langchain-bucket
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: embedding/
+
