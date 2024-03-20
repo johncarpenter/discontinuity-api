@@ -1,4 +1,4 @@
-import { APIGatewayEvent, APIGatewayProxyResult, Context } from "aws-lambda";
+import { APIGatewayEvent, Context } from "aws-lambda";
 
 export async function handler(event: APIGatewayEvent, context: Context) {
   return {
@@ -7,3 +7,13 @@ export async function handler(event: APIGatewayEvent, context: Context) {
     input: event,
   };
 }
+
+
+
+// process pdf 
+
+
+// process text files
+
+
+// process images

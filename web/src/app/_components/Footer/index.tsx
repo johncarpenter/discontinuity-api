@@ -2,9 +2,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 const navigation = {
   solutions: [
-    { name: 'Prototyping', href: '/solutions#prototyping' },
-    { name: 'Advisory', href: '/solutions#advisory' },
-    { name: 'Training', href: '/solutions#training' },
+    { name: 'Prototyping', href: '/prototyping' },
+    { name: 'Advisory', href: '/advisory' },
+    { name: 'Training Courses and Education', href: '/training' },
   ],
   support: [{ name: 'API', href: 'https://api.insightplatform.ai' }],
   company: [

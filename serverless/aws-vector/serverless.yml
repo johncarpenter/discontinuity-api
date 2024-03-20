@@ -12,12 +12,21 @@ provider:
   region: eu-west-1
   stage: ${opt:stage}
   timeout: 30
+  
+  environment:
+    OPENAI_API_KEY: ${env:OPENAI_API_KEY}
+    AWS_SECRET_KEY: ${env:AWS_SECRET_KEY}    
+    AWS_ACCESS_KEY: ${env:AWS_ACCESS_KEY}
+    AWS_BUCKET: ${env:AWS_BUCKET}
+    UNSTRUCTURED_URL: ${env:UNSTRUCTURED_URL}
+    UNSTRUCTURED_API_KEY: ${env:UNSTRUCTURED_API_KEY}
+
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:GetObject
         - s3:PutObject
-      Resource: "arn:aws:s3:::my-langchain-bucket/*"
+      Resource: "arn:aws:s3:::${env:AWS_BUCKET}/*"
 
   apiGateway:
     apiKeys:
@@ -33,6 +42,8 @@ provider:
         throttle:
           burstLimit: 10
           rateLimit: 1
+
+  
 
 package:
   exclude:
@@ -67,8 +78,6 @@ functions:
     handler: dist/embedding.handler
     events:
       - s3:
-          bucket: my-langchain-bucket
+          bucket: ${env:AWS_BUCKET}
           event: s3:ObjectCreated:*
-          rules:
-            - prefix: embedding/
 

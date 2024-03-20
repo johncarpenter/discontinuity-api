@@ -17,19 +17,19 @@ const products = [
   {
     name: 'Prototyping',
     description: 'Build, test and learn. Test AI ideas out first',
-    href: '/solutions#prototyping',
+    href: '/prototyping',
     icon: RocketLaunchIcon,
   },
   {
     name: 'Advisory',
     description: 'Need help adopting or monetizing AI?',
-    href: '/solutions#advisory',
+    href: '/advisory',
     icon: LightBulbIcon,
   },
   {
     name: 'Training',
     description: 'Need to ramp your team up on AI?',
-    href: '/solutions#training',
+    href: '/training',
     icon: UsersIcon,
   },
 ]
@@ -127,8 +127,8 @@ export default function NavBar() {
               </Popover.Panel>
             </Transition>
           </Popover>
-          <a href="/start" className="text-sm font-semibold leading-6 text-gray-900">
-            Getting Started
+          <a href="/training" className="text-sm font-semibold leading-6 text-gray-900">
+            Courses
           </a>
 
           <a href="/about" className="text-sm font-semibold leading-6 text-gray-900">
@@ -203,10 +203,10 @@ export default function NavBar() {
                   )}
                 </Disclosure>
                 <a
-                  href="/start"
+                  href="/training"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Getting Started
+                  Courses
                 </a>
                 <a
                   href="/about"

@@ -11,62 +11,75 @@ const Features = () => {
             </h2>
             <p className="text-xl  text-gray-600">
               AI can transform your business, but doing it correctly can be challenging. We&apos;ll
-              position you for success by building MVP prototypes and models to help you springboard
+              walk you through the strategy and tactics to help you springboard your AI programs
               your ideas.{' '}
             </p>
           </div>
+
           <div className="flex flex-col py-10 space-x-0 space-y-10 md:space-y-0 md:space-x-5 md:flex-row">
-            <div className="flex flex-col items-center justify-start px-5 space-y-3 md:w-1/3">
-              <div className="flex items-center justify-center w-48 h-48 rounded-lg">
-                <Image
-                  priority
-                  src="/images/rapid_prototyping.png"
-                  className="rounded-lg"
-                  width={200}
-                  height={200}
-                  alt="A group of artists gathered around a statue arguing over the design"
-                />
-              </div>
-              <h3 className="text-lg font-bold">Scope Your Idea</h3>
-              <p className="text-center text-gray-600">
-                First step is to scope out your idea. We&apos;ll work with you to work with your
-                goals but also work with the existing capabilities of AI.
-              </p>
+            <div className="px-5 space-y-3 md:w-1/3">
+              <a href={'/advisory'}>
+                <div className="flex flex-col items-center justify-start">
+                  <div className="flex items-center justify-center w-48 h-48 rounded-lg">
+                    <Image
+                      priority
+                      src="/images/rapid_prototyping.png"
+                      className="rounded-lg"
+                      width={200}
+                      height={200}
+                      alt="A group of artists gathered around a statue arguing over the design"
+                    />
+                  </div>
+                  <h3 className="text-lg font-bold">AI Strategic Advisory</h3>
+                  <p className="text-center text-gray-600">
+                    Forge a clear path to AI integration with tailored strategic advice from our
+                    experts.
+                  </p>
+                </div>
+              </a>
             </div>
-            <div className="flex flex-col items-center justify-start px-5 space-y-3 md:w-1/3">
-              <div className="flex items-center justify-center w-48 h-48 rounded-lg">
-                <Image
-                  priority
-                  src="/images/data_driven.png"
-                  className="rounded-lg"
-                  width={200}
-                  height={200}
-                  alt="A philosopher giving a presentation in an amphitheater"
-                />
-              </div>
-              <h3 className="text-lg font-bold">Prototype and Deploy</h3>
-              <p className="text-center text-gray-600">
-                Once we have a goal in mind, we can build out the prototype and deploy it. Typically
-                within a single week. Applications are available as a chat widget, ChatGPT plugin,
-                API or interfaces that you have decided.
-              </p>
+
+            <div className="px-5 space-y-3 md:w-1/3">
+              <a href={'/training'}>
+                <div className="flex flex-col items-center justify-start">
+                  <div className="flex items-center justify-center w-48 h-48 rounded-lg">
+                    <Image
+                      priority
+                      src="/images/data_driven.png"
+                      className="rounded-lg"
+                      width={200}
+                      height={200}
+                      alt="A philosopher giving a presentation in an amphitheater"
+                    />
+                  </div>
+                  <h3 className="text-lg font-bold">Executive & Team Training</h3>
+                  <p className="text-center text-gray-600">
+                    Up-skill your leaders and teams with our specialized training programs, designed
+                    to accelerate AI adoption.
+                  </p>
+                </div>
+              </a>
             </div>
-            <div className="flex flex-col items-center justify-start px-5 space-y-3 md:w-1/3">
-              <div className="flex items-center justify-center w-48 h-48 rounded-lg">
-                <Image
-                  priority
-                  src="/images/infrastructure.png"
-                  className="rounded-lg"
-                  width={200}
-                  height={200}
-                  alt="A mason working on a castle"
-                />
-              </div>
-              <h3 className="text-lg font-bold">Validate</h3>
-              <p className="text-center text-gray-600">
-                Now with a working prototype, we can work with you to validate the idea, and
-                communicate the benefits from your data-driven analysis.
-              </p>
+            <div className="px-5 space-y-3 md:w-1/3">
+              <a href={'/prototyping'}>
+                <div className="flex flex-col items-center justify-start ">
+                  <div className="flex items-center justify-center w-48 h-48 rounded-lg">
+                    <Image
+                      priority
+                      src="/images/infrastructure.png"
+                      className="rounded-lg"
+                      width={200}
+                      height={200}
+                      alt="A mason working on a castle"
+                    />
+                  </div>
+
+                  <h3 className="text-lg text-center font-bold">Rapid Prototyping</h3>
+                  <p className="text-center text-gray-600">
+                    Quickly move from concept to prototype with our agile AI development approach.
+                  </p>
+                </div>
+              </a>
             </div>
           </div>
         </div>
