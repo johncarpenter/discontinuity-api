@@ -2,9 +2,9 @@ import Hero from './_components/Hero'
 import MarketingLayout from '@/layouts/MarketingLayout'
 import ContactForm from '@/components/ContactForm'
 import FeatureSection from '@/components/FeatureSection'
-import FeatureTechnicalSection from './_components/FeatureTechnicalSection'
 import BlogSlider from './_components/BlogSlider'
 import { Metadata } from 'next'
+import FeatureDetailSection from '@/components/FeatureDetailSection'
 
 export const metadata: Metadata = {
   alternates: {
@@ -17,13 +17,14 @@ export default function Home() {
     <>
       <MarketingLayout>
         <Hero />
+        <section id="detail">
+          <FeatureDetailSection />
+        </section>
         <section id="features">
           <FeatureSection />
         </section>
         {/* <Testimonial /> */}
-        <section id="product">
-          <FeatureTechnicalSection />
-        </section>
+
         <section id="blog">
           <BlogSlider />
         </section>

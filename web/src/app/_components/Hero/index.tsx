@@ -7,13 +7,11 @@ export default function Hero() {
         <div className="px-6 sm:pb-12 lg:col-span-7 lg:px-0 lg:pb-20 lg:pt-8 xl:col-span-6">
           <span className=" text-secondary-600 uppercase">Not sure about adopting ai?</span>
           <h1 className="mt-10 text-6xl font-bold tracking-normal text-gray-900">
-            Fast-track your AI initiatives with our rapid prototyping service.
+            Accelerating Your AI Journey: Advisory and Training Tailored for Success
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Let our experience prove the value of AI by testing, refining and validating your ideas
-            before making investments. We will help you build a custom AI prototype{' '}
-            <span className="text-secondary-400">usually in less than a week.</span> Faster time to
-            market, lower risk, and lower cost.
+            From ideation to execution, Discontinuity.ai is your partner in demystifying AI adoption
+            and unlocking its full potential for your organizations{' '}
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <a
@@ -23,7 +21,7 @@ export default function Hero() {
               Talk to Us
             </a>
             <a href="/start" className="text-sm font-semibold leading-6 text-gray-900">
-              Learn more <span aria-hidden="true">→</span>
+              Discover Our Services <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>

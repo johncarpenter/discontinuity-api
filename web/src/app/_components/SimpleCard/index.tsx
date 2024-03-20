@@ -1,37 +1,38 @@
-import { classNames } from '@/app/_lib/utils/classnames'
+import Image from 'next/image'
 
 export interface SimpleCardProps {
   title: string
   subtitle: string
-  Icon: React.ElementType
+  cta: string
   href: string
-  background_color: string
-  icon_color: string
+  src: string
+  alt: string
 }
 
-export default function SimpleCard({
-  title,
-  subtitle,
-  href,
-  background_color,
-  icon_color,
-  Icon,
-}: SimpleCardProps) {
+const imageCourse = (id: string, alt: string) => {
+  return <Image priority src={id} className="rounded-lg" width={200} height={200} alt={alt} />
+}
+
+export default function SimpleCard({ title, subtitle, href, cta, src, alt }: SimpleCardProps) {
   return (
-    <a href={href} className="hover:ring-1 hover:ring-primary-50">
-      <div className="col-span-1 flex rounded-md shadow-sm">
-        <div
-          className={classNames(
-            'flex w-16 flex-shrink-0 items-center justify-center',
-            `${background_color}`
-          )}
-        >
-          {Icon && <Icon className={classNames(`${icon_color}`, 'h-6 w-6')} aria-hidden="true" />}
-        </div>
-        <div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
-          <div className="flex-1 truncate px-4 py-2 text-sm">
-            {title}
-            <p className="text-gray-500">{subtitle}</p>
+    <a href={href}>
+      <div className="bg-white px-6 py-6 lg:px-8 overflow-hidden rounded-2xl shadow-xl hover:ring-1 hover:ring-secondary-500 ">
+        <div className="col-span-1 flex ">
+          <div className="flex items-center justify-center w-48 h-48 rounded-lg">
+            {imageCourse(src, alt)}
+          </div>
+
+          <div className="flex flex-1 items-center justify-between">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-base font-semibold leading-6 text-gray-900">{title}</h3>
+              <div className="mt-2 max-w-xl text-sm text-gray-500">
+                <p>{subtitle}</p>
+              </div>
+              <div className="mt-3 text-sm leading-6 font-semibold text-secondary-600">
+                {cta}
+                <span aria-hidden="true"> &rarr;</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

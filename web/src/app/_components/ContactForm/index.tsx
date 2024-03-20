@@ -55,13 +55,15 @@ export default function ContactForm() {
         <div className="relative px-6 pb-10 pt-4 sm:pt-14 lg:static lg:px-8 lg:py-4">
           <div className="mx-auto max-w-4xl lg:mx-0 lg:max-w-lg">
             <div className="flex flex-col space-y-5">
-              <span className="text-secondary-600 uppercase">Need Something Else?</span>
+              <span className="text-secondary-600 uppercase">
+                Ready to Transform Your Organization with AI?
+              </span>
               <h2 className="text-4xl font-bold ">
-                <span className="block">Get in touch</span>
+                <span className="block">Book Your Free Consultation</span>
               </h2>
               <p className=" mt-5 text-gray-600">
-                We&apos;d love to hear more about your projects and how we can help. Fill out the
-                form below and we&apos;ll contact you as soon as possible.
+                Let's discuss how we can tailor our advisory and training services to meet your
+                unique needs. Book a free consultation today.
               </p>
             </div>
 

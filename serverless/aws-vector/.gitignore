@@ -1,0 +1,11 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# API keys
+serverless.env.yml
+.env
+.env.staging
