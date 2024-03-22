@@ -12,6 +12,8 @@ from fastapi import APIRouter
 from fastapi import Request
 import os
 from langflow import load_flow_from_json
+import os
+from google.cloud import storage
 
 
 logger = logging.getLogger(__name__)
@@ -108,3 +110,29 @@ async def query(message: Message, workspace=Depends(JWTBearer())):
 
     
     return {"response":response}
+
+# upload a file to the server
+@router.post("/file")
+async def upload_file(request: Request, background_tasks: BackgroundTasks, workspace=Depends(JWTBearer())):
+    """Upload a file to the server"""
+
+    # Check if the workspace slug file exists in the local directory
+    logger.info(f"Uploading file to workspace {workspace.slug}")
+
+    # Get the vector db for the workspace
+    db = get_postgres_vector_db(workspace.slug)
+    # Save the file to an gcs bucket
+
+
+    form = await request.form()
+    file = form['file']
+    file_path = f"./local/files/{file.filename}"
+    with open(file_path, "wb") as file_object:
+        file_object.write(await file.read())
+
+    # Add the file to the vector db
+    document = Document(page_content=file_path, metadata={"workspace": workspace.slug, "type": "file", "source": "api", "date": datetime.now().isoformat()})
+    add_document(index=db, documents=[document])
+
+    return {"status": "added"}
+

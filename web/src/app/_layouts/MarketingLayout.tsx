@@ -2,7 +2,7 @@
 import React from 'react'
 import NavBar from '@/components/NavBar'
 import Footer from '@/components/Footer'
-import { BubbleChat } from 'flowise-embed-react'
+import Widget from '@/components/Widget'
 
 type MarketingLayoutProps = {
   children: React.ReactNode
@@ -20,7 +20,8 @@ export default function MarketingLayout({ children }: MarketingLayoutProps) {
       <footer className="mt-auto">
         <Footer />
       </footer>
-      <BubbleChat
+      <Widget />
+      {/* <BubbleChat
         chatflowid="8c416847-3999-4248-8167-1220917c9e2d"
         apiHost="https://flow.discontinuity.ai"
         theme={{
@@ -51,7 +52,7 @@ export default function MarketingLayout({ children }: MarketingLayoutProps) {
             },
           },
         }}
-      />
+      />*/}
     </div>
   )
 }

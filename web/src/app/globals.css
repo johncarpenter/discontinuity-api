@@ -4,6 +4,9 @@
 
 @import "css/clerk.overrides.css";
 
+@import "react-chatbot-kit/build/main.css";
+@import "css/widget.overrides.css";
+
 
 
 @layer base {

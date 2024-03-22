@@ -16,7 +16,7 @@ export default authMiddleware({
     '/about',
     '/privacy',
     '/legal',
-    '/api/contact',
+    '/api/(.*)',
     '/contact',
   ],
   afterAuth(auth, req) {
