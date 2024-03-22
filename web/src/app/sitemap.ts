@@ -23,13 +23,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
-      url: `${host}/solutions`,
+      url: `${host}/prototyping`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.5,
     },
     {
-      url: `${host}/start`,
+      url: `${host}/training`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+    {
+      url: `${host}/training/strategic-ai-for-leaders`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+    {
+      url: `${host}/advisory`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.5,
