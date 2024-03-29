@@ -20,7 +20,7 @@ ENV DATABASE_USER=flow
 #ENV OVERRIDE_DATABASE=false
 
 # You can install a specific version like: flowise@1.0.0
-RUN npm install -g flowise
+RUN npm install -g flowise@1.6.2
 
 WORKDIR /data
 
