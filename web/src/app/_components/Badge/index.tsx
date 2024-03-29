@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { classNames } from '@/lib/utils/classnames'
 

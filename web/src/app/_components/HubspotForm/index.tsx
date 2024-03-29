@@ -25,7 +25,7 @@ const HubspotContactForm = ({ region, portalId, formId }: HubspotContactFormProp
         })
       }
     })
-  }, [])
+  }, [formId, portalId, region])
 
   return (
     <div>

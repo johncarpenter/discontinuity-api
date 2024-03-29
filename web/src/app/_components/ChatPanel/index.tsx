@@ -1,16 +1,11 @@
 'use client'
 import { Fragment, useState } from 'react'
-import {
-  ComputerDesktopIcon,
-  LightBulbIcon,
-  SparklesIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline'
-import Markdown from 'react-markdown'
-import style from '@/css/markdown.module.css'
-import Badge from '../Badge'
-import remarkMath from 'remark-math'
-import remarkGfm from 'remark-gfm'
+import { ComputerDesktopIcon, LightBulbIcon, UserIcon } from '@heroicons/react/24/outline'
+//import Markdown from 'react-markdown'
+//import style from '@/css/markdown.module.css'
+//import Badge from '../Badge'
+//import remarkMath from 'remark-math'
+//import remarkGfm from 'remark-gfm'
 //import rehypeKatex from 'rehype-katex'
 //import rehypeMathJax from 'rehype-mathjax'
 
@@ -21,11 +16,7 @@ interface MessageType {
 
 export default function ChatPanel() {
   const [input, setInput] = useState('')
-  const [summary, setSummary] = useState('')
-
-  const [question, setQuestion] = useState('')
   const [processing, setProcessing] = useState(false)
-
   const [isError, setIsError] = useState(false)
 
   const [messageList, setMessageList] = useState<MessageType[]>()
@@ -48,10 +39,7 @@ export default function ChatPanel() {
 
     const ans = await response.json()
 
-    setQuestion(text)
     appendMessage({ message: ans.text, type: 'assistant' } as MessageType)
-
-    setSummary(ans.text)
   }
 
   async function appendMessage(data: MessageType) {
@@ -61,7 +49,10 @@ export default function ChatPanel() {
   return (
     <>
       <div className="flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 dark:text-white h-full">
-        <div className="w-full p-4 bg-blue-500 text-white h-16">Fixed chat header</div>
+        <div className="w-full p-4 bg-blue-500 text-white h-16">
+          Fixed chat header {isError}
+          {processing}
+        </div>
 
         <div className="px-4 overflow-auto mt-16 mb-16 flex-1 h-full">
           <div className="flex h-full items-center justify-center rounded-full bg-white text-gray-950">

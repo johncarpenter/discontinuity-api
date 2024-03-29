@@ -1,55 +1,8 @@
 'use client'
 import { EnvelopeIcon } from '@heroicons/react/24/outline'
-import React, { useState } from 'react'
-import { event } from '@/lib/client/gtag'
 import HubspotContactForm from '../HubspotForm'
 
 export default function ContactForm() {
-  const [enabled, setEnabled] = useState(true)
-  const [message, setMessage] = useState('')
-  const [state, setState] = useState({
-    first: '',
-    last: '',
-    email: '',
-    company: '',
-    message: '',
-  })
-
-  const handleChange = (e: { target: any }) => {
-    const target = e.target
-    const value = target.value
-    const name = target.name
-
-    setState({ ...state, [name]: value })
-  }
-
-  const submit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault()
-    setEnabled(false)
-    const res = await fetch(`/api/contact`, {
-      body: JSON.stringify({
-        email: state.email,
-        first: state.first,
-        last: state.last,
-        company: state.company,
-        message: state.message,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    })
-
-    const { error } = await res.json()
-    if (error) {
-      setMessage('We are Sorry Something Went Wrong. Please contact us at hello@discontinuity.ai')
-      return
-    }
-    event('generate_lead', { currency: 'CAD', value: 50 })
-
-    setMessage('Thanks. One of our team will be in touch soon!')
-  }
-
   return (
     <>
       <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2 ">

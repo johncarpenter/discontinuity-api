@@ -56,7 +56,7 @@ export default function ChatContainer({ assistant_id }: ChatMessageProps) {
       setProcessing(false)
       setMessage({ run: '', thread: message?.thread ?? '' })
     }
-  }, [response])
+  }, [message?.thread, question, response, summary])
 
   const handleClick = async (text: string) => {
     const resp = await sendChatMessage({
