@@ -26,9 +26,11 @@
       "@/config/*": ["./src/app/_config/*"],
       "@/lib/*": ["./src/app/_lib/*"],
       "@/layouts/*": ["./src/app/_layouts/*"],
+      "@/css/*": ["./src/app/css/*"],
+      "@/types/*": ["./src/app/types/*"],
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/ai/flow/route.js"],
   "exclude": ["node_modules"]
 }

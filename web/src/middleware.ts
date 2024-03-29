@@ -18,6 +18,9 @@ export default authMiddleware({
     '/legal',
     '/api/contact',
     '/contact',
+    '/chat',
+    '/chat/(/*)',
+    '/api/ai/(.*)',
   ],
   afterAuth(auth, req) {
     const { pathname } = req.nextUrl

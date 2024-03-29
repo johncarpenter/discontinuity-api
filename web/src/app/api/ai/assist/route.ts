@@ -1,16 +1,16 @@
-import { auth } from '@clerk/nextjs'
+//import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
 export async function POST(req: NextRequest) {
-  const { sessionId, orgId } = auth()
-  if (!sessionId) {
-    return NextResponse.json({ id: null }, { status: 401 })
-  }
+  // const { sessionId, orgId } = auth()
+  // if (!sessionId) {
+  //   return NextResponse.json({ id: null }, { status: 401 })
+  // }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
-  }
+  // if (orgId === null || orgId === undefined) {
+  //   return NextResponse.json({}, { status: 401 })
+  // }
 
   const data = await req.json()
 

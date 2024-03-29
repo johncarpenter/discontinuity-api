@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs'
+//import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { MessageContentText } from 'openai/resources/beta/threads/messages/messages.mjs'
@@ -7,14 +7,14 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { thread: string; run: string } }
 ) {
-  const { sessionId, orgId } = auth()
-  if (!sessionId) {
-    return NextResponse.json({ id: null }, { status: 401 })
-  }
+  // const { sessionId, orgId } = auth()
+  // if (!sessionId) {
+  //   return NextResponse.json({ id: null }, { status: 401 })
+  // }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
-  }
+  // if (orgId === null || orgId === undefined) {
+  //   return NextResponse.json({}, { status: 401 })
+  // }
 
   const { thread, run } = params
 

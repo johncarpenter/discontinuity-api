@@ -4,20 +4,20 @@ import NavBar from '@/components/NavBar'
 import Footer from '@/components/Footer'
 import { BubbleChat } from 'flowise-embed-react'
 
-type MarketingLayoutProps = {
+type SimpleLayoutProps = {
   children: React.ReactNode
 }
 
-export default function MarketingLayout({ children }: MarketingLayoutProps) {
+export default function SimpleLayout({ children }: SimpleLayoutProps) {
   return (
     <div className="flex flex-col min-h-screen">
       <header>
         <NavBar />
       </header>
       <main>
-        <div className="mx-auto flex-1 min-h-[80vh]">{children}</div>
+        <div className="mx-auto">{children}</div>
       </main>
-      <footer className="flex-0">
+      <footer className="mt-auto">
         <Footer />
       </footer>
       <BubbleChat
