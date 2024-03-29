@@ -18,6 +18,7 @@ ENV DATABASE_HOST=34.34.179.242
 ENV DATABASE_NAME=flowise
 ENV DATABASE_USER=flow
 #ENV OVERRIDE_DATABASE=false
+ENV AWS_DEFAULT_REGION=us-west-2
 
 # You can install a specific version like: flowise@1.0.0
 RUN npm install -g flowise@1.6.2
