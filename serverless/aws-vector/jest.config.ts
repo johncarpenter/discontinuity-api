@@ -16,6 +16,9 @@ const config: Config.InitialOptions = {
   coverageProvider: "v8",
   verbose: true,
   testMatch: ["**/tests/**/*.test.ts"],
+  moduleNameMapper: {
+    "fs/promises": "<rootDir>/node_modules/fs-extra/lib/fs",
+  },
 };
 
 export default config;

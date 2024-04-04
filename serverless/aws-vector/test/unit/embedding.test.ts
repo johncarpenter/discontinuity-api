@@ -1,18 +1,39 @@
 import { S3Event } from "aws-lambda";
-import { handler } from "../../src/embedding";
+import path from "path";
+import {
+  extractDocumentsUsingUnstructured,
+  extractDocumentsFromImages,
+  handler,
+} from "../../src/embedding";
+import exp from "constants";
 
 describe("Embeddings are created when new files are added to s3", () => {
-  it("When a file is added to s3 it calculates the embedding", async () => {
+  it("When a pdf is added to s3 it calculates the embedding", async () => {
     // Call the handler function
-    const result = await handler(event);
-    console.log(result);
+    const result = await extractDocumentsUsingUnstructured(
+      path.join(__dirname, "test.pdf")
+    );
+    expect(result.length > 0);
+    expect(result[0].pageContent).toContain("This is a test PDF file");
+
+    // Assert the expected result
+    // Add your assertions here
+  }, 30000);
+
+  it("An image embedding is correctly calculated from gpt4v", async () => {
+    // Call the handler function
+    const result = await extractDocumentsFromImages(
+      path.join(__dirname, "test.jpg")
+    );
+    expect(result.length > 0);
+    expect(result[0].pageContent).toContain("wine glass");
 
     // Assert the expected result
     // Add your assertions here
   }, 30000);
 });
 
-const event: S3Event = {
+const event = {
   Records: [
     {
       eventVersion: "2.0",

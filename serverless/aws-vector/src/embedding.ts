@@ -1,10 +1,14 @@
 import { S3Event } from "aws-lambda";
-import { S3Loader } from "langchain/document_loaders/web/s3";
 import { Document } from "langchain/document";
 import { getPostgresVectorStore } from "./utils";
 import { S3, GetObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs";
 import { UnstructuredLoader } from "langchain/document_loaders/fs/unstructured";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 const {
   S3_AWS_SECRET_KEY,
@@ -41,16 +45,9 @@ const unstructuredFileTypes = [
   "pptx",
   "tsv",
   "xlsx",
-  "jpg",
-  "jpeg",
-  "png",
-  "gif",
-  "tiff",
-  "bmp",
-  "heic",
 ];
 
-const mediaFileTypes = [
+const imageFileTypes = [
   "jpg",
   "jpeg",
   "png",
@@ -60,6 +57,8 @@ const mediaFileTypes = [
   "heic",
   "webp",
 ];
+
+const audioFileTypes = ["mp3", "wav", "flac", "ogg", "m4a", "aac"];
 
 /**
  * Triggered when an AWS Object is uploaded to the S3 bucket (specified in the serverless.yml file)
@@ -83,19 +82,20 @@ export async function handler(event: S3Event) {
 
   let documents: Document<Record<string, any>>[] = [];
 
+  const tmpFile = await downloadS3fileLocally(bucket, key);
+
   if (unstructuredFileTypes.includes(ext.toLowerCase())) {
     console.log("Processing with unstructured API");
     // Extract the document from the S3 object using unstructured API
-    documents = await extractDocumentsUsingUnstructured(bucket, key);
-    //} else if (mediaFileTypes.includes(ext.toLowerCase())) {
-    // use multimodal embeddings
-    //  documents = await extractDocumentsFromImages(bucket, key, ext);
+    documents = await extractDocumentsUsingUnstructured(tmpFile);
+  } else if (audioFileTypes.includes(ext.toLowerCase())) {
+    documents = await extractDocumentsFromAudio(tmpFile);
+  } else if (imageFileTypes.includes(ext.toLowerCase())) {
+    documents = await extractDocumentsFromImages(tmpFile);
   } else {
     console.error(`Unsupported file type: ${ext}`);
     return;
   }
-
-  console.log(`file: ${file} folder: ${folder} bucket: ${bucket} ext: ${ext}`);
 
   // Append metadata
   appendMetadata(documents, bucket, file, key);
@@ -106,38 +106,7 @@ export async function handler(event: S3Event) {
   console.log("Embedding calculated for file");
 }
 
-async function extractDocumentsFromImages(
-  bucket: string,
-  key: string,
-  type: string
-): Promise<Document<Record<string, any>>[]> {
-  const getObjectCommand = new GetObjectCommand({
-    Bucket: bucket,
-    Key: key,
-  });
-
-  const data = await s3.send(getObjectCommand).then((data) => {
-    const base64String = data?.Body?.transformToString("base64") || "";
-    let src = `data:image/${type};base64,${base64String}`;
-
-    const document = new Document({
-      pageContent: src,
-      // Metadata is optional but helps track what kind of document is being retrieved
-      metadata: {
-        mediaType: "image",
-      },
-    });
-    return [document];
-  });
-
-  console.log("Image Downloaded.");
-  // convert to base64
-  return [];
-}
-
-async function extractDocumentsUsingUnstructured(bucket: string, key: string) {
-  // Retrieve the bucket & key for the uploaded S3 object that
-  // caused this Lambda function to be triggered
+async function downloadS3fileLocally(bucket: string, key: string) {
   const getObjectCommand = new GetObjectCommand({
     Bucket: bucket,
     Key: key,
@@ -163,7 +132,97 @@ async function extractDocumentsUsingUnstructured(bucket: string, key: string) {
     });
   }
 
-  const loader = new UnstructuredLoader(`/tmp/${file}`, options);
+  return `/tmp/${file}`;
+}
+
+/**
+ * This function will extract context from the images using CLIP from openai
+ * @param tmpfile
+ */
+async function extractDocumentsFromImages(tmpfile: string) {
+  // load image and convert to base64
+  const base64_image = fs.readFileSync(tmpfile, { encoding: "base64" });
+
+  const ext = tmpfile.split(".").pop() || "";
+
+  const payload = {
+    model: "gpt-4-vision-preview",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "What’s in this image?",
+          },
+          {
+            type: "image_url",
+            image_url: {
+              url: `data:image/jpeg;base64,${base64_image}`,
+            },
+          },
+        ],
+      },
+    ],
+    max_tokens: 300,
+  };
+
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+  };
+
+  // call request to openai
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(payload),
+  });
+
+  const result = await response.json();
+
+  console.log(JSON.stringify(result, null, 2));
+
+  const transcription = result.choices[0].message.content;
+
+  const document = new Document({
+    pageContent: transcription || "Unable to interpret image",
+    // Metadata is optional but helps track what kind of document is being retrieved
+    metadata: {
+      mediaType: "image",
+    },
+  });
+
+  return [document];
+}
+
+/**
+ * This function will extract context from audio using whisper transcription from openai
+ * @param tmpfile
+ */
+async function extractDocumentsFromAudio(tmpfile: string) {
+  const transcription = await openai.audio.transcriptions.create({
+    file: fs.createReadStream(tmpfile),
+    model: "whisper-1",
+  });
+
+  const document = new Document({
+    pageContent: transcription.text || "Unable to read audio",
+    // Metadata is optional but helps track what kind of document is being retrieved
+    metadata: {
+      mediaType: "audio",
+    },
+  });
+  return [document];
+}
+
+async function extractDocumentsUsingUnstructured(tmpfile: string) {
+  const options = {
+    apiUrl: UNSTRUCTURED_URL || "",
+    apiKey: UNSTRUCTURED_API_KEY || "",
+  };
+
+  const loader = new UnstructuredLoader(tmpfile, options);
 
   const docs = await loader.load();
   return docs;
@@ -182,6 +241,7 @@ function appendMetadata(
       file: file,
       scope: bucket,
       uri: "s3://" + bucket + "/" + key,
+      date: new Date().toISOString(),
     };
   });
 }
@@ -194,3 +254,11 @@ async function calculateEmbedding(
 
   await vectorstore.addDocuments(documents);
 }
+
+// export for testing
+export {
+  extractDocumentsUsingUnstructured,
+  downloadS3fileLocally,
+  extractDocumentsFromAudio,
+  extractDocumentsFromImages,
+};
