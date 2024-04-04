@@ -5,6 +5,7 @@ describe("Embeddings are created when new files are added to s3", () => {
   it("When a file is added to s3 it calculates the embedding", async () => {
     // Call the handler function
     const result = await handler(event);
+    console.log(result);
 
     // Assert the expected result
     // Add your assertions here
