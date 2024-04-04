@@ -3,10 +3,12 @@
  * https://jestjs.io/docs/configuration
  */
 
-export default {
+import type { Config } from "@jest/types";
+const config: Config.InitialOptions = {
+  setupFiles: ["dotenv/config"],
   projects: ["<rootDir>/jest.unit.config.ts"],
   transform: {
-    "^.+\\.ts?$": "esbuild-jest",
+    "^.+\\.ts?$": "ts-jest",
   },
   clearMocks: true,
   collectCoverage: true,
@@ -15,3 +17,5 @@ export default {
   verbose: true,
   testMatch: ["**/tests/**/*.test.ts"],
 };
+
+export default config;

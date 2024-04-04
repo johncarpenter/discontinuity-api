@@ -9,3 +9,7 @@ jspm_packages
 serverless.env.yml
 .env
 .env.staging
+.env.test
+
+google-services.json
+

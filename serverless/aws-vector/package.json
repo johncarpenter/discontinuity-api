@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/typescript/bin/tsc",
-    "local": "npm run build && ./node_modules/serverless/bin/serverless invoke local -f hello -l",
-    "deploy": "npm run build && ./node_modules/serverless/bin/serverless deploy -v",
-    "deploy:function": "npm run build && npm run test:unit && ./node_modules/serverless/bin/serverless deploy function -f hello",
-    "stream:logs": "./node_modules/serverless/bin/serverless logs -f hello -t",
-    "test:unit": "jest --verbose test",
+    "local": "npm run build && serverless invoke local -f embedding -l",
+    "deploy": "npm run build && serverless deploy --stage dev --aws-profile discontinuity",
+    "deploy:prod": "npm run build && serverless deploy --stage prod",
+    "stream:logs": "serverless logs -f embedding -t",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --verbose test",
     "test:unit:coverage": "jest --verbose --coverage=true --collectCoverageFrom=src/**/*.{js,jsx,ts,vue} test || exit 0"
   },
   "author": "Discontinuity.ai <hello@discontinuity.ai>",
@@ -23,8 +23,7 @@
     "@types/node": "^20.11.25",
     "@types/serverless": "^3.12.22",
     "cross-env": "^7.0.3",
-    "dotenv": "^8.2.0",
-    "esbuild-jest": "^0.5.0",
+    "dotenv": "^8.6.0",
     "eslint": "^7.29.0",
     "husky": "^6.0.0",
     "jest": "^29.7.0",
@@ -33,6 +32,7 @@
     "prettier": "^2.3.1",
     "serverless": "^3.38.0",
     "serverless-add-api-key": "^4.2.0",
+    "serverless-esbuild": "^1.52.1",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
@@ -43,6 +43,14 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.529.1",
-    "langchain": "^0.1.26"
+    "@langchain/community": "^0.0.43",
+    "@langchain/google-vertexai": "^0.0.2",
+    "@langchain/openai": "^0.0.25",
+    "@vercel/postgres": "^0.5.1",
+    "faiss-node": "^0.5.1",
+    "google-auth-library": "^8.9.0",
+    "langchain": "^0.1.30",
+    "pg": "^8.11.4",
+    "pickleparser": "^0.2.1"
   }
 }

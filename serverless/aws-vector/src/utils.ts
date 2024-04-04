@@ -1,13 +1,20 @@
 import * as fs from "fs";
 import { S3, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-import { FaissStore } from "langchain/vectorstores/faiss";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { FaissStore } from "@langchain/community/vectorstores/faiss";
+import { OpenAIEmbeddings } from "@langchain/openai";
+
 import path from "path";
 const s3Client = new S3();
 
+import {
+  PGVectorStore,
+  DistanceStrategy,
+} from "@langchain/community/vectorstores/pgvector";
+import { PoolConfig } from "pg";
+
 const bucketName = process.env.BUCKET_NAME;
 
-export async function getVectorStore() {
+export async function getFaissVectorStore() {
   // Initially we are going to start with a simple FAISS index.
   // The index will be persisted in the embedding director within the s3 bucket
 
@@ -80,4 +87,26 @@ export async function getEmbeddings() {
 
   const openaiEmbeddings = new OpenAIEmbeddings({ openAIApiKey: openaiApiKey });
   return openaiEmbeddings;
+  //return new GoogleVertexAIMultimodalEmbeddings();
+}
+
+export async function getPostgresVectorStore(tableName: string) {
+  const config = {
+    postgresConnectionOptions: {
+      connectionString: process.env.DATABASE_URL || "",
+    } as PoolConfig,
+    tableName: tableName || "documents",
+    columns: {
+      idColumnName: "id",
+      vectorColumnName: "embedding",
+      contentColumnName: "pageContent",
+      metadataColumnName: "metadata",
+    },
+    // supported distance strategies: cosine (default), innerProduct, or euclidean
+    distanceStrategy: "cosine" as DistanceStrategy,
+  };
+
+  const pgstore = await PGVectorStore.initialize(await getEmbeddings(), config);
+
+  return pgstore;
 }

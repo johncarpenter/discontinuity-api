@@ -1,51 +1,34 @@
 service: discontinuity-rag
-frameworkVersion: '3'
-
+frameworkVersion: "3"
 
 # Uncomment this line to read the env variables from a .env local file. This is used for deploying just this
 # component to a test account
-#useDotenv: true
+useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs18.x
-  region: eu-west-1
-  stage: ${opt:stage}
-  timeout: 30
-  
+  region: us-west-2
+  timeout: 300
+
   environment:
     OPENAI_API_KEY: ${env:OPENAI_API_KEY}
-    AWS_SECRET_KEY: ${env:AWS_SECRET_KEY}    
-    AWS_ACCESS_KEY: ${env:AWS_ACCESS_KEY}
-    AWS_BUCKET: ${env:AWS_BUCKET}
+    S3_AWS_SECRET_KEY: ${env:S3_AWS_SECRET_KEY}
+    S3_AWS_ACCESS_KEY: ${env:S3_AWS_ACCESS_KEY}
+    S3_AWS_BUCKET: ${env:S3_AWS_BUCKET}
     UNSTRUCTURED_URL: ${env:UNSTRUCTURED_URL}
     UNSTRUCTURED_API_KEY: ${env:UNSTRUCTURED_API_KEY}
-
+    DATABASE_URL: ${env:DATABASE_URL}
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:GetObject
         - s3:PutObject
-      Resource: "arn:aws:s3:::${env:AWS_BUCKET}/*"
-
-  apiGateway:
-    apiKeys:
-      - name: api-development
-        value: b2e8aca8-3df8-43cd-a2fe-dc10cdfbc242
-      - name: api-production
-        value: 35e3a46f-2fd9-4ce7-835e-e3472c705983
-      usagePlan:
-        quota:
-          limit: 1000
-          offset: 2
-          period: MONTH
-        throttle:
-          burstLimit: 10
-          rateLimit: 1
-
-  
+      Resource: "arn:aws:s3:::${env:S3_AWS_BUCKET}"
 
 package:
+  include:
+    - google-services.json
   exclude:
     - node_modules/**
     - coverage/**
@@ -62,22 +45,15 @@ plugins:
   - serverless-esbuild
 
 functions:
-  query:
-    handler: dist/query.handler
-    events:
-      - http:
-          path: /
-          method: any
-          private: true
-      - http:
-          path: /{proxy+}
-          method: ANY
-          private: true
-
   embedding:
     handler: dist/embedding.handler
     events:
       - s3:
-          bucket: ${env:AWS_BUCKET}
+          bucket: ${env:S3_AWS_BUCKET}
           event: s3:ObjectCreated:*
-
+  deletion:
+    handler: dist/deletion.handler
+    events:
+      - s3:
+          bucket: ${env:S3_AWS_BUCKET}
+          event: s3:ObjectRemoved:*

@@ -1,7 +1,9 @@
+require("dotenv").config({ path: "test/.env.test" });
+
 module.exports = {
   displayName: "unit",
   testMatch: ["**/test/unit/*.test.ts"],
   transform: {
-    "^.+\\.ts?$": "esbuild-jest",
+    "^.+\\.ts?$": "ts-jest",
   },
 };

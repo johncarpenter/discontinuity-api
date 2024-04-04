@@ -41,3 +41,17 @@ def test_workspace_search(get_valid_bearer_token):
     first = response.json()[0]
     assert first["score"] > 0
     assert first["content"] == "does this work?"
+
+
+def test_flow_query(get_valid_bearer_token):
+    flow_id = "f11a23bd-edab-4173-b55f-4756da31a1b1"
+    response = client.post(
+        f"/workspace/flow/{flow_id}",
+        headers={"Authorization": f"Bearer {get_valid_bearer_token}"},
+        json={"message": "Does this work?"},
+    )
+
+    print(response.json())
+    assert response.status_code == 200
+    assert response.json()["json"] == {"test":"ok"}
+

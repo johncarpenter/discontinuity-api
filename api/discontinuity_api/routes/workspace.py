@@ -11,13 +11,15 @@ from fastapi import APIRouter
 
 from fastapi import Request
 import os
-from langflow import load_flow_from_json
-
+import requests
 
 logger = logging.getLogger(__name__)
 
 
 router = APIRouter(prefix="/workspace", tags=["workspace"], include_in_schema=True)
+
+BASE_API_URL = "https://flow.discontinuity.ai/api/v1/prediction/"
+
 
 
 class Message(BaseModel):
@@ -108,3 +110,27 @@ async def query(message: Message, workspace=Depends(JWTBearer())):
 
     
     return {"response":response}
+
+
+@router.post("/flow/{flow_id}")
+def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
+    """
+    Queries the flow.discontinuity.ai API with a message
+
+    :param message: The message to send to the flow
+    :param flow_id: The ID of the flow to run
+    :return: The JSON response from the flow
+    """
+    api_url = f"{BASE_API_URL}{flow_id}"
+    api_key = os.getenv("FLOW_API_KEY")
+
+    payload = {"question": message.message}
+    headers = {"Authorization": f"Bearer {api_key}"}
+
+    try:
+        response = requests.post(api_url, json=payload, headers=headers)       
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(e)
+        raise HTTPException(status_code=501, detail="Flow API not available")
+    
