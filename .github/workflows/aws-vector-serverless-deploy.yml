@@ -1,0 +1,42 @@
+name: aws-vector-serverless-deploy
+on:
+  push:
+    paths:
+      - "serverless/aws-vector/**"
+    branches:
+      - main
+defaults:
+  run:
+    working-directory: ./serverless/aws-vector
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-prod:
+    name: deploy-prod
+    runs-on: ubuntu-latest
+    environment: production
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: npm run deploy:prod
+      env:
+        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        S3_AWS_SECRET_KEY: ${{ secrets.S3_AWS_SECRET_KEY }}
+        S3_AWS_ACCESS_KEY: ${{ secrets.S3_AWS_ACCESS_KEY }}
+        S3_AWS_BUCKET: ${{ secrets.S3_AWS_BUCKET }}
+        UNSTRUCTURED_URL: ${{ secrets.UNSTRUCTURED_URL }}
+        UNSTRUCTURED_API_KEY: ${{ secrets.UNSTRUCTURED_API_KEY }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
