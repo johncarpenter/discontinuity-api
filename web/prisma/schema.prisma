@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model apikeys {
+  id            String     @id @default(cuid())
+  client_id     String
+  client_secret String
+  permissions   String
+  workspaceId   String
+  name          String?
+  workspaces    workspaces @relation(fields: [workspaceId], references: [id])
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model workspaces {
+  id            String    @id @default(cuid())
+  name          String
+  slug          String
+  createdAt     DateTime? @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
+  ownerId       String?   @db.VarChar
+  apikeys       apikeys[]
+
+}
+

@@ -5,23 +5,27 @@ export interface CardProps {
   danger?: boolean
 }
 
-const Body = ({ children, subtitle, title }: CardProps) => {
+const Title = ({ children, subtitle, title }: CardProps) => {
   return (
-    <div className="flex flex-col space-y-3 overflow-auto p-5">
-      {subtitle && (
-        <h3 className="text-base font-semibold leading-7 text-primary-600">{subtitle}</h3>
-      )}
-      {title ? (
-        <h2 className="text-2xl font-bold">{title}</h2>
-      ) : (
-        <div className="h-8 w-full animate-pulse rounded bg-gray-400" />
-      )}
-
-      <div className="flex flex-col">{children}</div>
+    <div className="flex flex-col lg:flex-row items-center justify-between space-x-5 ">
+      <div className="flex flex-1 flex-col space-y-3 overflow-auto p-5">
+        {title ? (
+          <h2 className="text-2xl font-bold">{title}</h2>
+        ) : (
+          <div className="h-8 w-full animate-pulse rounded bg-gray-400" />
+        )}
+        {subtitle && <h3 className="text-base leading-7 text-gray-500">{subtitle}</h3>}
+      </div>
+      {children}
     </div>
   )
 }
-Body.displayName = 'Body'
+Title.displayName = 'Title'
+
+const Action = ({ children }: CardProps) => {
+  return <div className="p-5">{children}</div>
+}
+Action.displayName = 'Action'
 
 const Empty = ({ children }: CardProps) => {
   return (
@@ -54,7 +58,8 @@ const Card = ({ children, danger }: CardProps) => {
 }
 
 Card.Footer = Footer
-Card.Body = Body
+Card.Title = Title
 Card.Empty = Empty
+Card.Action = Action
 
 export default Card

@@ -8,21 +8,37 @@ import { workspaceMenu } from '@/config/menu'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+import { workspaces } from '@prisma/client'
+import { Field, Label } from '@/components/Base/fieldset'
+import { Select } from '@/components/Base/select'
 
-export default function Sidebar() {
+export type SidebarProps = {
+  workspaces: workspaces[]
+}
+
+export default function Sidebar({ workspaces }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
 
+  const [currentWorkspace, setCurrentWorkspace] = useState(workspaces[0].slug)
+
+  function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
+    return (
+      <Field>
+        <Label>Current Workspace</Label>
+        <Select name="status">
+          {workspaces.map((workspace: workspaces) => (
+            <option key={workspace.id} value={workspace.id}>
+              {workspace.name}
+            </option>
+          ))}
+        </Select>
+      </Field>
+    )
+  }
+
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
@@ -87,7 +103,7 @@ export default function Sidebar() {
                       <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <ul className="-mx-2 space-y-1">
-                            {workspaceMenu().map((menu, index) => (
+                            {workspaceMenu(currentWorkspace).map((menu, index) => (
                               <div key={index}>
                                 <span className="text-xs uppercase text-gray-500 ">
                                   {menu.name}
@@ -141,10 +157,11 @@ export default function Sidebar() {
               </div>
             </div>
             <nav className="flex flex-1 flex-col">
+              <WorkspaceSwitcher workspaces={workspaces} />
               <ul className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul className="-mx-2 space-y-1">
-                    {workspaceMenu().map((menu, index) => (
+                    {workspaceMenu(currentWorkspace).map((menu, index) => (
                       <div key={index}>
                         <span className="text-xs uppercase text-gray-500 ">{menu.name}</span>
                         <li>

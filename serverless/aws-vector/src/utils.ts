@@ -12,9 +12,7 @@ import {
 } from "@langchain/community/vectorstores/pgvector";
 import { PoolConfig } from "pg";
 
-const bucketName = process.env.BUCKET_NAME;
-
-export async function getFaissVectorStore() {
+export async function getFaissVectorStore(bucketName: string) {
   // Initially we are going to start with a simple FAISS index.
   // The index will be persisted in the embedding director within the s3 bucket
 
@@ -59,7 +57,10 @@ export async function getFaissVectorStore() {
  * Only required for FAISS models the others as it syncs the files from s3 to local
  * @param vectorStore
  */
-export async function persistVectorStore(vectorStore: FaissStore) {
+export async function persistVectorStore(
+  vectorStore: FaissStore,
+  bucketName: string
+) {
   const tempPath = "/tmp/embeddings";
   await vectorStore.save(tempPath);
 

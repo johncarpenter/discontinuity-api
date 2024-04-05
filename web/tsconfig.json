@@ -28,9 +28,10 @@
       "@/layouts/*": ["./src/app/_layouts/*"],
       "@/css/*": ["./src/app/css/*"],
       "@/types/*": ["./src/app/types/*"],
+      "@/prisma/*": ["./prisma/*"],
 
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/ai/flow/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/ai/flow/route.js", "prisma/index.js"],
   "exclude": ["node_modules"]
 }

@@ -10,7 +10,4 @@ const UserProfilePage = () => {
     </Container>
   )
 }
-
-;<UserProfile />
-
 export default UserProfilePage

@@ -2,26 +2,33 @@ import {
   ChartPieIcon,
   FolderIcon,
   HomeIcon,
-  LightBulbIcon,
   RectangleStackIcon,
   ServerStackIcon,
 } from '@heroicons/react/24/outline'
 
-export const workspaceMenu = () => [
+export const workspaceMenu = (currentWorkspace: string) => [
   {
-    name: 'platform',
+    name: 'Workspace',
     menuItems: [
       {
-        name: 'Home',
-        href: `/site`,
+        name: 'Chat',
+        href: `/workspace/${currentWorkspace}/chat`,
         description: 'Home Page',
         enabled: true,
         visible: true,
         Icon: HomeIcon,
       },
       {
-        name: 'Support',
-        href: `/site/support`,
+        name: 'Files',
+        href: `/workspace/${currentWorkspace}/files`,
+        description: 'Status and Monitoring',
+        enabled: true,
+        visible: true,
+        Icon: ServerStackIcon,
+      },
+      {
+        name: 'Settings',
+        href: `/workspace/${currentWorkspace}/settings`,
         description: 'Status and Monitoring',
         enabled: true,
         visible: true,
@@ -30,24 +37,32 @@ export const workspaceMenu = () => [
     ],
   },
   {
-    name: 'Data',
+    name: 'platform',
     menuItems: [
       {
-        name: 'Analytics',
-        href: '/site',
-        description: 'Dashboards',
+        name: 'Home',
+        href: `/`,
+        description: 'Home Page',
         enabled: true,
         visible: true,
-        Icon: ChartPieIcon,
+        Icon: HomeIcon,
+      },
+      {
+        name: 'Support',
+        href: `/support`,
+        description: 'Status and Monitoring',
+        enabled: true,
+        visible: true,
+        Icon: ServerStackIcon,
       },
     ],
   },
   {
-    name: 'Applications',
+    name: 'account',
     menuItems: [
       {
-        name: 'Applications',
-        href: '/site/reports',
+        name: 'Manage',
+        href: '/workspaces',
         description: 'Main Page',
         enabled: true,
         visible: true,
@@ -56,24 +71,19 @@ export const workspaceMenu = () => [
 
       {
         name: 'Reports',
-        href: '/site/reports',
+        href: '/',
         description: 'Analysis and Reporting',
         enabled: true,
         visible: true,
         Icon: FolderIcon,
       },
-    ],
-  },
-  {
-    name: 'Elevate',
-    menuItems: [
       {
-        name: 'Research and Insights',
-        href: '/site/research',
-        description: 'Main Page',
+        name: 'Analytics',
+        href: '/',
+        description: 'Dashboards',
         enabled: true,
         visible: true,
-        Icon: LightBulbIcon,
+        Icon: ChartPieIcon,
       },
     ],
   },

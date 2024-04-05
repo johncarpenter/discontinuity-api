@@ -1,6 +1,10 @@
 import { S3Event } from "aws-lambda";
 import { Document } from "langchain/document";
-import { getPostgresVectorStore } from "./utils";
+import {
+  getFaissVectorStore,
+  getPostgresVectorStore,
+  persistVectorStore,
+} from "./utils";
 import { S3, GetObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs";
 import { UnstructuredLoader } from "langchain/document_loaders/fs/unstructured";
@@ -75,9 +79,11 @@ export async function handler(event: S3Event) {
   const key = decodeURIComponent(
     event.Records[0].s3.object.key.replace(/\+/g, " ")
   );
+  // Extract the folders
   const folder = key.split("/")[0];
-  const file = key.split("/").pop() || "";
 
+  // Extract the file name and extension
+  const file = key.split("/").pop() || "";
   const ext = file.split(".").pop() || "";
 
   let documents: Document<Record<string, any>>[] = [];
@@ -253,6 +259,17 @@ async function calculateEmbedding(
   const vectorstore = await getPostgresVectorStore(folder);
 
   await vectorstore.addDocuments(documents);
+}
+
+async function calculateEmbeddingFaiss(
+  folder: string,
+  documents: Document<Record<string, any>>[]
+) {
+  const vectorstore = await getFaissVectorStore(folder);
+
+  await vectorstore.addDocuments(documents);
+
+  await persistVectorStore(vectorstore, folder);
 }
 
 // export for testing

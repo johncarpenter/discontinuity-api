@@ -23,11 +23,17 @@ export default authMiddleware({
     '/api/ai/(.*)',
   ],
   afterAuth(auth, req) {
+    const url = req.nextUrl.clone()
     const { pathname } = req.nextUrl
 
     // handle users who aren't authenticated
     if (!auth.userId && !auth.isPublicRoute) {
       return redirectToSignIn({ returnBackUrl: req.url })
+    }
+    // redirect them to organization selection page
+    if (auth.userId && !auth.orgId && pathname !== '/org-selection') {
+      const orgSelection = new URL('/org-selection', req.url)
+      return NextResponse.redirect(orgSelection)
     }
 
     // redirect them to organization selection page
@@ -36,8 +42,8 @@ export default authMiddleware({
       return NextResponse.redirect(orgSelection)
     }
 
-    /*const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
-    const inPaths = ignorePaths.some((path) => pathname.startsWith(path)) || pathname === '/'
+    const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
+    const inPaths = ignorePaths.some((path) => pathname.startsWith(path))
 
     if (!inPaths) {
       const currentHost = auth.orgSlug
@@ -50,10 +56,8 @@ export default authMiddleware({
 
       console.log(`Redirecting to ${url.toString()}`)
 
-      return NextResponse.rewrite(url)*/
-
-    //}
-    return NextResponse.next()
+      return NextResponse.rewrite(url)
+    }
   },
 })
 

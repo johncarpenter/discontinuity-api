@@ -1,5 +1,4 @@
 import { auth } from '@clerk/nextjs'
-import { getOrganization } from '@/lib/server/organizations'
 
 export default async function useCurrentOrganization() {
   const { orgId } = auth()
@@ -8,5 +7,5 @@ export default async function useCurrentOrganization() {
     throw Error('No organization')
   }
 
-  return getOrganization(orgId)
+  return orgId
 }
