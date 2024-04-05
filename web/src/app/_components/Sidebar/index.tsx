@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { workspaces } from '@prisma/client'
-import { Field, Label } from '@/components/Base/fieldset'
+import { Field } from '@/components/Base/fieldset'
 import { Select } from '@/components/Base/select'
 
 export type SidebarProps = {
@@ -24,16 +24,22 @@ export default function Sidebar({ workspaces }: SidebarProps) {
 
   function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
     return (
-      <Field>
-        <Label>Current Workspace</Label>
-        <Select name="status">
-          {workspaces.map((workspace: workspaces) => (
-            <option key={workspace.id} value={workspace.id}>
-              {workspace.name}
-            </option>
-          ))}
-        </Select>
-      </Field>
+      <div className="mb-4 -mx-2">
+        <span className="text-xs uppercase text-gray-500 ">current workspace</span>
+        <Field className="dark mt-2">
+          <Select
+            name="status"
+            value={currentWorkspace}
+            onChange={(e) => setCurrentWorkspace(e.target.value)}
+          >
+            {workspaces.map((workspace: workspaces) => (
+              <option key={workspace.id} value={workspace.slug}>
+                {workspace.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      </div>
     )
   }
 
@@ -100,6 +106,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                       </div>
                     </div>
                     <nav className="flex flex-1 flex-col">
+                      <WorkspaceSwitcher workspaces={workspaces} />
                       <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <ul className="-mx-2 space-y-1">

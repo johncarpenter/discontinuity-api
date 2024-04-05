@@ -7,8 +7,11 @@ type DateType = (typeof dateTypes)[number]
 
 export const Input = forwardRef<
   HTMLInputElement,
-  { type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | DateType } & HeadlessInputProps
->(function Input({ className, ...props }, ref) {
+  {
+    type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | DateType
+  } & HeadlessInputProps
+>(function Input({ className, ...props }) {
+  //, ref) {
   return (
     <span
       data-slot="control"
@@ -35,7 +38,7 @@ export const Input = forwardRef<
       ])}
     >
       <HeadlessInput
-        ref={ref}
+        // ref={ref}
         className={clsx([
           // Date classes
           props.type &&

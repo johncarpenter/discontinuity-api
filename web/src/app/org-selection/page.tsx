@@ -38,47 +38,44 @@ export default function Switcher() {
           <UserButton />
         </div>
 
-        <Card.Body title="Switch Organizations">
-          {!isLoaded && <div>Loading...</div>}
-          {isLoaded && userMemberships && userMemberships.data.length === 0 && (
-            <EmptyOrganizations />
-          )}
-          {isLoaded && userMemberships && userMemberships.data.length > 0 && (
-            <div className="flex flex-col items-center justify-center">
-              <div className="flex flex-col w-full">
-                {userMemberships.data.map((membership) => (
-                  <button
-                    key={membership.organization.id}
-                    onClick={() => setAndRedirect(membership.organization.id)}
-                    className="hover:ring-1 hover:ring-primary-50"
-                  >
-                    <div className="flex rounded-md shadow-sm p-2">
-                      <div className="flex w-16 flex-shrink-0 items-center justify-center">
-                        <Image
-                          src={membership.organization.imageUrl}
-                          width={24}
-                          height={24}
-                          className="rounded-full"
-                          alt="Organization Logo"
-                        />
-                      </div>
-                      <div className="flex flex-1 items-center justify-between truncate rounded-r-md ">
-                        <div className="truncate px-4 py-2 text-sm">
-                          {membership.organization.name}
-                        </div>
-
-                        <ArrowRightIcon
-                          className="h-4 w-4 text-gray-400 float-right"
-                          aria-hidden="true"
-                        />
-                      </div>
+        <Card.Title title="Switch Organizations"> </Card.Title>
+        {!isLoaded && <div>Loading...</div>}
+        {isLoaded && userMemberships && userMemberships.data.length === 0 && <EmptyOrganizations />}
+        {isLoaded && userMemberships && userMemberships.data.length > 0 && (
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col w-full">
+              {userMemberships.data.map((membership) => (
+                <button
+                  key={membership.organization.id}
+                  onClick={() => setAndRedirect(membership.organization.id)}
+                  className="hover:ring-1 hover:ring-primary-50"
+                >
+                  <div className="flex rounded-md shadow-sm p-2">
+                    <div className="flex w-16 flex-shrink-0 items-center justify-center">
+                      <Image
+                        src={membership.organization.imageUrl}
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                        alt="Organization Logo"
+                      />
                     </div>
-                  </button>
-                ))}
-              </div>
+                    <div className="flex flex-1 items-center justify-between truncate rounded-r-md ">
+                      <div className="truncate px-4 py-2 text-sm">
+                        {membership.organization.name}
+                      </div>
+
+                      <ArrowRightIcon
+                        className="h-4 w-4 text-gray-400 float-right"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
-          )}
-        </Card.Body>
+          </div>
+        )}
       </Card>
     </main>
   )

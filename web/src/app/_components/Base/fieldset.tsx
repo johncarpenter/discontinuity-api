@@ -71,7 +71,6 @@ export function Label({ className, ...props }: { className?: string } & Headless
 
 export function Description({
   className,
-  disabled,
   ...props
 }: { className?: string; disabled?: boolean } & HeadlessDescriptionProps) {
   return (
@@ -88,14 +87,16 @@ export function Description({
 
 export function ErrorMessage({
   className,
-  disabled,
   ...props
 }: { className?: string; disabled?: boolean } & HeadlessDescriptionProps) {
   return (
     <HeadlessDescription
       {...props}
       data-slot="error"
-      className={clsx(className, 'text-base/6 text-red-600 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-red-500')}
+      className={clsx(
+        className,
+        'text-base/6 text-red-600 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-red-500'
+      )}
     />
   )
 }

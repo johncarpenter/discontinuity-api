@@ -40,14 +40,6 @@ export const workspaceMenu = (currentWorkspace: string) => [
     name: 'platform',
     menuItems: [
       {
-        name: 'Home',
-        href: `/`,
-        description: 'Home Page',
-        enabled: true,
-        visible: true,
-        Icon: HomeIcon,
-      },
-      {
         name: 'Support',
         href: `/support`,
         description: 'Status and Monitoring',
