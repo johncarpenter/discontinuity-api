@@ -25,8 +25,7 @@ export default function Switcher() {
   const EmptyOrganizations = () => (
     <div className="flex flex-col items-center justify-center h-full relative w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
       <div className="text-gray-400 text-2xl">
-        You are not assigned to any organizations. Please contact support@insightplatform.ai for
-        help
+        You are not assigned to any organizations. Please contact support@discontinuity.ai for help
       </div>
     </div>
   )

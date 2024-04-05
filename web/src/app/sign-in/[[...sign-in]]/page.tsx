@@ -7,7 +7,7 @@ export default function Page() {
       <MarketingLayout>
         <div className="flex flex-col items-center justify-center w-full h-full">
           <SignIn
-            redirectUrl={'/site'}
+            redirectUrl={'/'}
             appearance={{
               elements: {
                 footer: {
