@@ -11,6 +11,7 @@ import Image from 'next/image'
 import { workspaces } from '@prisma/client'
 import { Field } from '@/components/Base/fieldset'
 import { Select } from '@/components/Base/select'
+import { Button } from '../Base/button'
 
 export type SidebarProps = {
   workspaces: workspaces[]
@@ -20,24 +21,30 @@ export default function Sidebar({ workspaces }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
 
-  const [currentWorkspace, setCurrentWorkspace] = useState(workspaces[0].slug)
+  const [currentWorkspace, setCurrentWorkspace] = useState(
+    workspaces && workspaces[0] ? workspaces[0].slug : ''
+  )
 
   function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
     return (
       <div className="mb-4 -mx-2">
         <span className="text-xs uppercase text-gray-500 ">current workspace</span>
         <Field className="dark mt-2">
-          <Select
-            name="status"
-            value={currentWorkspace}
-            onChange={(e) => setCurrentWorkspace(e.target.value)}
-          >
-            {workspaces.map((workspace: workspaces) => (
-              <option key={workspace.id} value={workspace.slug}>
-                {workspace.name}
-              </option>
-            ))}
-          </Select>
+          {workspaces.length > 1 ? (
+            <Select
+              name="status"
+              value={currentWorkspace}
+              onChange={(e) => setCurrentWorkspace(e.target.value)}
+            >
+              {workspaces.map((workspace: workspaces) => (
+                <option key={workspace.id} value={workspace.slug}>
+                  {workspace.name}
+                </option>
+              ))}
+            </Select>
+          ) : (
+            <Button href="/workspaces">Add Workspace</Button>
+          )}
         </Field>
       </div>
     )
