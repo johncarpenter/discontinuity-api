@@ -10,10 +10,10 @@ export const Input = forwardRef<
   {
     type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | DateType
   } & HeadlessInputProps
->(function Input({ className, ...props }) {
-  //, ref) {
+>(function Input({ className, ...props }, ref) {
   return (
     <span
+      ref={ref}
       data-slot="control"
       className={clsx([
         className,
@@ -38,7 +38,6 @@ export const Input = forwardRef<
       ])}
     >
       <HeadlessInput
-        // ref={ref}
         className={clsx([
           // Date classes
           props.type &&

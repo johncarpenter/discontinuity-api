@@ -11,7 +11,7 @@ import {
 import { ChevronDownIcon, PhoneIcon } from '@heroicons/react/20/solid'
 import { classNames } from '@/utils/classnames'
 import Image from 'next/image'
-//import { useUser } from '@clerk/nextjs'
+import { useUser } from '@clerk/nextjs'
 
 const products = [
   {
@@ -38,7 +38,7 @@ const callsToAction = [{ name: 'Contact sales', href: '/about#contact', icon: Ph
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  //const { isSignedIn } = useUser()
+  const { isSignedIn } = useUser()
 
   return (
     <header className="bg-white">
@@ -139,16 +139,15 @@ export default function NavBar() {
           </a>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {/*
           {!isSignedIn ? (
             <a href="/sign-in" className="text-sm font-semibold leading-6 text-secondary-300">
               Log in <span aria-hidden="true"></span>
             </a>
           ) : (
-            <a href="/site" className="text-sm font-semibold leading-6 text-secondary-300">
+            <a href="/" className="text-sm font-semibold leading-6 text-secondary-300">
               Dashboard
             </a>
-          )}*/}
+          )}
         </div>
       </nav>
       <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -221,7 +220,7 @@ export default function NavBar() {
                   Contact
                 </a>
               </div>
-              {/*
+
               <div className="py-6">
                 {!isSignedIn ? (
                   <a
@@ -232,14 +231,13 @@ export default function NavBar() {
                   </a>
                 ) : (
                   <a
-                    href="/site"
+                    href="/"
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
                     Dashboard
                   </a>
                 )}
               </div>
-              */}
             </div>
           </div>
         </Dialog.Panel>

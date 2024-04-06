@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+var path = require('path')
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -26,6 +27,18 @@ const nextConfig = {
         permanent: true,
       },
     ]
+  },
+  webpack: (config, options) => {
+    config.resolve.modules.push(path.resolve('.'))
+
+    if (!options.isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        module: false,
+      }
+    }
+
+    return config
   },
 }
 

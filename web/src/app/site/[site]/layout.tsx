@@ -20,7 +20,7 @@ export default async function AuthLayout({ children }: AuthProps) {
       </nav>
       <main className="lg:pl-72">
         <Toaster />
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
+        <div>{children}</div>
       </main>
     </div>
   )

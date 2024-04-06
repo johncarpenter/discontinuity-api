@@ -1,7 +1,7 @@
 //import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
-import { MessageContentText } from 'openai/resources/beta/threads/messages/messages.mjs'
+import { TextContentBlock } from 'openai/resources/beta/threads/messages/messages.mjs'
 
 export async function GET(
   req: NextRequest,
@@ -29,7 +29,7 @@ export async function GET(
 
   if (runStatus.status === 'completed') {
     const threadMessages = await openai.beta.threads.messages.list(thread)
-    const message = threadMessages.data[0].content[0] as MessageContentText
+    const message = threadMessages.data[0].content[0] as TextContentBlock
 
     // remove 【13†source】from text
     message.text.value = message.text.value.replace(/【\d+†source】/g, '')

@@ -5,14 +5,14 @@ import {
 import { clsx } from 'clsx'
 import { forwardRef } from 'react'
 
-export const Select = forwardRef<HTMLSelectElement, HeadlessSelectProps>(function Select({
-  className,
-  multiple,
-  ...props
-}) {
+export const Select = forwardRef<HTMLSelectElement, HeadlessSelectProps>(function Select(
+  { className, multiple, ...props },
+  ref
+) {
   return (
     <span
       data-slot="control"
+      ref={ref}
       className={clsx([
         className,
 
@@ -33,7 +33,6 @@ export const Select = forwardRef<HTMLSelectElement, HeadlessSelectProps>(functio
       ])}
     >
       <HeadlessSelect
-        //   ref={ref}
         multiple={multiple}
         {...props}
         className={clsx([
