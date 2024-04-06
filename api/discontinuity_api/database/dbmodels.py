@@ -29,8 +29,6 @@ class WorkspaceDb(Base):
     # __table__ = Table("workspaces", Base.metadata, autoload_with=engine)
     __tablename__ = "workspaces"
     id = Column(String, primary_key=True)
-    workspaceCode = Column(String, unique=True)
-    inviteCode = Column(String)
     name = Column(String)
     slug = Column(String)
     createdAt = Column(DateTime, default=datetime.datetime.utcnow)
