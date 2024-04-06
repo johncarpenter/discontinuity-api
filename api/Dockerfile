@@ -18,5 +18,5 @@ RUN pip install -r requirements.txt
 # copy every content from the local file to the image
 COPY . /app
 
-
-CMD exec uvicorn app:app --port $PORT --host 0.0.0.0 --forwarded-allow-ips '*' 
+EXPOSE 8000
+CMD exec uvicorn app:app --port 8000 --host 0.0.0.0 --forwarded-allow-ips '*' 
