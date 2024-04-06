@@ -9,7 +9,7 @@ pytest
 ## Running the API
 
 ```bash
-uvicorn main:app --reload
+uvicorn app:app  --reload
 ```
 
 

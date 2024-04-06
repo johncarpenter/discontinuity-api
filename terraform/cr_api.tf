@@ -23,6 +23,9 @@ resource "google_cloud_run_v2_service" "api" {
 
       image = "gcr.io/${var.project_id}/discontinuity-api:latest"
       name  = "api"
+      ports {
+        container_port = 8000
+      }
 
       env {
         name  = "POSTGRES_URL"
