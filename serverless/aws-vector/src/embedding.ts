@@ -244,6 +244,8 @@ function appendMetadata(
     doc.metadata = {
       ...doc.metadata,
       // Add any additional metadata here
+      type: "file",
+      source: "s3",
       file: file,
       scope: bucket,
       uri: "s3://" + bucket + "/" + key,

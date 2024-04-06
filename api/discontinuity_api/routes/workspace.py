@@ -1,6 +1,7 @@
 from datetime import datetime
 from fastapi.params import Depends
-from fastapi import HTTPException, Depends, BackgroundTasks
+from fastapi import HTTPException, Depends, status
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import logging
 from discontinuity_api.workers.chains import retrieval_qa
@@ -8,8 +9,10 @@ from discontinuity_api.vector import add_document, get_postgres_vector_db, query
 from discontinuity_api.utils import JWTBearer
 from langchain.docstore.document import Document
 from fastapi import APIRouter
+from discontinuity_api.utils import JWTBearer, s3Client, uploadFileToBucket
+from fastapi import APIRouter, File, UploadFile
+from botocore.client import BaseClient
 
-from fastapi import Request
 import os
 import requests
 
@@ -56,12 +59,11 @@ async def insert(document: Doc, workspace=Depends(JWTBearer())):
     """Insert text embeddings into the workspace model"""
 
     # Check if the workspace slug file exists in the local directory
-    logger.info(f"Adding text to workspace {workspace.slug}")
+    logger.info(f"Adding text to workspace {workspace.id}")
 
     # Get the vector db for the workspace
-    db = get_postgres_vector_db(workspace.slug)
+    db = get_postgres_vector_db(workspace.id)
 
-    document.metadata["workspace"] = workspace.slug
     document.metadata["type"] = "text"
     document.metadata["source"] = "api"
     # Add the current date
@@ -86,7 +88,7 @@ async def search(message: Message, workspace=Depends(JWTBearer())):
     if(workspace.slug == "test"):
         db = get_faiss_vector_db("test")
     else:
-        db = get_postgres_vector_db(workspace.slug)
+        db = get_postgres_vector_db(workspace.id)
 
     docs_with_score = query_index(index=db, query=message.message)
     
@@ -101,10 +103,10 @@ async def query(message: Message, workspace=Depends(JWTBearer())):
     """Query the model with RAG the workspace model"""
 
     # Check if the workspace slug file exists in the local directory
-    logger.info(f"Querying workspace {workspace.slug}")
+    logger.info(f"Querying workspace {workspace.id}")
 
     # Get the vector db for the workspace
-    db = get_postgres_vector_db(workspace.slug)
+    db = get_postgres_vector_db(workspace.id)
 
     response  = retrieval_qa(index=db, query=message.message)
 
@@ -134,3 +136,24 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
         print(e)
         raise HTTPException(status_code=501, detail="Flow API not available")
     
+
+@router.post("/file")
+async def insert(workspace=Depends(JWTBearer()),s3: BaseClient = Depends(s3Client), file_obj: UploadFile = File(...)):
+    """Insert a file to the S3 bucket"""
+
+    # Check if the workspace slug file exists in the local directory
+    logger.info(f"Adding file to workspace {workspace.id}")
+
+
+    upload_obj = uploadFileToBucket(s3_client=s3, file_obj=file_obj.file,
+                                       bucket='discontinuity-rag-serverless-prod',
+                                       folder=workspace.id,
+                                       object_name=file_obj.filename
+                                       )
+
+    if upload_obj:
+        return JSONResponse(content="Object has been uploaded to bucket successfully",
+                            status_code=status.HTTP_201_CREATED)
+    else:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail="File could not be uploaded")
