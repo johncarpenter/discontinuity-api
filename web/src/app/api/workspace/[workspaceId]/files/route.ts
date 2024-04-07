@@ -1,7 +1,8 @@
 // app/api/documents/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs'
-import { S3Client, ListObjectsCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import { S3Client, ListObjectsCommand } from '@aws-sdk/client-s3'
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -42,8 +43,15 @@ export async function GET(req: NextRequest, { params }: { params: { workspaceId:
   return NextResponse.json(files ?? [])
 }
 
+/**
+ * Vercel doesn't allow file uploads, so we are routing this to the
+ * @param request
+ * @param param1
+ * @returns
+ */
 export async function POST(request: NextRequest, { params }: { params: { workspaceId: string } }) {
   const { workspaceId } = params
+  const { filename, contentType } = await request.json()
 
   const { sessionId, orgId } = auth()
   if (!sessionId) {
@@ -55,18 +63,38 @@ export async function POST(request: NextRequest, { params }: { params: { workspa
   }
 
   try {
-    const formData = await request.formData()
-    const files = formData.getAll('file') as File[]
-    const response = await Promise.all(
-      files.map(async (file) => {
-        // not sure why I have to override the types here
-        const Body = (await file.arrayBuffer()) as Buffer
-        s3.send(new PutObjectCommand({ Bucket, Key: `${workspaceId}/${file.name}`, Body }))
-      })
-    )
-    return NextResponse.json(response)
+    const { url, fields } = await createPresignedPost(s3, {
+      Bucket,
+      Key: `${workspaceId}/${filename}`,
+      Conditions: [
+        ['content-length-range', 0, 10485760], // up to 10 MB
+        ['starts-with', '$Content-Type', contentType],
+      ],
+      Fields: {
+        'Content-Type': contentType,
+      },
+      Expires: 600, // Seconds before the presigned post expires. 3600 by default.
+    })
+
+    return Response.json({ url, fields })
   } catch (error) {
-    console.log(error)
-    return NextResponse.json({ message: 'Unable to load files' }, { status: 500 })
+    console.log('Problem generating presigned:', error)
+    return Response.json({ error: 'Unable to upload file' })
   }
 }
+
+// try {
+//   const formData = await request.formData()
+//   const files = formData.getAll('file') as File[]
+//   const response = await Promise.all(
+//     files.map(async (file) => {
+//       // not sure why I have to override the types here
+//       const Body = (await file.arrayBuffer()) as Buffer
+//       s3.send(new PutObjectCommand({ Bucket, Key: `${workspaceId}/${file.name}`, Body }))
+//     })
+//   )
+//   return NextResponse.json(response)
+// } catch (error) {
+//   console.log(error)
+//   return NextResponse.json({ message: 'Unable to load files' }, { status: 500 })
+// }

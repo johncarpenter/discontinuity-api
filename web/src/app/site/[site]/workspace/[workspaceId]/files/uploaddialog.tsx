@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 import Dropzone from 'react-dropzone'
+import toast from 'react-hot-toast'
 
 export function UploadDialog({ workspaceId }: { workspaceId: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,21 +21,40 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
 
   // Add workspace via API
   async function uploadFile(uploadFiles: File[]) {
-    console.log(uploadFiles)
-    const body = new FormData()
     uploadFiles.forEach((file) => {
-      body.append('file', file, file.name)
+      uploadSingleFile(file)
     })
+
+    setIsOpen(false)
+    router.refresh()
+  }
+
+  async function uploadSingleFile(file: File) {
+    const body = JSON.stringify({ filename: file.name, contentType: file.type })
 
     const response = await fetch(`/api/workspace/${workspaceId}/files`, { method: 'POST', body })
 
     if (response.ok) {
-      console.log('file added successfully')
+      const { url, fields } = await response.json()
+
+      console.log('Uploading to:', url, fields)
+      const formData = new FormData()
+      Object.entries(fields).forEach(([key, value]) => {
+        formData.append(key, value as string)
+      })
+      formData.append('file', file)
+
+      const uploadResponse = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (uploadResponse.ok) {
+        toast.error('There was an error uploading the file. Please try again')
+      }
     } else {
-      console.error('Failed to add workspace')
+      toast.error('There was an error uploading the file. Please try again')
     }
-    setIsOpen(false)
-    router.refresh()
   }
 
   return (
