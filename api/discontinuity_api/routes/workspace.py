@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from fastapi.params import Depends
 from fastapi import HTTPException, Depends, status
 from fastapi.responses import JSONResponse
@@ -29,8 +30,9 @@ class Message(BaseModel):
     message: str
 
 class Doc(BaseModel):
+    filename: Optional[str] = None
     content: str
-    metadata: dict
+    metadata: Optional[dict] = {}
 
 
 # @router.post("/debug")
@@ -64,7 +66,10 @@ async def insert(document: Doc,s3: BaseClient = Depends(s3Client), workspace=Dep
     body = f"{document.content} \n\n{document.metadata}"
 
     # Assign random UUID to the document and append .txt
-    file_name = str(uuid.uuid4()) + '.txt'
+    if(document.filename):
+        file_name = document.filename
+    else:
+        file_name = 'text-' + str(uuid.uuid4()) + '.txt'
 
     upload_obj = createFileOnBucket(s3_client=s3, data=body,
                                        bucket='discontinuity-rag-serverless-prod',
@@ -137,17 +142,23 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     
 
 @router.post("/file")
-async def insert(file: UploadFile = File(...), workspace=Depends(JWTBearer()),s3: BaseClient = Depends(s3Client)):
+async def insert(filename: Optional[str]=None, file: UploadFile = File(...), workspace=Depends(JWTBearer()),s3: BaseClient = Depends(s3Client)):
     """Insert a file to the S3 bucket"""
 
     # Check if the workspace slug file exists in the local directory
     logger.info(f"Adding file to workspace {workspace.id}")
 
+    # Assign random UUID to the document and append the extension of the file
+
+    if(file.filename):
+        file_name = file.filename
+    else:
+        file_name = str(uuid.uuid4()) + (os.path.splitext(file.filename)[1] if file.filename else '.txt')
 
     upload_obj = uploadFileToBucket(s3_client=s3, file_obj=file.file,
                                        bucket='discontinuity-rag-serverless-prod',
                                        folder=workspace.id,
-                                       object_name=file.filename
+                                       object_name=file_name
                                        )
 
     if upload_obj:
