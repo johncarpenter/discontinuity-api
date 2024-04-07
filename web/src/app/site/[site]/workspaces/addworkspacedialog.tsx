@@ -26,12 +26,7 @@ export function AddWorkspaceDialog() {
     api('/api/workspaces', {
       body: { name },
       method: 'POST',
-    }).then((response) => {
-      if (response.ok) {
-        console.log('Workspace added successfully')
-      } else {
-        console.error('Failed to add workspace')
-      }
+    }).then(() => {
       setIsOpen(false)
       router.refresh()
     })

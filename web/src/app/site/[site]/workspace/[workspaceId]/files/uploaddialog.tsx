@@ -26,14 +26,7 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
       body.append('file', file, file.name)
     })
 
-    console.log(body)
     const response = await fetch(`/api/workspace/${workspaceId}/files`, { method: 'POST', body })
-
-    if (response.ok) {
-      console.log('file added successfully')
-    } else {
-      console.error('Failed to add workspace')
-    }
     setIsOpen(false)
     router.refresh()
   }

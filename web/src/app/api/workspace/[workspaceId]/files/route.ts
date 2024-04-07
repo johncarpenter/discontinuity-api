@@ -54,15 +54,19 @@ export async function POST(request: NextRequest, { params }: { params: { workspa
     return NextResponse.json({}, { status: 401 })
   }
 
-  const formData = await request.formData()
-  const files = formData.getAll('file') as File[]
-  const response = await Promise.all(
-    files.map(async (file) => {
-      // not sure why I have to override the types here
-      const Body = (await file.arrayBuffer()) as Buffer
-      s3.send(new PutObjectCommand({ Bucket, Key: `${workspaceId}/${file.name}`, Body }))
-    })
-  )
-
-  return NextResponse.json(response)
+  try {
+    const formData = await request.formData()
+    const files = formData.getAll('file') as File[]
+    const response = await Promise.all(
+      files.map(async (file) => {
+        // not sure why I have to override the types here
+        const Body = (await file.arrayBuffer()) as Buffer
+        s3.send(new PutObjectCommand({ Bucket, Key: `${workspaceId}/${file.name}`, Body }))
+      })
+    )
+    return NextResponse.json(response)
+  } catch (error) {
+    console.log(error)
+    return NextResponse.json({ message: 'Unable to load files' }, { status: 500 })
+  }
 }
