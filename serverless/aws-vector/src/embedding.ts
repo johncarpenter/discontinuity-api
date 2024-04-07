@@ -9,6 +9,7 @@ import { S3, GetObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs";
 import { UnstructuredLoader } from "langchain/document_loaders/fs/unstructured";
 import OpenAI from "openai";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -105,6 +106,9 @@ export async function handler(event: S3Event) {
 
   // Append metadata
   appendMetadata(documents, bucket, file, key, ext);
+
+  // Split large documents
+  documents = await splitLargeDocuments(documents);
 
   // Calculate the embedding vector
   await calculateEmbedding(folder, documents);
@@ -265,6 +269,15 @@ function appendMetadata(
       date: new Date().toISOString(),
     };
   });
+}
+
+async function splitLargeDocuments(documents: Document<Record<string, any>>[]) {
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1024,
+    chunkOverlap: 50,
+  });
+
+  return await splitter.splitDocuments(documents);
 }
 
 async function calculateEmbedding(
