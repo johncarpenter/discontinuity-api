@@ -26,7 +26,7 @@ def login(client: ClientIdSecret, session: Session = Depends(get_db)):
     )
 
     if apiKey is not None:
-        return signJWT(apiKey.id)
+        return signJWT(apiKey.id, expires=365*24*60*60)  # 1 year ex
 
     raise HTTPException(status_code=403, detail="Invalid credentials")
 
