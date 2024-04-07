@@ -137,17 +137,17 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     
 
 @router.post("/file")
-async def insert(file_obj: UploadFile = File(...), workspace=Depends(JWTBearer()),s3: BaseClient = Depends(s3Client)):
+async def insert(file: UploadFile = File(...), workspace=Depends(JWTBearer()),s3: BaseClient = Depends(s3Client)):
     """Insert a file to the S3 bucket"""
 
     # Check if the workspace slug file exists in the local directory
     logger.info(f"Adding file to workspace {workspace.id}")
 
 
-    upload_obj = uploadFileToBucket(s3_client=s3, file_obj=file_obj.file,
+    upload_obj = uploadFileToBucket(s3_client=s3, file_obj=file.file,
                                        bucket='discontinuity-rag-serverless-prod',
                                        folder=workspace.id,
-                                       object_name=file_obj.filename
+                                       object_name=file.filename
                                        )
 
     if upload_obj:
