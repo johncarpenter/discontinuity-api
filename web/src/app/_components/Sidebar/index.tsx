@@ -12,6 +12,7 @@ import { workspaces } from '@prisma/client'
 import { Field } from '@/components/Base/fieldset'
 import { Select } from '@/components/Base/select'
 import { Button } from '../Base/button'
+import { useRouter } from 'next/navigation'
 
 export type SidebarProps = {
   workspaces: workspaces[]
@@ -25,6 +26,15 @@ export default function Sidebar({ workspaces }: SidebarProps) {
     workspaces && workspaces[0] ? workspaces[0].slug : ''
   )
 
+  const router = useRouter()
+
+  const setWorkspace = (workspace: string) => {
+    setCurrentWorkspace(workspace)
+    if (!pathname.includes('/workspace/')) return
+    const currentPath = pathname.split('/').pop()
+    router.push(`/workspace/${workspace}/${currentPath}`)
+  }
+
   function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
     return (
       <div className="mb-4 -mx-2">
@@ -34,7 +44,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
             <Select
               name="status"
               value={currentWorkspace}
-              onChange={(e) => setCurrentWorkspace(e.target.value)}
+              onChange={(e) => setWorkspace(e.target.value)}
             >
               {workspaces.map((workspace: workspaces) => (
                 <option key={workspace.id} value={workspace.slug}>

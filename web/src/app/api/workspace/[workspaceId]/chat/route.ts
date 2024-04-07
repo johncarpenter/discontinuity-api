@@ -73,7 +73,7 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
   const retriever = vector.asRetriever()
 
   const model = new ChatOpenAI({
-    temperature: 0.8,
+    temperature: 0,
     streaming: true,
   })
 
@@ -96,6 +96,7 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
     question: currentMessageContent,
   })
 
+  vector.end()
   return new StreamingTextResponse(stream)
 }
 
