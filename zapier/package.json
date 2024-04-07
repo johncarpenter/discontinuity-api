@@ -1,0 +1,24 @@
+{
+  "name": "discontinuity-ai",
+  "version": "1.0.1",
+  "description": "Discontinuity.ai is a platform for running custom AI agents",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --testTimeout 10000"
+  },
+  "engines": {
+    "node": ">=v18",
+    "npm": ">=5.6.0"
+  },
+  "dependencies": {
+    "should": "^13.2.3",
+    "zapier-platform-core": "15.5.1"
+  },
+  "devDependencies": {
+    "jest": "^29.6.0"
+  },
+  "private": true,
+  "zapier": {
+    "convertedByCLIVersion": "15.6.2"
+  }
+}
