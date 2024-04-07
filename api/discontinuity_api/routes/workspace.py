@@ -9,17 +9,17 @@ from discontinuity_api.vector import add_document, get_postgres_vector_db, query
 from discontinuity_api.utils import JWTBearer
 from langchain.docstore.document import Document
 from fastapi import APIRouter
-from discontinuity_api.utils import JWTBearer, s3Client, uploadFileToBucket
+from discontinuity_api.utils import JWTBearer, s3Client, uploadFileToBucket, createFileOnBucket
 from fastapi import APIRouter, File, UploadFile
 from botocore.client import BaseClient
-
+import uuid
 import os
 import requests
 
 logger = logging.getLogger(__name__)
 
 
-router = APIRouter(prefix="/workspace", tags=["workspace"], include_in_schema=True)
+router = APIRouter(prefix="/workspace", tags=["workspace"])
 
 BASE_API_URL = "https://flow.discontinuity.ai/api/v1/prediction/"
 
@@ -55,27 +55,26 @@ class Doc(BaseModel):
 #     return output
 
 @router.post("/text")
-async def insert(document: Doc, workspace=Depends(JWTBearer())):
+async def insert(document: Doc,s3: BaseClient = Depends(s3Client), workspace=Depends(JWTBearer())):
     """Insert text embeddings into the workspace model"""
 
     # Check if the workspace slug file exists in the local directory
     logger.info(f"Adding text to workspace {workspace.id}")
 
-    # Get the vector db for the workspace
-    db = get_postgres_vector_db(workspace.id)
+    body = f"{document.content} \n\n{document.metadata}"
 
-    document.metadata["type"] = "text"
-    document.metadata["source"] = "api"
-    # Add the current date
-    document.metadata["date"] = datetime.now().isoformat()
-    
-    # Create the document
-    doc = Document(page_content=document.content, metadata=document.metadata)
+    # Assign random UUID to the document and append .txt
+    file_name = str(uuid.uuid4()) + '.txt'
 
-    # Add the document to the vector db
-    add_document(index=db, documents=[doc])
-
-    return {"status": "added"}
+    upload_obj = createFileOnBucket(s3_client=s3, data=body,
+                                       bucket='discontinuity-rag-serverless-prod',
+                                       folder=workspace.id,
+                                       object_name=file_name
+                                       )
+    if upload_obj:
+        return JSONResponse(content="Object has been uploaded to bucket successfully", status_code=status.HTTP_201_CREATED)
+    else:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="File could not be uploaded")
 
 @router.post("/search")
 async def search(message: Message, workspace=Depends(JWTBearer())):

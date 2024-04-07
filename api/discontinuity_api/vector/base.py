@@ -48,7 +48,7 @@ def get_postgres_vector_db(
     
 
     vector_store = PGVector(
-        table_name=f"{table_name}",
+        collection_name=f"{table_name}",
         connection_string=os.getenv("VECTORDB_URL"),
         embedding_function=embeddings,
     )
