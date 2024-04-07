@@ -6,11 +6,10 @@ import { RunnableSequence } from '@langchain/core/runnables'
 import { ChatOpenAI } from '@langchain/openai'
 import { PromptTemplate } from '@langchain/core/prompts'
 import { auth } from '@clerk/nextjs'
-import { OpenAIEmbeddings } from '@langchain/openai'
-import { PGVectorStore, DistanceStrategy } from '@langchain/community/vectorstores/pgvector'
-import { PoolConfig } from 'pg'
+
 import { StringOutputParser } from '@langchain/core/output_parsers'
 import { Document } from 'langchain/document'
+import { getPostgresVectorStore } from '../util'
 
 //export const runtime = 'edge'
 
@@ -25,7 +24,7 @@ const formatMessage = (message: VercelChatMessage) => {
 const TEMPLATE = `
 
 System: You are a conversational chat bot assistant that uses the Documents and History to answer the users questions. The Documents are from files uploaded by the user. The History is the chat history of the conversation. You should use the Documents and History to answer the users questions.
-Respond in 1-2 complete sentences, unless specifically asked by the user to elaborate on something. Answer the users Question using the Documents and History text above.
+Elaborate on the questions and quote the relevant documents. Answer the users Question using the Documents and History text above.
 Keep your answer ground in the facts of the Documents.  If the Documents doesnt contain the facts to answer the Question inform the user. If the user refers to a file reference make sure to provide the link to the file in the response. 
  
 Always include links to the relevant documents in your response. Use the Location URI: field in the Documents to get the link to the file. Don't duplicate the links. 
@@ -100,40 +99,11 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
   return new StreamingTextResponse(stream)
 }
 
-async function getPostgresVectorStore(tableName: string) {
-  const config = {
-    postgresConnectionOptions: {
-      connectionString: process.env.VECTOR_DATABASE_URL || '',
-    } as PoolConfig,
-    tableName: tableName || 'documents',
-    columns: {
-      idColumnName: 'id',
-      vectorColumnName: 'embedding',
-      contentColumnName: 'pageContent',
-      metadataColumnName: 'metadata',
-    },
-    // supported distance strategies: cosine (default), innerProduct, or euclidean
-    distanceStrategy: 'cosine' as DistanceStrategy,
-  }
-
-  const pgstore = await PGVectorStore.initialize(await getEmbeddings(), config)
-
-  return pgstore
-}
-
-async function getEmbeddings() {
-  const openaiApiKey = process.env.OPENAI_API_KEY
-  if (!openaiApiKey) {
-    throw new Error('OPENAI_API_KEY environment variable is not defined.')
-  }
-
-  const openaiEmbeddings = new OpenAIEmbeddings({ openAIApiKey: openaiApiKey })
-  return openaiEmbeddings
-}
-
 const formatDocuments = (workspaceId: string, documents: Document[]): string => {
   const docs = documents.map((doc) => {
-    return `Location URI: /api/workspace/${workspaceId}/files/${doc.metadata.file} Filename: ${doc.metadata.filename}\n\nContent: ${doc.pageContent}`
+    return `Location URI: /api/workspace/${workspaceId}/files/${doc.metadata.file} \n\nFilename: ${
+      doc.metadata.filename
+    }\n\nContent: ${doc.pageContent}\n\nMetadata: ${JSON.stringify(doc.metadata)}`.trim()
   })
 
   return docs.join('\n\n')

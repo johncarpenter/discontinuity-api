@@ -30,7 +30,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
       <div className="mb-4 -mx-2">
         <span className="text-xs uppercase text-gray-500 ">current workspace</span>
         <Field className="dark mt-2">
-          {workspaces.length > 1 ? (
+          {workspaces.length > 0 ? (
             <Select
               name="status"
               value={currentWorkspace}

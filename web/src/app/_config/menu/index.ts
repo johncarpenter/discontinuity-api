@@ -4,6 +4,8 @@ import {
   HomeIcon,
   RectangleStackIcon,
   ServerStackIcon,
+  MagnifyingGlassCircleIcon,
+  Cog8ToothIcon,
 } from '@heroicons/react/24/outline'
 
 export const workspaceMenu = (currentWorkspace: string) => [
@@ -11,17 +13,25 @@ export const workspaceMenu = (currentWorkspace: string) => [
     name: 'Workspace',
     menuItems: [
       {
-        name: 'Chat',
+        name: 'Generate',
         href: `/workspace/${currentWorkspace}/chat`,
-        description: 'Home Page',
+        description: 'Generate',
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: HomeIcon,
       },
       {
+        name: 'Search & Discover',
+        href: `/workspace/${currentWorkspace}/search`,
+        description: 'Search and Discover',
+        enabled: currentWorkspace !== '',
+        visible: true,
+        Icon: MagnifyingGlassCircleIcon,
+      },
+      {
         name: 'Files',
         href: `/workspace/${currentWorkspace}/files`,
-        description: 'Status and Monitoring',
+        description: 'File Management',
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: ServerStackIcon,
@@ -32,7 +42,7 @@ export const workspaceMenu = (currentWorkspace: string) => [
         description: 'Status and Monitoring',
         enabled: currentWorkspace !== '',
         visible: true,
-        Icon: ServerStackIcon,
+        Icon: Cog8ToothIcon,
       },
     ],
   },

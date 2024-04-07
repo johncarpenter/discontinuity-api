@@ -261,7 +261,6 @@ function appendMetadata(
       type: ext,
       file: file,
       scope: bucket,
-      url: `/api/workspace/${bucket}/files/${file}`,
       uri: "s3://" + bucket + "/" + key,
       date: new Date().toISOString(),
     };
