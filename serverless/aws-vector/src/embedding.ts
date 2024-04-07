@@ -104,7 +104,7 @@ export async function handler(event: S3Event) {
   }
 
   // Append metadata
-  appendMetadata(documents, bucket, file, key);
+  appendMetadata(documents, bucket, file, key, ext);
 
   // Calculate the embedding vector
   await calculateEmbedding(folder, documents);
@@ -121,6 +121,8 @@ async function downloadS3fileLocally(bucket: string, key: string) {
   const options = {
     apiUrl: UNSTRUCTURED_URL || "",
     apiKey: UNSTRUCTURED_API_KEY || "",
+    strategy: "hi-res",
+    chunkingStrategy: "by_title",
   };
 
   const file = key.split("/").pop();
@@ -195,6 +197,7 @@ async function extractDocumentsFromImages(tmpfile: string) {
     pageContent: transcription || "Unable to interpret image",
     // Metadata is optional but helps track what kind of document is being retrieved
     metadata: {
+      source: "gpt4v",
       mediaType: "image",
     },
   });
@@ -216,6 +219,7 @@ async function extractDocumentsFromAudio(tmpfile: string) {
     pageContent: transcription.text || "Unable to read audio",
     // Metadata is optional but helps track what kind of document is being retrieved
     metadata: {
+      source: "whisper",
       mediaType: "audio",
     },
   });
@@ -231,6 +235,15 @@ async function extractDocumentsUsingUnstructured(tmpfile: string) {
   const loader = new UnstructuredLoader(tmpfile, options);
 
   const docs = await loader.load();
+
+  docs.forEach((doc) => {
+    doc.metadata = {
+      ...doc.metadata,
+      source: "unstructured",
+      mediaType: "text",
+    };
+  });
+
   return docs;
 }
 
@@ -238,16 +251,17 @@ function appendMetadata(
   documents: Document<Record<string, any>>[],
   bucket: string,
   file: string,
-  key: string
+  key: string,
+  ext: string
 ) {
   documents.forEach((doc) => {
     doc.metadata = {
       ...doc.metadata,
       // Add any additional metadata here
-      type: "file",
-      source: "s3",
+      type: ext,
       file: file,
       scope: bucket,
+      url: `/api/workspace/${bucket}/files/${file}`,
       uri: "s3://" + bucket + "/" + key,
       date: new Date().toISOString(),
     };
