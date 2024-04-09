@@ -1,4 +1,5 @@
 import { DocumentIcon, DocumentTextIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import { Badge } from '@/components/Base/badge'
 
 export type FileCardProps = {
   snippet: string
@@ -10,41 +11,55 @@ export type FileCardProps = {
 export default function FileCard({ snippet, filename, href, type }: FileCardProps) {
   const icon = (type: string) => {
     switch (type) {
-      case 'application/pdf':
-        return <DocumentIcon className="h-24 w-24 text-gray-400" />
+      case 'pdf':
+        return <DocumentIcon className="h-10 w-10 flex-shrink-0 p-2 rounded-full bg-gray-300" />
       case 'image/jpeg':
-        return <PhotoIcon className="h-24 w-24 text-gray-400" />
+        return <PhotoIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
       case 'image/png':
-        return <PhotoIcon className="h-24 w-24 text-gray-400" />
+        return <PhotoIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
       case 'text/plain':
-        return <DocumentTextIcon className="h-24 w-24 text-gray-400" />
+        return <DocumentTextIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
       default:
-        return <DocumentIcon className="h-24 w-24 text-gray-400" />
+        return <DocumentIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
     }
   }
 
   return (
-    <a href={href}>
-      <div className="bg-white px-6 py-6 lg:px-8 overflow-hidden rounded-2xl shadow-xl hover:ring-1 hover:ring-secondary-500 ">
-        <div className="col-span-1 flex ">
-          <div className="flex items-center justify-center w-16 h-16 rounded-lg">{icon(type)}</div>
-
-          <div className="flex flex-1 items-center justify-between">
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-base font-semibold leading-6 text-gray-900">
-                {`${snippet.substring(0, 30)}...`}
-              </h3>
-              <div className="mt-2 max-w-xl text-sm text-gray-500"></div>
-              <a href={href} className="text-sm text-secondary-600 hover:underline">
-                <div className="mt-3 text-sm leading-6 font-semibold text-secondary-600 flex flex-row">
-                  <p>{filename}</p>
-                  <span aria-hidden="true"> &rarr;</span>
-                </div>
-              </a>
-            </div>
+    <div className="flex flex-col">
+      <div className="flex w-full items-center justify-between space-x-6 p-6">
+        <div className="flex-1 truncate">
+          <div className="flex items-center space-x-3">
+            <h3 className="truncate text-sm font-medium text-gray-900">{filename}</h3>
+            <Badge color="secondary" className="h-4">
+              {type}
+            </Badge>
+          </div>
+          <p className="mt-1 truncate text-sm text-gray-500">{snippet?.substring(0, 30)}</p>
+        </div>
+        {icon(type)}
+      </div>
+      <div>
+        <div className="-mt-px flex divide-x divide-gray-200">
+          <div className="flex w-0 flex-1">
+            <a
+              href={href}
+              className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+            >
+              <DocumentTextIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              View
+            </a>
+          </div>
+          <div className="-ml-px flex w-0 flex-1">
+            <a
+              href={`tel:12`}
+              className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+            >
+              <DocumentTextIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              Search Only This
+            </a>
           </div>
         </div>
       </div>
-    </a>
+    </div>
   )
 }

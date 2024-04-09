@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
-
 import { RunnableSequence } from '@langchain/core/runnables'
 
 import { ChatOpenAI } from '@langchain/openai'
@@ -9,8 +7,13 @@ import { auth } from '@clerk/nextjs'
 
 import { StringOutputParser } from '@langchain/core/output_parsers'
 import { Document } from 'langchain/document'
-import { getPostgresVectorStore } from '../util'
 
+import { Message as VercelChatMessage, StreamingTextResponse, experimental_StreamData } from 'ai'
+
+import { getPostgresVectorStore, reduceSourcesToFiles } from '../util'
+
+import { BaseCallbackHandler } from '@langchain/core/callbacks/base'
+import { LangChainAgentStream } from './langchainagentstream'
 //export const runtime = 'edge'
 
 /**
@@ -72,9 +75,17 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
   const vector = await getPostgresVectorStore(workspaceId)
   const retriever = vector.asRetriever()
 
+  const data = new experimental_StreamData()
+  const { stream, handlers } = LangChainAgentStream({
+    onFinal: () => {
+      data.close()
+    },
+    experimental_streamData: true,
+  })
+
   const model = new ChatOpenAI({
     temperature: 0,
-    streaming: true,
+    callbacks: [handlers],
   })
 
   const chain = RunnableSequence.from([
@@ -82,8 +93,16 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
       question: (input: { question: string }) => input.question,
       chatHistory: () => formattedPreviousMessages.join('\n'),
       context: async (input: { question: string }) => {
+        console.log('getting relevant docs')
         const relevantDocs = await retriever.getRelevantDocuments(input.question)
         const serialized = formatDocuments(workspaceId, relevantDocs)
+        const sources = reduceSourcesToFiles(relevantDocs)
+        data.append({
+          sources: sources.map((doc: Document) => ({
+            contentChunk: doc.pageContent,
+            metadata: doc.metadata,
+          })),
+        })
         return serialized
       },
     },
@@ -92,12 +111,30 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
     new StringOutputParser(),
   ])
 
-  const stream = await chain.stream({
-    question: currentMessageContent,
-  })
+  chain.invoke(
+    {
+      question: currentMessageContent,
+    },
+    {
+      callbacks: [
+        handlers,
+        BaseCallbackHandler.fromMethods({
+          handleRetrieverEnd(documents: Document[]) {
+            // documents not being returned with the callback
+            const sources = reduceSourcesToFiles(documents)
+            data.append({
+              sources: sources.map((doc: Document) => ({
+                contentChunk: doc.pageContent,
+                metadata: doc.metadata,
+              })),
+            })
+          },
+        }),
+      ],
+    }
+  )
 
-  vector.end()
-  return new StreamingTextResponse(stream)
+  return new StreamingTextResponse(stream, {}, data)
 }
 
 const formatDocuments = (workspaceId: string, documents: Document[]): string => {

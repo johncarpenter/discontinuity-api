@@ -4,7 +4,6 @@ import {
   HomeIcon,
   RectangleStackIcon,
   ServerStackIcon,
-  MagnifyingGlassCircleIcon,
   Cog8ToothIcon,
 } from '@heroicons/react/24/outline'
 
@@ -13,20 +12,12 @@ export const workspaceMenu = (currentWorkspace: string) => [
     name: 'Workspace',
     menuItems: [
       {
-        name: 'Generate',
+        name: 'Discover',
         href: `/workspace/${currentWorkspace}/chat`,
         description: 'Generate',
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: HomeIcon,
-      },
-      {
-        name: 'Search & Discover',
-        href: `/workspace/${currentWorkspace}/search`,
-        description: 'Search and Discover',
-        enabled: currentWorkspace !== '',
-        visible: true,
-        Icon: MagnifyingGlassCircleIcon,
       },
       {
         name: 'Files',

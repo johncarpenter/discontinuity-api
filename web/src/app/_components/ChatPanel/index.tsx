@@ -17,11 +17,13 @@ import { Text } from '@/components/Base/text'
 
 import { useChat } from 'ai/react'
 import Markdown from 'react-markdown'
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import SourcesPanel from '../SourcesPanel'
+import { JSONValue } from 'ai'
+import { Document } from 'langchain/document'
 
 export default function ChatPanel({ workspaceId }: { workspaceId: string }) {
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, data } = useChat({
     api: `/api/workspace/${workspaceId}/chat`,
     onFinish: () => {
       scrollToBottom()
@@ -34,11 +36,34 @@ export default function ChatPanel({ workspaceId }: { workspaceId: string }) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const [sourcesQuery, setSourcesQuery] = useState<string | null>(null)
-
   const handleNewQuery = (e: FormEvent<HTMLFormElement>) => {
-    setSourcesQuery(input)
     handleSubmit(e)
+  }
+
+  const [sourceDocuments, setSourceDocuments] = useState<Document[] | undefined>([])
+
+  useEffect(() => {
+    if (data) {
+      const docs = convertDataToDocument(data)
+      setSourceDocuments(docs)
+    }
+  }, [data])
+
+  function convertDataToDocument(data: JSONValue[] | undefined) {
+    if (data && data.length > 0) {
+      const dataStr = JSON.parse(JSON.stringify(data))
+
+      const docs: Document[] = []
+      dataStr.forEach((doc: any) => {
+        doc.sources.forEach((source: any) => {
+          docs.push({
+            pageContent: source.contentChunk,
+            metadata: source.metadata,
+          })
+        })
+      })
+      return docs
+    }
   }
 
   return (
@@ -48,13 +73,13 @@ export default function ChatPanel({ workspaceId }: { workspaceId: string }) {
           Control bar
         </div>
         <div className="px-4 overflow-auto mt-16 mb-16 flex-1 h-full overflow-y-scroll">
-          {sourcesQuery && (
+          {data && (
             <>
               <div className="flex flex-row p-4">
                 <DocumentTextIcon className="h-8 w-8 mr-2 text-gray-400" />
                 <h3>Sources</h3>
               </div>
-              <SourcesPanel workspaceId={workspaceId} query={sourcesQuery} />
+              <SourcesPanel workspaceId={workspaceId} documents={sourceDocuments} />
             </>
           )}
           <div className="flex flex-row p-4">
