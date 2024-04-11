@@ -5,6 +5,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import PGVector, VectorStore, FAISS
 from langchain.document_loaders import TextLoader
 from langchain.docstore.document import Document
+from langchain_google_cloud_sql_pg import PostgresEngine, PostgresVectorStore
 
 import logging
 import logging.config
@@ -55,6 +56,38 @@ def get_postgres_vector_db(
 
     return vector_store
 
+async def get_postgres_vector_db_2(
+    table_name: str, embeddings=OpenAIEmbeddings()
+) -> VectorStore:
+    logger.info("Using production vector database")
+
+    # we need to create a new vector database if it does not exist
+    if not os.getenv("VECTORDB_URL"):
+        raise Exception("Vector Env not set")
+    
+    
+    engine = await PostgresEngine.afrom_instance(
+        project_id='discontinuity-ai', region='europe-west1', instance='discontinuity-api-db', database='discontinuity-rag' , user='discontinuity-rag', password='2UZF9gAycs2UCWz'
+    )
+
+
+    # Initialize PostgresVectorStore
+    custom_store = await PostgresVectorStore.create(
+        engine=engine,
+        table_name=table_name,
+        embedding_service=embeddings,
+        metadata_columns=["metadata"],
+        # Connect to a existing VectorStore by customizing the table schema:
+        id_column="id",
+        content_column="pageContent",
+        embedding_column="embedding",
+    )
+
+
+    return custom_store
+
+
+
 
 def load_local_vector_db(table_name: str, embeddings=OpenAIEmbeddings()) -> VectorStore:
     """
@@ -76,8 +109,8 @@ def add_document(index: VectorStore, documents: List[Document]):
     index.add_documents(documents=_split(documents))
 
 
-def query_index(index: VectorStore, query: str):
-    return index.similarity_search_with_score(query)
+async def query_index(index: VectorStore, query: str):
+    return await index.asimilarity_search_with_score(query)
 
 
 def _split(documents: List[Document]) -> List[Document]:

@@ -21,61 +21,30 @@ import { FormEvent, useEffect, useRef, useState } from 'react'
 import SourcesPanel from '../SourcesPanel'
 import { JSONValue } from 'ai'
 import { Document } from 'langchain/document'
-import { useStreaming } from '@/lib/client/useStreaming'
 
-export default function ChatPanel({ workspaceId, token }: { workspaceId: string; token: string }) {
-  // const { messages, input, handleInputChange, handleSubmit, data } = useChat({
-  //   //api: `/api/workspace/${workspaceId}/chat`,
-  //   api: `http://localhost:8000/workspace/stream`,
-  //   onResponse(response) {
-  //     console.log('response', response)
-  //   },
-  //   onFinish: () => {
-  //     scrollToBottom()
-  //   },
-  // })
+export default function ChatPanelTest({ workspaceId }: { workspaceId: string }) {
+  type Message = {
+    role: string
+    content: string
+  }
 
-  const { messages, data, addUserMessage } = useStreaming(
-    `http://localhost:8000/workspace/stream`,
-    {
-      Authorization: `Bearer ${token}`,
-    }
-  )
-
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
-  const messagesEndRef = useRef<null | HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+  async function query() {
+    const response = await fetch(`/api/workspace/${workspaceId}/agent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ q: input }),
+      cache: 'force-cache',
+    })
 
-  const handleNewQuery = (e: FormEvent<HTMLFormElement>) => {
-    addUserMessage('hello')
-  }
-
-  const [sourceDocuments, setSourceDocuments] = useState<Document[] | undefined>([])
-
-  // useEffect(() => {
-  //   if (data) {
-  //     const docs = convertDataToDocument(data)
-  //     setSourceDocuments(docs)
-  //   }
-  // }, [data])
-
-  function convertDataToDocument(data: JSONValue[] | undefined) {
-    if (data && data.length > 0) {
-      const dataStr = JSON.parse(JSON.stringify(data))
-
-      const docs: Document[] = []
-      dataStr.forEach((doc: any) => {
-        doc.sources.forEach((source: any) => {
-          docs.push({
-            pageContent: source.contentChunk,
-            metadata: source.metadata,
-          })
-        })
-      })
-      return docs
+    if (response.status === 200) {
+      const { text } = await response.json()
+      console.log(text)
+      setMessages([...messages, { role: 'computer', content: text }])
     }
   }
 
@@ -86,15 +55,6 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
           Control bar
         </div>
         <div className="px-4 overflow-auto mt-16 mb-16 flex-1 h-full overflow-y-scroll">
-          {data && (
-            <>
-              <div className="flex flex-row p-4">
-                <DocumentTextIcon className="h-8 w-8 mr-2 text-gray-400" />
-                <h3>Sources</h3>
-              </div>
-              {/* <SourcesPanel workspaceId={workspaceId} documents={sourceDocuments} /> */}
-            </>
-          )}
           <div className="flex flex-row p-4">
             <ChatBubbleLeftIcon className="h-8 w-8 mr-2 text-gray-400" />
             <h3>Discussion</h3>
@@ -121,8 +81,6 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
                 </div>
               )
             })}
-            {JSON.stringify(messages)}
-            <div ref={messagesEndRef} />
           </div>
         </div>
         <div className="w-full  p-4 h-24  bottom-0 right-auto left-auto  dark:bg-gray-800 dark:text-white pt-">
@@ -138,7 +96,7 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
               value={input}
               onKeyUp={(e) => {
                 if (e.key === 'Enter') {
-                  addUserMessage(input)
+                  query()
                 }
               }}
             />

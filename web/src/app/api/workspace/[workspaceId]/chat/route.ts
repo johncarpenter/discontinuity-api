@@ -111,7 +111,7 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
     new StringOutputParser(),
   ])
 
-  chain.invoke(
+  const stream2 = chain.invoke(
     {
       question: currentMessageContent,
     },

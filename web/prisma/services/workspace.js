@@ -1,5 +1,6 @@
 import prisma from '@/prisma/index'
 import slugify from 'slugify'
+import { createApiKey } from '@/prisma/services/apikey'
 
 export const countWorkspaces = async (slug) =>
   await prisma.workspaces.count({
@@ -15,13 +16,15 @@ export const createWorkspace = async (ownerId, name) => {
     slug = `${slug}-${count}`
   }
 
-  await prisma.workspaces.create({
+  const workspace = await prisma.workspaces.create({
     data: {
       ownerId,
       name,
       slug,
     },
   })
+
+  await createApiKey(workspace.id, '*', 'default')
 }
 
 export const getWorkspace = async (ownerId, slug) =>
@@ -31,6 +34,17 @@ export const getWorkspace = async (ownerId, slug) =>
       name: true,
       slug: true,
       id: true,
+      apikeys: {
+        select: {
+          name: true,
+          client_id: true,
+          client_secret: true,
+          permissions: true,
+        },
+        where: {
+          name: 'default',
+        },
+      },
     },
     where: {
       deletedAt: null,

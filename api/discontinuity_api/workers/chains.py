@@ -15,7 +15,7 @@ Use the following pieces of context to answer the question at the end. If you do
 
 Question: {question}
 """
-def retrieval_qa(index: VectorStore, query: str, embeddings = OpenAIEmbeddings(), prompt_template:str = STANDARD_PROMPT) -> str:
+def retrieval_qa(index: VectorStore, query: str, prompt_template:str = STANDARD_PROMPT) -> str:
     PROMPT = PromptTemplate(
         template=prompt_template, input_variables=["context", "question"]
     )

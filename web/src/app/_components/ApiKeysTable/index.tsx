@@ -27,13 +27,13 @@ export default async function ApiKeysTable({ workspaceId }: { workspaceId: strin
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Workspace Slug
+                    Client ID
                   </th>
                   <th
                     scope="col"
                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Created
+                    Client Secret
                   </th>
                   <th scope="col" className="relative py-3.5 pl-3 pr-0">
                     <span className="sr-only">Manage</span>
@@ -54,9 +54,11 @@ export default async function ApiKeysTable({ workspaceId }: { workspaceId: strin
                     </td>
 
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0">
-                      <Button type="plain" href={`/workspace/settings`}>
-                        Delete
-                      </Button>
+                      {key.name !== 'default' && (
+                        <Button type="plain" href={`/workspace/settings`}>
+                          Delete
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}
