@@ -15,15 +15,16 @@ export type Message = {
       url: string
       type: string
       source: string
+      date: string
     }
   }>
 }
 
 export type StreamListenerType = {
-  onMessage: (message: string) => void
-  onError: (error: Error) => void
-  onStartStream: () => void
-  onStopStream: () => void
+  onMessage?: (message: string) => void
+  onError?: (error: Error) => void
+  onStartStream?: () => void
+  onStopStream?: () => void
 }
 
 export const useStreaming = (
@@ -45,7 +46,7 @@ export const useStreaming = (
 
   const addUserMessage = useCallback(
     (message: string) => {
-      listener?.onStartStream()
+      listener?.onStartStream?.()
 
       appendMessages([
         {
@@ -88,7 +89,7 @@ export const useStreaming = (
 
                 // 0 is the message
                 if (control === '0') {
-                  listener?.onMessage(msg)
+                  listener?.onMessage?.(msg)
 
                   newMessageRef.current += msg
 
@@ -113,7 +114,7 @@ export const useStreaming = (
               }
             },
             onclose() {
-              listener?.onStopStream()
+              listener?.onStopStream?.()
             },
           })
         } catch (error: any) {
@@ -121,9 +122,9 @@ export const useStreaming = (
             // Fetch was aborted
             console.log('Fetch aborted')
           } else {
-            listener?.onError(error)
+            listener?.onError?.(error)
           }
-          listener?.onStopStream()
+          listener?.onStopStream?.()
         }
       }
 

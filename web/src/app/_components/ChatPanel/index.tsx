@@ -16,15 +16,12 @@ import remarkGfm from 'remark-gfm'
 import { Text } from '@/components/Base/text'
 
 import Markdown from 'react-markdown'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import SourcesPanel from '../SourcesPanel'
 import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
 
 export default function ChatPanel({ workspaceId, token }: { workspaceId: string; token: string }) {
   const listener: StreamListenerType = {
-    onMessage: (message: string) => {
-      console.log(message)
-    },
     onError: (error: Error) => {
       console.error(error)
       setIsBusy(false)
@@ -34,7 +31,6 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
     },
     onStopStream: () => {
       setIsBusy(false)
-      scrollToBottom()
     },
   }
 
@@ -55,11 +51,20 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const handleNewQuery = (message: string) => {
+    addUserMessage(message)
+    setInput('')
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+
   return (
     <>
       <div className="flex flex-col  bg-gray-50 dark:bg-gray-800 dark:text-white h-full w-full min-h-screen">
         <div className="w-full p-4 fixed top-10 lg:top-0 bg-gray-50 dark:bg-gray-800 dark:text-white h-16 ">
-          Control bar
+          {/*control bar */}
         </div>
         <div className="px-4 overflow-auto mt-16 mb-16 flex-1 h-full overflow-y-scroll">
           <div className="flex flex-row p-4">
@@ -115,7 +120,7 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
               value={input}
               onKeyUp={(e) => {
                 if (e.key === 'Enter') {
-                  addUserMessage(input)
+                  handleNewQuery(input)
                 }
               }}
             />

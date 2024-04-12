@@ -1,7 +1,5 @@
 'use client'
 
-//import Badge from '../Badge'
-import { useRef } from 'react'
 import FileCard from './filecard'
 
 export type SourcesPanelProps = {
@@ -13,13 +11,12 @@ export type SourcesPanelProps = {
       url: string
       type: string
       source: string
+      date: string
     }
   }[]
 }
 
 export default function SourcesPanel({ workspaceId, documents }: SourcesPanelProps) {
-  const messagesEndRef = useRef<null | HTMLDivElement>(null)
-
   return (
     <>
       <div className="flex flex-col  dark:bg-gray-800 dark:text-white ">
@@ -46,12 +43,12 @@ export default function SourcesPanel({ workspaceId, documents }: SourcesPanelPro
                         `/api/workspace/${workspaceId}/files/${document.metadata?.file}`
                       )}
                       type={document.metadata?.type}
+                      date={document.metadata?.date ?? new Date().toISOString()}
                     />
                   </div>
                 )
               })}
             </div>
-            <div ref={messagesEndRef} />
           </div>
         </div>
       </div>
