@@ -107,7 +107,31 @@ async def get_chain_for_workspace(workspaceId:str):
 
 
     else:
-        return await defaultChain(workspaceId)
+        llm = ChatOpenAI(streaming=True,temperature=0)
+        vector = await get_postgres_vector_db_2(workspaceId)
+        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 6}, score_threshold=0.5)
+
+        prompt = PromptTemplate.from_template(STANDARD_PROMPT)
+
+        contextualize_q_system_prompt = """Given a chat history and the latest user question \
+        which might reference context in the chat history, formulate a standalone question \
+        which can be understood without the chat history. Do NOT answer the question, \
+        just reformulate it if needed and otherwise return it as is."""
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", contextualize_q_system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human", "{input}"),
+            ]
+        )
+
+        history_aware_retriever =  create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
+
+        question_answer_chain = create_stuff_documents_chain(llm, prompt)
+        
+        rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+ 
+        return rag_chain
     
 
 async def defaultChain(workspaceId:str):
