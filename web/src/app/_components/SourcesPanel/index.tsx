@@ -7,17 +7,24 @@ import { Document } from 'langchain/document'
 
 export type SourcesPanelProps = {
   workspaceId: string
-  documents?: Document[]
+  documents?: {
+    pageContent: string
+    metadata: {
+      file: string
+      url: string
+      type: string
+      source: string
+    }
+  }[]
 }
 
 export default function SourcesPanel({ workspaceId, documents }: SourcesPanelProps) {
   const messagesEndRef = useRef<null | HTMLDivElement>(null)
 
-  console.log(documents)
   return (
     <>
       <div className="flex flex-col  dark:bg-gray-800 dark:text-white ">
-        <div className="px-4 overflow-auto mt-6 m-16 flex-1 ">
+        <div className="px-4 overflow-auto mt-6 m-4 flex-1 ">
           <div className="flex flex-col justify-end">
             {documents && documents.length === 0 && (
               <div className="flex p-6 items-start">
@@ -35,11 +42,11 @@ export default function SourcesPanel({ workspaceId, documents }: SourcesPanelPro
                   >
                     <FileCard
                       snippet={document.pageContent ?? ''}
-                      filename={document.metadata.file}
+                      filename={document.metadata?.file ?? ''}
                       href={encodeURI(
-                        `/api/workspace/${workspaceId}/files/${document.metadata.file}`
+                        `/api/workspace/${workspaceId}/files/${document.metadata?.file}`
                       )}
-                      type={document.metadata.type}
+                      type={document.metadata?.type}
                     />
                   </div>
                 )

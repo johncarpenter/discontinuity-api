@@ -1,6 +1,6 @@
 // hook/useStreaming.ts
 import { nanoid } from 'nanoid'
-import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 
 export type Message = {
@@ -8,25 +8,36 @@ export type Message = {
   role: 'user' | 'computer'
   id: string
   created: string
+  sources: Array<{
+    pageContent: string
+    metadata: {
+      file: string
+      url: string
+      type: string
+      source: string
+    }
+  }>
 }
 
-export type StreamListener = {
+export type StreamListenerType = {
   onMessage: (message: string) => void
+  onError: (error: Error) => void
+  onStartStream: () => void
+  onStopStream: () => void
 }
 
 export const useStreaming = (
   url: string,
   headers?: Record<string, string>,
-  initialMessages?: Message[]
+  initialMessages?: Message[],
+  listener?: StreamListenerType
 ) => {
   const [data, setData] = useState<string | undefined>(undefined)
   const [controller, setController] = useState<AbortController | null>(null)
 
-  const listener = useRef<StreamListener | null>(null)
   const newMessageRef = useRef<string>('')
 
   const [messages, setMessages] = useState<Message[]>(initialMessages || [])
-  const forceUpdate = useReducer(() => ({}), {})[1] as () => void
 
   const appendMessages = (messageList: Message[]) => {
     setMessages((prevMessages) => [...prevMessages, ...messageList])
@@ -34,9 +45,23 @@ export const useStreaming = (
 
   const addUserMessage = useCallback(
     (message: string) => {
+      listener?.onStartStream()
+
       appendMessages([
-        { content: message, role: 'user', id: nanoid(5), created: new Date().toISOString() },
-        { content: '', role: 'computer', id: nanoid(5), created: new Date().toISOString() },
+        {
+          content: message,
+          role: 'user',
+          id: nanoid(5),
+          created: new Date().toISOString(),
+          sources: [],
+        },
+        {
+          content: '',
+          role: 'computer',
+          id: nanoid(5),
+          created: new Date().toISOString(),
+          sources: [],
+        },
       ])
       newMessageRef.current = ''
 
@@ -63,7 +88,7 @@ export const useStreaming = (
 
                 // 0 is the message
                 if (control === '0') {
-                  listener.current?.onMessage(msg)
+                  listener?.onMessage(msg)
 
                   newMessageRef.current += msg
 
@@ -76,21 +101,29 @@ export const useStreaming = (
                 // 2 is the data
                 else if (control === '2') {
                   setData(msg)
+                  setMessages((prevMessages) => {
+                    let lastMessage = prevMessages.slice(-1)[0]
+                    lastMessage.sources = msg
+
+                    return [...prevMessages.slice(0, -1), lastMessage]
+                  })
                 }
               } catch (error) {
                 console.error('Error parsing message:', error)
               }
-
-              //forceUpdate()
+            },
+            onclose() {
+              listener?.onStopStream()
             },
           })
-        } catch (error) {
+        } catch (error: any) {
           if (error.name === 'AbortError') {
             // Fetch was aborted
             console.log('Fetch aborted')
           } else {
-            console.error('Fetch error:', error)
+            listener?.onError(error)
           }
+          listener?.onStopStream()
         }
       }
 
@@ -115,5 +148,5 @@ export const useStreaming = (
     }
   }, [controller])
 
-  return { messages, data, addUserMessage, stopFetching }
+  return { messages, data, addUserMessage, stopFetching, listener }
 }

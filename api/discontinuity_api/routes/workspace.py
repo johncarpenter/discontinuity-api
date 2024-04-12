@@ -6,7 +6,7 @@ from fastapi import HTTPException, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import logging
-from discontinuity_api.workers.chains import retrieval_qa
+from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
 from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db, get_postgres_vector_db_2
 from discontinuity_api.utils import JWTBearer
 from langchain.docstore.document import Document
@@ -17,18 +17,15 @@ from botocore.client import BaseClient
 import uuid
 import os
 import requests
-from fastapi.responses import StreamingResponse
 from sse_starlette.sse import EventSourceResponse
-from langchain_openai import ChatOpenAI
 import json
-import asyncio
+from langchain_core.messages import HumanMessage, AIMessage
 logger = logging.getLogger(__name__)
 
 
 router = APIRouter(prefix="/workspace", tags=["workspace"])
 
 BASE_API_URL = "https://flow.discontinuity.ai/api/v1/prediction/"
-
 
 
 class Message(BaseModel):
@@ -56,15 +53,31 @@ class ChatMessage(BaseModel):
 @router.post("/stream")
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     logger.info(f"Streaming Chat for {workspace.id}")
-    logger.info("History: ",message.history)
-    model = ChatOpenAI()
+   
+    # Get the vector db for the workspace
+    chain = await get_chain_for_workspace(workspace.id)
+
+    formattedHistory = []
+    for hist in message.history:
+        if(hist.role == UserEnum.USER.value):
+            formattedHistory.append(HumanMessage(content=hist.content,id=hist.id))
+        elif(hist.role == UserEnum.COMPUTER.value):
+            formattedHistory.append(AIMessage(content=hist.content,id=hist.id))
+        
 
     async def generator():
-        async for chunk in model.astream(message.message):         
-            yield stream_chunk(chunk.content or "", "text")
-        yield stream_chunk([{"foo":"bar"}], "data") # send streaming data after 
+        async for chunk in chain.astream({"input":message.message, "chat_history":formattedHistory}):    
+            #logger.info(f"Chunk: {chunk}")    
+            action = list(chunk.keys())[0]
+            msg = chunk[action]
+            if action == "context":
+                yield stream_chunk(reduceSourceDocumentsToUniqueFiles(sources=msg), "data")  
+            elif action == "answer":
+                yield stream_chunk(msg, "text")
+
 
     return EventSourceResponse(generator())
+
 
 
 @router.post("/text")
@@ -198,3 +211,16 @@ def get_stream_part_code(stream_part_type: str) -> str:
         "message_annotations_stream_part": "7",
     }
     return stream_part_types[stream_part_type]
+
+def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
+    # Iterate through to document list and return only unique filenames
+    unique_files = {}
+    for source in sources:
+        metadata = source.metadata['metadata']
+        if metadata['file'] not in unique_files:
+            unique_files[metadata['file']] = {
+                "pageContent": source.page_content,
+                "metadata": metadata
+            }
+    
+    return list(unique_files.values())
