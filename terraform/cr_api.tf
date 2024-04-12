@@ -63,8 +63,19 @@ resource "google_cloud_run_v2_service" "api" {
         name  = "AWS_BUCKET"
         value = "discontinuity-rag-serverless-prod"
       }
+      env {
+        name  = "LANGCHAIN_TRACING_V2"
+        value = "true"
+      }
+      env {
+        name  = "LANGCHAIN_API_KEY"
+        value = "ls__83c04a774aef4f8e913ee1397cd6ea8b"
+      }
+      env {
+        name  = "LANGCHAIN_PROJECT"
+        value = "python-prod"
+      }
     }
-
   }
 
   traffic {

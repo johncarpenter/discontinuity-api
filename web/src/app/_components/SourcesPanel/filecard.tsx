@@ -8,6 +8,7 @@ export type FileCardProps = {
   href: string
   type: string
 }
+
 export default function FileCard({ snippet, filename, href, type }: FileCardProps) {
   const icon = (type: string) => {
     switch (type) {
@@ -17,8 +18,6 @@ export default function FileCard({ snippet, filename, href, type }: FileCardProp
         return <PhotoIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
       case 'png':
         return <PhotoIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
-      case 'text/plain':
-        return <DocumentTextIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
       default:
         return <DocumentIcon className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" />
     }

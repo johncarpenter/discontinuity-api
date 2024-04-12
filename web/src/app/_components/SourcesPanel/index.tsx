@@ -3,7 +3,6 @@
 //import Badge from '../Badge'
 import { useRef } from 'react'
 import FileCard from './filecard'
-import { Document } from 'langchain/document'
 
 export type SourcesPanelProps = {
   workspaceId: string

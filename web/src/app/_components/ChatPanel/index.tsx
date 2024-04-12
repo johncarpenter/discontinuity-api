@@ -2,7 +2,6 @@
 import {
   ChatBubbleLeftIcon,
   ComputerDesktopIcon,
-  DocumentTextIcon,
   LightBulbIcon,
   SparklesIcon,
   UserIcon,
@@ -16,15 +15,10 @@ import remarkGfm from 'remark-gfm'
 //import rehypeMathJax from 'rehype-mathjax'
 import { Text } from '@/components/Base/text'
 
-import { useChat } from 'ai/react'
 import Markdown from 'react-markdown'
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import SourcesPanel from '../SourcesPanel'
-import { JSONValue } from 'ai'
-import { Document } from 'langchain/document'
 import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
-import { on } from 'events'
-import { listeners } from 'process'
 
 export default function ChatPanel({ workspaceId, token }: { workspaceId: string; token: string }) {
   const listener: StreamListenerType = {
@@ -40,11 +34,12 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
     },
     onStopStream: () => {
       setIsBusy(false)
+      scrollToBottom()
     },
   }
 
-  const { messages, data, addUserMessage } = useStreaming(
-    `http://localhost:8000/workspace/stream`,
+  const { messages, addUserMessage } = useStreaming(
+    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/stream`,
     {
       Authorization: `Bearer ${token}`,
     },
@@ -58,10 +53,6 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const handleNewQuery = (e: FormEvent<HTMLFormElement>) => {
-    addUserMessage('hello')
   }
 
   return (

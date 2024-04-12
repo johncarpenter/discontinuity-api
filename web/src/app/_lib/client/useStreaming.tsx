@@ -93,7 +93,7 @@ export const useStreaming = (
                   newMessageRef.current += msg
 
                   setMessages((prevMessages) => {
-                    let lastMessage = prevMessages.slice(-1)[0]
+                    const lastMessage = prevMessages.slice(-1)[0]
                     lastMessage.content = newMessageRef.current
                     return [...prevMessages.slice(0, -1), lastMessage]
                   })
@@ -102,7 +102,7 @@ export const useStreaming = (
                 else if (control === '2') {
                   setData(msg)
                   setMessages((prevMessages) => {
-                    let lastMessage = prevMessages.slice(-1)[0]
+                    const lastMessage = prevMessages.slice(-1)[0]
                     lastMessage.sources = msg
 
                     return [...prevMessages.slice(0, -1), lastMessage]
@@ -129,7 +129,7 @@ export const useStreaming = (
 
       fetchData()
     },
-    [messages, url, headers]
+    [messages, url, headers, listener]
   )
 
   const stopFetching = useCallback(() => {

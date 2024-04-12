@@ -1,9 +1,7 @@
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspace } from '@/prisma/services/workspace'
-import ChatPanelTest from '@/app/_components/ChatPanelTest'
 import ChatPanel from '@/app/_components/ChatPanel'
-import { setCookie, getCookie, getCookies, deleteCookie, hasCookie } from 'cookies-next'
-import { workspaces } from '@prisma/client'
+import { setCookie, getCookie, hasCookie } from 'cookies-next'
 
 type WorkspaceSettingsPageProps = {
   params: {
@@ -19,7 +17,7 @@ async function loginIfNotAuthenticated(workspace: any) {
     return getCookie(cookieName)
   }
 
-  const API_URL = 'http://localhost:8000'
+  const API_URL = process.env.NEXT_PUBLIC_DSC_API_URL
   const KEY = workspace.apikeys[0].client_id
   const SECRET = workspace.apikeys[0].client_secret
 
