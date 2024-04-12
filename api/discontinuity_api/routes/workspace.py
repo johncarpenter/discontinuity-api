@@ -172,8 +172,9 @@ async def insert(filename: Optional[str]=None, file: UploadFile = File(...), wor
     logger.info(f"Adding file to workspace {workspace.id}")
 
     # Assign random UUID to the document and append the extension of the file
-
-    if(file.filename):
+    if(filename):
+        file_name = filename
+    elif(file.filename):
         file_name = file.filename
     else:
         file_name = str(uuid.uuid4()) + (os.path.splitext(file.filename)[1] if file.filename else '.txt')
