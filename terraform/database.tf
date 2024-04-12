@@ -5,14 +5,10 @@ resource "google_sql_database_instance" "default" {
 
   settings {
     tier = "db-f1-micro"
-    # ip_configuration {
-    #   ipv4_enabled = true
-    #private_network = google_compute_network.vpc.id
-    #   authorized_networks {
-    #     name  = "discontinuity-api"
-    #     value = google_compute_subnetwork.subnet.self_link
-    #   }
-    # }
+    database_flags {
+      name  = "max_connections"
+      value = 100
+    }
   }
 }
 

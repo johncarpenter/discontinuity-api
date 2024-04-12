@@ -1,12 +1,13 @@
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 from fastapi.params import Depends
 from fastapi import HTTPException, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import logging
-from discontinuity_api.workers.chains import retrieval_qa
-from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db
+from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
+from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db, get_postgres_vector_db_2
 from discontinuity_api.utils import JWTBearer
 from langchain.docstore.document import Document
 from fastapi import APIRouter
@@ -16,14 +17,15 @@ from botocore.client import BaseClient
 import uuid
 import os
 import requests
-
+from sse_starlette.sse import EventSourceResponse
+import json
+from langchain_core.messages import HumanMessage, AIMessage
 logger = logging.getLogger(__name__)
 
 
 router = APIRouter(prefix="/workspace", tags=["workspace"])
 
 BASE_API_URL = "https://flow.discontinuity.ai/api/v1/prediction/"
-
 
 
 class Message(BaseModel):
@@ -34,27 +36,49 @@ class Doc(BaseModel):
     content: str
     metadata: Optional[dict] = {}
 
+class UserEnum(Enum):
+    USER = 'user'
+    COMPUTER = 'computer'
 
-# @router.post("/debug")
-# async def query(message: Message, workspace=Depends(JWTBearer())):
-#     """Query/Chat against the workspace model"""
+class HistoryMessage(BaseModel):
+    content: str
+    role: str
+    id: str
+    created: str
 
-#     # Check if the workspace slug file exists in the local directory
-#     logger.info(f"Querying workspace {workspace.slug}")
+class ChatMessage(BaseModel):
+    message: str
+    history: Optional[list[HistoryMessage]]
 
-#     filename = f"{workspace.slug}-flow.json"
+@router.post("/stream")
+async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
+    logger.info(f"Streaming Chat for {workspace.id}")
+   
+    # Get the vector db for the workspace
+    chain = await get_chain_for_workspace(workspace.id)
 
-#     if not os.path.exists(f"./local/flow/{filename}"):
-#         logger.error(f"Missing file: ./local/flow/{filename}")
-#         raise HTTPException(status_code=404, detail="Unknown workspace")
+    formattedHistory = []
+    for hist in message.history:
+        if(hist.role == UserEnum.USER.value):
+            formattedHistory.append(HumanMessage(content=hist.content,id=hist.id))
+        elif(hist.role == UserEnum.COMPUTER.value):
+            formattedHistory.append(AIMessage(content=hist.content,id=hist.id))
+        
 
-#     flow = load_flow_from_json(f"./local/flow/{filename}")
+    async def generator():
+        async for chunk in chain.astream({"input":message.message, "chat_history":formattedHistory}):    
+            #logger.info(f"Chunk: {chunk}")    
+            action = list(chunk.keys())[0]
+            msg = chunk[action]
+            if action == "context":
+                yield stream_chunk(reduceSourceDocumentsToUniqueFiles(sources=msg), "data")  
+            elif action == "answer":
+                yield stream_chunk(msg, "text")
 
-#     input = {"input": message.message}
 
-#     output = flow.run(input)
+    return EventSourceResponse(generator())
 
-#     return output
+
 
 @router.post("/text")
 async def insert(document: Doc,s3: BaseClient = Depends(s3Client), workspace=Depends(JWTBearer())):
@@ -89,16 +113,15 @@ async def search(message: Message, workspace=Depends(JWTBearer())):
     logger.info(f"Searching {message.message} in workspace {workspace.slug}")
 
     # Get the vector db for the workspace
-    if(workspace.slug == "test"):
-        db = get_faiss_vector_db("test")
-    else:
-        db = get_postgres_vector_db(workspace.id)
+    db = await get_postgres_vector_db_2(workspace.id)
 
-    docs_with_score = query_index(index=db, query=message.message)
+    docs_with_score = await query_index(index=db, query=message.message)
     
     response = []
     for doc, score in docs_with_score:
         response.append({"content": doc.page_content, "score": score, "metadata": doc.metadata})
+
+    logger.info(f"Search response: {response}")
         
     return response
 
@@ -110,12 +133,12 @@ async def query(message: Message, workspace=Depends(JWTBearer())):
     logger.info(f"Querying workspace {workspace.id}")
 
     # Get the vector db for the workspace
-    db = get_postgres_vector_db(workspace.id)
+    db = await get_postgres_vector_db_2(workspace.id)
 
     response  = retrieval_qa(index=db, query=message.message)
-
     
-    return {"response":response}
+    logger.info(f"Query response: {response}")
+    return {"text":response}
 
 
 @router.post("/flow/{flow_id}")
@@ -167,3 +190,37 @@ async def insert(filename: Optional[str]=None, file: UploadFile = File(...), wor
     else:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                             detail="File could not be uploaded")
+
+
+# transforms the chunk into a stream part compatible with the vercel/ai
+def stream_chunk(chunk, type: str = "text"):
+    code = get_stream_part_code(type)
+    formatted_stream_part = f"{code}:{json.dumps(chunk, separators=(',', ':'))}\n"
+    return formatted_stream_part
+
+# given a type returns the code for the stream part
+def get_stream_part_code(stream_part_type: str) -> str:
+    stream_part_types = {
+        "text": "0",
+        "function_call": "1",
+        "data": "2",
+        "error": "3",
+        "assistant_message": "4",
+        "assistant_data_stream_part": "5",
+        "data_stream_part": "6",
+        "message_annotations_stream_part": "7",
+    }
+    return stream_part_types[stream_part_type]
+
+def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
+    # Iterate through to document list and return only unique filenames
+    unique_files = {}
+    for source in sources:
+        metadata = source.metadata['metadata']
+        if metadata['file'] not in unique_files:
+            unique_files[metadata['file']] = {
+                "pageContent": source.page_content,
+                "metadata": metadata
+            }
+    
+    return list(unique_files.values())

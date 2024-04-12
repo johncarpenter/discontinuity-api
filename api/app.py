@@ -26,7 +26,6 @@ load_dotenv()
 logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
-
 app = FastAPI(
     title="Discontinuity Platform API",
     description="This API will connect directly to your Discontinuity platform instance",
