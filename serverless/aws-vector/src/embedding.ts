@@ -193,8 +193,6 @@ async function extractDocumentsFromImages(tmpfile: string) {
 
   const result = await response.json();
 
-  console.log(JSON.stringify(result, null, 2));
-
   const transcription = result.choices[0].message.content;
 
   const document = new Document({

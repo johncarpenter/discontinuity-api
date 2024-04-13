@@ -3,6 +3,7 @@ import {
   ChatBubbleLeftIcon,
   ComputerDesktopIcon,
   LightBulbIcon,
+  PencilSquareIcon,
   SparklesIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
@@ -19,6 +20,7 @@ import Markdown from 'react-markdown'
 import { useRef, useState, useEffect } from 'react'
 import SourcesPanel from '../SourcesPanel'
 import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
+import { Button } from '@/components/Base/button'
 
 export default function ChatPanel({ workspaceId, token }: { workspaceId: string; token: string }) {
   const listener: StreamListenerType = {
@@ -33,13 +35,11 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
       setIsBusy(false)
     },
   }
-
-  const { messages, addUserMessage } = useStreaming(
+  const { messages, addUserMessage, resetChat } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/stream`,
     {
       Authorization: `Bearer ${token}`,
     },
-    [],
     listener
   )
 
@@ -62,14 +62,14 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
 
   return (
     <>
-      <div className="flex flex-col  bg-gray-50 dark:bg-gray-800 dark:text-white h-full w-full min-h-screen">
-        <div className="w-full p-4 fixed top-10 lg:top-0 bg-gray-50 dark:bg-gray-800 dark:text-white h-16 ">
-          {/*control bar */}
-        </div>
-        <div className="px-4 overflow-auto mt-16 mb-16 flex-1 h-full overflow-y-scroll">
+      <div className="flex flex-col  bg-gray-50 dark:bg-gray-800 dark:text-white h-full w-full lg:min-h-screen min-h-[85vh]">
+        <div className="px-4 overflow-auto mb-16 flex-1 h-full overflow-y-scroll">
           <div className="flex flex-row p-4">
             <ChatBubbleLeftIcon className="h-8 w-8 mr-2 text-gray-400" />
             <h3>Discussion</h3>
+            <Button onClick={resetChat} plain={true} className="ml-auto">
+              <PencilSquareIcon className="h-6 w-6 ml-auto text-gray-600" />
+            </Button>
           </div>
           <div className="flex flex-col justify-end">
             {messages?.map((message, index) => {
@@ -109,7 +109,7 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
         </div>
         <div className="w-full  p-4 h-24  bottom-0 right-auto left-auto  dark:bg-gray-800 dark:text-white pt-">
           <div className="flex flex-col w-full relative border-2 border-secondary-500 dark:text-white rounded-2xl">
-            <LightBulbIcon className="absolute left-3 top-4 w-5 h-5" />
+            <LightBulbIcon className="absolute lg:left-3 left-2 lg:top-3 top-2 w-6 h-6" />
             <input
               type="text"
               name="chat"

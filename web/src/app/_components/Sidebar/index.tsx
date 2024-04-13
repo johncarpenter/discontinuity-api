@@ -33,6 +33,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
     if (!pathname.includes('/workspace/')) return
     const currentPath = pathname.split('/').pop()
     router.push(`/workspace/${workspace}/${currentPath}`)
+    setSidebarOpen(false)
   }
 
   function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
@@ -137,6 +138,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                                     {menu.menuItems.map((item) => (
                                       <li key={item.name}>
                                         <MenuItem
+                                          setSidebarOpen={setSidebarOpen}
                                           name={item.name}
                                           href={item.href}
                                           Icon={item.Icon}
@@ -193,6 +195,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                             {menu.menuItems.map((item) => (
                               <li key={item.name}>
                                 <MenuItem
+                                  setSidebarOpen={setSidebarOpen}
                                   name={item.name}
                                   href={item.href}
                                   Icon={item.Icon}
@@ -226,7 +229,15 @@ export default function Sidebar({ workspaces }: SidebarProps) {
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 text-sm font-semibold leading-6 text-white">Dashboard</div>
+          <div className="flex-1 text-sm font-semibold leading-6 text-white">
+            <Image
+              priority
+              src="/images/glitch.svg"
+              height={45}
+              width={150}
+              alt="Discontinuity AI"
+            />
+          </div>
         </div>
       </div>
     </>
@@ -240,6 +251,7 @@ type MenuItemProps = {
   active: boolean
   enabled: boolean
   visible: boolean
+  setSidebarOpen: (open: boolean) => void
 }
 
 const MenuItem = ({
@@ -249,10 +261,12 @@ const MenuItem = ({
   active = false,
   enabled = true,
   visible = true,
+  setSidebarOpen,
 }: MenuItemProps) => {
   return (
     (visible && (
       <Link
+        onClick={() => setSidebarOpen?.(false)}
         href={enabled ? href : {}}
         className={classNames(
           active ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white',

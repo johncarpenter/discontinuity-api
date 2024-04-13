@@ -14,7 +14,7 @@ export const workspaceMenu = (currentWorkspace: string) => [
       {
         name: 'Discover',
         href: `/workspace/${currentWorkspace}/chat`,
-        description: 'Generate',
+        description: 'Search through your documents',
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: HomeIcon,

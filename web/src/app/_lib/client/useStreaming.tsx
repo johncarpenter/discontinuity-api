@@ -1,4 +1,5 @@
 // hook/useStreaming.ts
+'use client'
 import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
@@ -30,7 +31,6 @@ export type StreamListenerType = {
 export const useStreaming = (
   url: string,
   headers?: Record<string, string>,
-  initialMessages?: Message[],
   listener?: StreamListenerType
 ) => {
   const [data, setData] = useState<string | undefined>(undefined)
@@ -38,7 +38,21 @@ export const useStreaming = (
 
   const newMessageRef = useRef<string>('')
 
-  const [messages, setMessages] = useState<Message[]>(initialMessages || [])
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const storedValue = localStorage.getItem('messages')
+    if (storedValue) {
+      return JSON.parse(storedValue)
+    }
+    return []
+  })
+
+  useEffect(() => {
+    localStorage.setItem('messages', JSON.stringify(messages))
+  }, [messages])
+
+  const resetChat = useCallback(() => {
+    setMessages([])
+  }, [])
 
   const appendMessages = (messageList: Message[]) => {
     setMessages((prevMessages) => [...prevMessages, ...messageList])
@@ -149,5 +163,5 @@ export const useStreaming = (
     }
   }, [controller])
 
-  return { messages, data, addUserMessage, stopFetching, listener }
+  return { messages, data, addUserMessage, stopFetching, resetChat }
 }

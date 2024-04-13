@@ -27,7 +27,7 @@ export default function FileCard({ snippet, filename, href, type, date }: FileCa
     <a href={href}>
       <div className="flex flex-col items-center justify-center">
         <div className="p-4">
-          {type === 'jpeg' || type === 'png' ? (
+          {type === 'jpg' || type === 'jpeg' || type === 'png' ? (
             <Image src={href} width={120} height={120} alt="image" />
           ) : (
             <p className="text-sm text-gray-700">" {snippet} "</p>

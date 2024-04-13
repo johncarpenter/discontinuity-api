@@ -2,7 +2,7 @@
 from typing import List
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import PGVector, VectorStore, FAISS
+from langchain.vectorstores import  VectorStore, FAISS
 from langchain.document_loaders import TextLoader
 from langchain.docstore.document import Document
 from langchain_google_cloud_sql_pg import PostgresEngine, PostgresVectorStore

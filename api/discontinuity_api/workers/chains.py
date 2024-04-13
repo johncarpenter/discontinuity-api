@@ -80,7 +80,7 @@ async def get_chain_for_workspace(workspaceId:str):
     if(workspaceId=="clumutd7f0002tsdezd06430g"): # Test workspace on dev
         llm = ChatOpenAI(streaming=True,temperature=0)
         vector = await get_postgres_vector_db_2(workspaceId)
-        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15})
+        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":"metadata->>'category' in ('NarrativeText','ImageDescription','Transcription')"})
 
         
         embeddings = OpenAIEmbeddings()
