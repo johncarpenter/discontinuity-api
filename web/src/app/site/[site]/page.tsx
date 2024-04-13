@@ -14,17 +14,19 @@ export default async function SiteHome() {
     <>
       <Container>
         <PageHeader title={`Your Workspaces`} breadcrumbs={[]} />
-        {workspaces.map((workspace: workspaces) => (
-          <SimpleCard
-            key={workspace.id}
-            title={workspace.name}
-            subtitle={''}
-            cta={'Discover Files'}
-            href={`/workspaces/${workspace.slug}/chat`}
-            src={''}
-            alt={''}
-          />
-        ))}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 ">
+          {workspaces.map((workspace: workspaces) => (
+            <SimpleCard
+              key={workspace.id}
+              title={workspace.name}
+              subtitle={'Workspace Description'}
+              cta={'Go to Discover'}
+              href={`/workspace/${workspace.slug}/chat`}
+              src={'/images/course_1.png'}
+              alt={''}
+            />
+          ))}
+        </div>
       </Container>
     </>
   )
