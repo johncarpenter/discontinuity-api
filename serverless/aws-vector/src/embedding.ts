@@ -203,6 +203,7 @@ async function extractDocumentsFromImages(tmpfile: string) {
     metadata: {
       source: "gpt4v",
       mediaType: "image",
+      category: "ImageDescription",
     },
   });
 
@@ -225,6 +226,7 @@ async function extractDocumentsFromAudio(tmpfile: string) {
     metadata: {
       source: "whisper",
       mediaType: "audio",
+      category: "Transcription",
     },
   });
   return [document];

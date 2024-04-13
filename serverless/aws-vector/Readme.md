@@ -68,3 +68,34 @@ serverless deploy --stage development
 ```
 
 
+### MetaData from 
+
+```
+FigureCaption
+
+NarrativeText
+
+ListItem
+
+Title
+
+Address
+
+Table
+
+PageBreak
+
+Header
+
+Footer
+
+UncategorizedText
+
+Image
+
+Formula
+
+ImageDescription
+
+Transcription
+```
