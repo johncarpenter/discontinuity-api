@@ -59,7 +59,7 @@ export const useStreaming = (
   }
 
   const addUserMessage = useCallback(
-    (message: string) => {
+    (message: string, filter?: { [key: string]: string }) => {
       listener?.onStartStream?.()
 
       appendMessages([
@@ -93,7 +93,7 @@ export const useStreaming = (
               Accept: 'text/event-stream',
               ...headers,
             },
-            body: JSON.stringify({ message: message, history: messages }),
+            body: JSON.stringify({ message: message, history: messages, filter: filter || '' }),
             signal,
             onmessage(ev) {
               try {

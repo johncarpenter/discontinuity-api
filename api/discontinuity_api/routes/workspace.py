@@ -49,13 +49,17 @@ class HistoryMessage(BaseModel):
 class ChatMessage(BaseModel):
     message: str
     history: Optional[list[HistoryMessage]]
+    filter: Optional[dict] 
 
 @router.post("/stream")
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     logger.info(f"Streaming Chat for {workspace.id}")
    
+    filter = build_filter(message.filter)
+    logger.info(f"Using filter {filter}")
+
     # Get the vector db for the workspace
-    chain = await get_chain_for_workspace(workspace.id)
+    chain = await get_chain_for_workspace(workspace.id, filter)
 
     formattedHistory = []
     for hist in message.history:
@@ -225,3 +229,14 @@ def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
             }
     
     return list(unique_files.values())
+
+def build_filter(filter: dict):
+
+    filter_str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')"
+
+    if not filter:
+        return filter_str
+   
+    for key, value in filter.items():
+        filter_str += f" and metadata->>'{key}' like ('%{value}%')"
+    return filter_str

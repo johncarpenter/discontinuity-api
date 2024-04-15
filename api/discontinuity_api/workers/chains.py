@@ -74,13 +74,14 @@ def format_docs(docs):
     # }\n\nContent: ${doc.pageContent}\n\nMetadata: ${JSON.stringify(doc.metadata)}`.trim()
 
 
-async def get_chain_for_workspace(workspaceId:str):
+async def get_chain_for_workspace(workspaceId:str, filter:str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')" ):
     # Each workspace will have it's own chain, so we need to create a new chain for each workspace
     # We will use the workspaceId as the chain name
     if(workspaceId=="clumutd7f0002tsdezd06430g"): # Test workspace on dev
-        llm = ChatOpenAI(streaming=True,temperature=0)
+        llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
+ 
         vector = await get_postgres_vector_db_2(workspaceId)
-        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":"metadata->>'category' in ('NarrativeText','ImageDescription','Transcription')"})
+        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":filter})
 
         
         embeddings = OpenAIEmbeddings()
@@ -110,13 +111,13 @@ async def get_chain_for_workspace(workspaceId:str):
 
 
     else:
-        return await defaultChain(workspaceId)
+        return await defaultChain(workspaceId, filter)
     
 
-async def defaultChain(workspaceId:str):
+async def defaultChain(workspaceId:str, filter:str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')"):
     llm = ChatOpenAI(streaming=True,temperature=0)
     vector = await get_postgres_vector_db_2(workspaceId)
-    retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15})
+    retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":filter})
 
     
     embeddings = OpenAIEmbeddings()

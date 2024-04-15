@@ -52,7 +52,7 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
   }
 
   const handleNewQuery = (message: string) => {
-    addUserMessage(message)
+    addUserMessage(message, { file: 'JohnCarpenter-Cover.pdf' })
     setInput('')
   }
 
@@ -63,14 +63,17 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
   return (
     <>
       <div className="flex flex-col  bg-gray-50 dark:bg-gray-800 dark:text-white h-full w-full lg:min-h-screen min-h-[85vh]">
-        <div className="px-4 overflow-auto mb-16 flex-1 h-full overflow-y-scroll">
-          <div className="flex flex-row p-4">
+        <div className="sticky top-10 lg:top-0  dark:bg-gray-800 dark:text-white h-16 w-full">
+          <div className="flex flex-row p-4 bg-gray-200">
             <ChatBubbleLeftIcon className="h-8 w-8 mr-2 text-gray-400" />
-            <h3>Discussion</h3>
+            <h3>Searching All Files</h3>
             <Button onClick={resetChat} plain={true} className="ml-auto">
               <PencilSquareIcon className="h-6 w-6 ml-auto text-gray-600" />
             </Button>
           </div>
+        </div>
+
+        <div className="px-4 overflow-auto mb-16 flex-1 h-full overflow-y-scroll">
           <div className="flex flex-col justify-end">
             {messages?.map((message, index) => {
               return (
