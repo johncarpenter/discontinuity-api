@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation'
 
 import Dropzone from 'react-dropzone'
 import toast from 'react-hot-toast'
+import { DocumentIcon } from '@heroicons/react/24/outline'
 
 export function UploadDialog({ workspaceId }: { workspaceId: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -66,14 +67,19 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
         <DialogTitle>File Upload</DialogTitle>
         <DialogDescription>Add Files to Vector</DialogDescription>
         <DialogBody>
-          <Dropzone onDrop={uploadFile} minSize={0} maxSize={5242880}>
-            {({ getRootProps, getInputProps }) => (
-              <div {...getRootProps()}>
-                <input {...getInputProps()} />
-                Click me to upload a file!
-              </div>
-            )}
-          </Dropzone>
+          <div className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+            <Dropzone onDrop={uploadFile} minSize={0} maxSize={5242880}>
+              {({ getRootProps, getInputProps }) => (
+                <div {...getRootProps()}>
+                  <div className="absolute inset-0 bg-gray-100 bg-opacity-50 rounded-lg flex flex-col items-center">
+                    <input {...getInputProps()} />
+                    <DocumentIcon className="h-12 w-12 p-2" />
+                    <p className="text-md text-gray-600">Drag and drop your files here</p>
+                  </div>
+                </div>
+              )}
+            </Dropzone>
+          </div>
         </DialogBody>
         <DialogActions>
           <Button plain onClick={() => setIsOpen(false)}>

@@ -93,7 +93,7 @@ export const useStreaming = (
               Accept: 'text/event-stream',
               ...headers,
             },
-            body: JSON.stringify({ message: message, history: messages, filter: filter || '' }),
+            body: JSON.stringify({ message: message, history: messages, filter: filter || {} }),
             signal,
             onmessage(ev) {
               try {
