@@ -52,7 +52,7 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
   }
 
   const handleNewQuery = (message: string) => {
-    addUserMessage(message, { file: 'JohnCarpenter-Cover.pdf' })
+    addUserMessage(message)
     setInput('')
   }
 
