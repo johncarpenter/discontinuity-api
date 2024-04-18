@@ -6,6 +6,7 @@ from fastapi import HTTPException, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import logging
+from discontinuity_api.tools import get_agent_for_workspace
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
 from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db, get_postgres_vector_db_2
 from discontinuity_api.utils import JWTBearer
@@ -50,6 +51,41 @@ class ChatMessage(BaseModel):
     message: str
     history: Optional[list[HistoryMessage]]
     filter: Optional[dict] 
+
+@router.post("/agent")
+async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
+    logger.info(f"Streaming Agent for {workspace.id}")
+   
+    filter = build_filter(message.filter)
+    logger.info(f"Using filter {filter}")
+
+    # Get the vector db for the workspace
+    chain = await get_agent_for_workspace(workspace.id, filter)
+
+    formattedHistory = []
+    for hist in message.history:
+        if(hist.role == UserEnum.USER.value):
+            formattedHistory.append(HumanMessage(content=hist.content,id=hist.id))
+        elif(hist.role == UserEnum.COMPUTER.value):
+            formattedHistory.append(AIMessage(content=hist.content,id=hist.id))
+        
+
+    async def generator():
+        async for chunk in chain.astream({"input":message.message, "chat_history":formattedHistory}):    
+            logger.info(f"Chunk: {chunk}")    
+            action = list(chunk.keys())[0]
+            msg = chunk[action]
+            if action == "steps":
+                for agentstep in msg:
+                    logger.info(f"Agentstep: {agentstep}") 
+                    if(agentstep.observation['context']):
+                        yield stream_chunk(reduceSourceDocumentsToUniqueFiles(sources=agentstep.observation['context']), "data")  
+            elif action == "output":
+                yield stream_chunk(msg, "text")
+
+
+    return EventSourceResponse(generator())
+
 
 @router.post("/stream")
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):

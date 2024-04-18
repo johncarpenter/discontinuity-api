@@ -69,11 +69,6 @@ def format_docs(docs):
     return "\n\n".join(formattedDocs)
     
 
-    #     return `Location URI: /api/workspace/${workspaceId}/files/${doc.metadata.file} \n\nFilename: ${
-    #   doc.metadata.filename
-    # }\n\nContent: ${doc.pageContent}\n\nMetadata: ${JSON.stringify(doc.metadata)}`.trim()
-
-
 async def get_chain_for_workspace(workspaceId:str, filter:str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')" ):
     # Each workspace will have it's own chain, so we need to create a new chain for each workspace
     # We will use the workspaceId as the chain name

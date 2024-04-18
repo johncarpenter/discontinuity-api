@@ -36,7 +36,7 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
     },
   }
   const { messages, addUserMessage, resetChat } = useStreaming(
-    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/stream`,
+    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
     {
       Authorization: `Bearer ${token}`,
     },
