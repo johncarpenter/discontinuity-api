@@ -8,7 +8,7 @@ from pydantic import BaseModel
 import logging
 from discontinuity_api.tools import get_agent_for_workspace
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
-from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db, get_postgres_vector_db_2
+from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db, get_postgres_vector_db_2, get_postgres_history
 from discontinuity_api.utils import JWTBearer
 from langchain.docstore.document import Document
 from fastapi import APIRouter
@@ -49,8 +49,8 @@ class HistoryMessage(BaseModel):
 
 class ChatMessage(BaseModel):
     message: str
-    history: Optional[list[HistoryMessage]]
-    filter: Optional[dict] 
+    thread: Optional[str] = None
+    filter: Optional[dict] = {}
 
 @router.post("/agent")
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
@@ -62,29 +62,54 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     # Get the vector db for the workspace
     chain = await get_agent_for_workspace(workspace.id, filter)
 
-    formattedHistory = []
-    for hist in message.history:
-        if(hist.role == UserEnum.USER.value):
-            formattedHistory.append(HumanMessage(content=hist.content,id=hist.id))
-        elif(hist.role == UserEnum.COMPUTER.value):
-            formattedHistory.append(AIMessage(content=hist.content,id=hist.id))
-        
+    thread = message.thread or str(uuid.uuid4())
 
+    history = get_postgres_history(table_name=workspace.id, session_id=thread)
+
+    history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+    
     async def generator():
-        async for chunk in chain.astream({"input":message.message, "chat_history":formattedHistory}):    
-            logger.info(f"Chunk: {chunk}")    
+        response = '' 
+        sources = []
+        yield stream_chunk({"thread":thread}, "assistant_message")
+        async for chunk in chain.astream({"input":message.message, "chat_history":history.messages}):    
             action = list(chunk.keys())[0]
             msg = chunk[action]
             if action == "steps":
                 for agentstep in msg:
                     logger.info(f"Agentstep: {agentstep}") 
                     if(agentstep.observation['context']):
-                        yield stream_chunk(reduceSourceDocumentsToUniqueFiles(sources=agentstep.observation['context']), "data")  
+                        sources = reduceSourceDocumentsToUniqueFiles(sources=agentstep.observation['context'])                
+                        yield stream_chunk(sources, "data")  
             elif action == "output":
+                response += msg
                 yield stream_chunk(msg, "text")
+            
+        history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 
 
     return EventSourceResponse(generator())
+
+
+@router.get("/history/{thread}")
+async def query(thread: str, workspace=Depends(JWTBearer())):
+    """Retrieve the chat history for a given thread"""
+
+    # Check if the workspace slug file exists in the local directory
+    logger.info(f"Querying workspace {workspace.id}")
+
+    # Get the vector db for the workspace
+    history = get_postgres_history(table_name=workspace.id, session_id=thread)
+    
+    formattedHistory = []
+    for message in history.messages:
+        if(message.type == "human"):
+            formattedHistory.append({"role": UserEnum.USER.value, "content": message.content, "created": message.created, "id": message.id})
+        else:
+            formattedHistory.append({"role": UserEnum.COMPUTER.value, "content": message.content, "created": message.created, "id": message.id, "sources": message.additional_kwargs.get("sources", [])})
+
+    return formattedHistory
+
 
 
 @router.post("/stream")

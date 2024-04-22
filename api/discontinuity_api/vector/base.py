@@ -5,7 +5,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import  VectorStore, FAISS
 from langchain.document_loaders import TextLoader
 from langchain.docstore.document import Document
-from langchain_google_cloud_sql_pg import PostgresEngine, PostgresVectorStore
+from langchain_google_cloud_sql_pg import PostgresEngine, PostgresVectorStore, PostgresChatMessageHistory
 
 import logging
 import logging.config
@@ -86,6 +86,36 @@ async def get_postgres_vector_db_2(
 
     return custom_store
 
+
+def get_postgres_history(
+    table_name: str, session_id:str) -> VectorStore:
+    logger.info(f"Access history for {session_id} in {table_name}")
+
+    # we need to create a new vector database if it does not exist
+    if not os.getenv("VECTORDB_URL"):
+        raise Exception("Vector Env not set")
+    
+    
+    engine = PostgresEngine.from_instance(
+        project_id='discontinuity-ai', region='europe-west1', instance='discontinuity-api-db', database='discontinuity-rag' , user='discontinuity-rag', password='2UZF9gAycs2UCWz'
+    )
+    
+    TABLE_NAME = f"{table_name}_history"
+
+
+    try:
+        history = PostgresChatMessageHistory.create_sync(            
+            engine, session_id=session_id, table_name=TABLE_NAME
+        )
+    except Exception as e:
+        logger.warning(f"Table {TABLE_NAME} does not exist. Creating new table")
+        engine.init_chat_history_table(table_name=TABLE_NAME)
+        history = PostgresChatMessageHistory.create_sync(            
+            engine, session_id=session_id, table_name=TABLE_NAME
+        )
+
+
+    return history
 
 
 

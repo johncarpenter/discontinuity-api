@@ -22,7 +22,12 @@ import SourcesPanel from '../SourcesPanel'
 import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
 import { Button } from '@/components/Base/button'
 
-export default function ChatPanel({ workspaceId, token }: { workspaceId: string; token: string }) {
+type ChatPanelProps = {
+  workspaceId: string
+  token: string
+}
+
+export default function ChatPanel({ workspaceId, token }: ChatPanelProps) {
   const listener: StreamListenerType = {
     onError: (error: Error) => {
       console.error(error)
@@ -35,12 +40,17 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
       setIsBusy(false)
     },
   }
+
+  const cachedId = localStorage.getItem(`${workspaceId}-messages`)
+
   const { messages, addUserMessage, resetChat } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
+    workspaceId,
     {
       Authorization: `Bearer ${token}`,
     },
-    listener
+    listener,
+    cachedId || undefined
   )
 
   const [isBusy, setIsBusy] = useState(false)
@@ -88,6 +98,12 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
                   <div className="flex flex-col p-2">
                     <Text>{message.role === 'user' ? 'You' : 'AI'}</Text>
                     <div className="p-2">
+                      {isBusy && index == messages.length - 1 && (
+                        <div className="flex p-4 items-start">
+                          <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 animate-spin" />{' '}
+                          <div className="text-sm text-gray-600 mt-2 ml-4"> Searching... </div>
+                        </div>
+                      )}
                       <Markdown remarkPlugins={[remarkMath, remarkGfm]} className={style.markdown}>
                         {message.content}
                       </Markdown>
@@ -102,11 +118,7 @@ export default function ChatPanel({ workspaceId, token }: { workspaceId: string;
                 </div>
               )
             })}
-            {isBusy && (
-              <div className="flex p-4 items-start">
-                <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 animate-spin" />
-              </div>
-            )}
+
             <div ref={messagesEndRef} />
           </div>
         </div>
