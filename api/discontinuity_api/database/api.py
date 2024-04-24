@@ -1,5 +1,5 @@
-from .dbmodels import ApiKeyDb, WorkspaceDb
-from discontinuity_api.models import ApiKey, Workspace
+from .dbmodels import ApiKeyDb, FlowDb, WorkspaceDb
+from discontinuity_api.models import ApiKey, Workspace, Flow
 from sqlalchemy.orm import Session
 
 
@@ -35,6 +35,7 @@ def get_workspace(session: Session, api_key_id: int) -> Workspace:
 
     if apikey is None or apikey.workspace is None:
         return None
+    
 
     return Workspace(
         id=apikey.workspace.id,
@@ -46,5 +47,24 @@ def get_workspace(session: Session, api_key_id: int) -> Workspace:
                 client_id=apikey.client_id,
                 permissions=apikey.permissions.split(","),
             )
-        ],
+        ]
+    )
+
+def getFlow(session: Session, flow_id: int) -> Workspace:
+    flow = (
+        session.query(FlowDb)
+        .join(WorkspaceDb)
+        .filter(FlowDb.id == flow_id)
+        .first()
+    )
+
+    if flow is None:
+        return None
+    
+    return Flow(
+        id=flow.id,
+        name=flow.name,
+        description=flow.description,
+        apikey=flow.apikey,
+        endpoint=flow.endpoint,
     )

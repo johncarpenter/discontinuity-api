@@ -74,3 +74,17 @@ export const getWorkspaces = async (id) =>
       ownerId: id,
     },
   })
+
+export const deleteWorkspace = async (ownerId, slug) => {
+  const workspace = await getWorkspace(ownerId, slug)
+
+  if (workspace) {
+    await prisma.workspace.update({
+      data: { deletedAt: new Date() },
+      where: { id: workspace.id },
+    })
+    return slug
+  } else {
+    throw new Error('Unable to find workspace')
+  }
+}

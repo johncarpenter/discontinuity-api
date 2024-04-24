@@ -82,7 +82,7 @@ export const useStreaming = (
         retrieveHistory(thread)
       }
     }
-  }, [thread])
+  }, [headers, thread])
 
   const appendMessages = (messageList: Message[]) => {
     setMessages((prevMessages) => [...prevMessages, ...messageList])
@@ -182,7 +182,7 @@ export const useStreaming = (
 
       fetchData()
     },
-    [listener, url, headers, thread]
+    [listener, url, headers, thread, setThread]
   )
 
   const stopFetching = useCallback(() => {

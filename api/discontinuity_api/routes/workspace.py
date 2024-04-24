@@ -6,6 +6,8 @@ from fastapi import HTTPException, Depends, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import logging
+from discontinuity_api.database.api import getFlow
+from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.tools import get_agent_for_workspace
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
 from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db, get_postgres_vector_db_2, get_postgres_history
@@ -215,14 +217,25 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     :param flow_id: The ID of the flow to run
     :return: The JSON response from the flow
     """
-    api_url = f"{BASE_API_URL}{flow_id}"
-    api_key = os.getenv("FLOW_API_KEY")
+
+    session = next(get_db())
+    flow = getFlow(session=session, flow_id=flow_id)
+
+    if not flow:
+        raise HTTPException(status_code=404, detail="Flow not found")
+    
+    logger.info(f"Querying flow {flow.id} with message {message.message}")
+    
 
     payload = {"question": message.message}
-    headers = {"Authorization": f"Bearer {api_key}"}
+    headers = {"Authorization": f"Bearer {flow.apikey}"}
+
+    ## Reformat the output to be more readable
+
+    ## Store the messages in the history
 
     try:
-        response = requests.post(api_url, json=payload, headers=headers)       
+        response = requests.post(flow.endpoint, json=payload, headers=headers)    
         return response.json()
     except requests.exceptions.RequestException as e:
         print(e)

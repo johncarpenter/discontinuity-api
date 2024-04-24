@@ -1,6 +1,6 @@
 ## Create the alchemy models for the database. ApiKey, and Workspace with many ApiKeys
 import os
-import datetime
+from datetime import datetime, timezone
 from typing import List
 from sqlalchemy import Column, Integer, String, ForeignKey, Table, DateTime
 from sqlalchemy.orm import relationship
@@ -31,9 +31,10 @@ class WorkspaceDb(Base):
     id = Column(String, primary_key=True)
     name = Column(String)
     slug = Column(String)
-    createdAt = Column(DateTime, default=datetime.datetime.utcnow)
+    createdAt = Column(DateTime, default=datetime.now(timezone.utc))
     deletedAt = Column(DateTime)
     updatedAt = Column(DateTime)
+
 
 
 # Define the ApiKey model
@@ -46,6 +47,28 @@ class ApiKeyDb(Base):
     client_id = Column(String)
     client_secret = Column(String)
     permissions = Column(String)
+    createdAt = Column(DateTime, default=datetime.now(timezone.utc))
+    deletedAt = Column(DateTime)
+    updatedAt = Column(DateTime)
+    workspaceId = Column(Integer, ForeignKey("workspaces.id"))
+
+    workspace = relationship("WorkspaceDb")
+
+
+# Define the ApiKey model
+class FlowDb(Base):
+    # __table__ = Table("apikeys", Base.metadata, autoload_with=engine)
+    # workspace = relationship("WorkspaceDb")
+
+    __tablename__ = "flows"
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    description = Column(String)
+    apikey = Column(String)
+    endpoint = Column(String)
+    createdAt = Column(DateTime, default=datetime.now(timezone.utc))
+    deletedAt = Column(DateTime)
+    updatedAt = Column(DateTime)
     workspaceId = Column(Integer, ForeignKey("workspaces.id"))
 
     workspace = relationship("WorkspaceDb")

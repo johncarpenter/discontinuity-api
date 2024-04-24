@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 
+from discontinuity_api.models.flows import Flow
+
 
 class ApiKey(BaseModel):
     """
@@ -24,6 +26,7 @@ class Workspace(BaseModel):
     name: str = None
     slug: str = None
     api_keys: Optional[list[ApiKey]] = None
+    flows: Optional[list[Flow]] = None
 
 
 class JWTToken(BaseModel):

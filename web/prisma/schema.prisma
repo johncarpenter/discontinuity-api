@@ -14,6 +14,22 @@ model apikeys {
   permissions   String
   workspaceId   String
   name          String?
+  createdAt     DateTime? @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
+  workspaces    workspaces @relation(fields: [workspaceId], references: [id])
+}
+
+model flows {
+  id            String     @id @default(cuid())
+  description   String?
+  endpoint      String
+  apikey        String
+  workspaceId   String
+  name          String
+  createdAt     DateTime? @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
   workspaces    workspaces @relation(fields: [workspaceId], references: [id])
 }
 
@@ -27,9 +43,6 @@ model workspaces {
   updatedAt     DateTime?
   ownerId       String?   @db.VarChar
   apikeys       apikeys[]
+  flows         flows[]
 
 }
-
-
-
-

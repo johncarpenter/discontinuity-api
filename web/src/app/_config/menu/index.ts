@@ -1,10 +1,12 @@
 import {
   ChartPieIcon,
   FolderIcon,
-  HomeIcon,
   RectangleStackIcon,
   ServerStackIcon,
   Cog8ToothIcon,
+  ChatBubbleBottomCenterIcon,
+  CubeTransparentIcon,
+  PuzzlePieceIcon,
 } from '@heroicons/react/24/outline'
 
 export const workspaceMenu = (currentWorkspace: string) => [
@@ -12,20 +14,36 @@ export const workspaceMenu = (currentWorkspace: string) => [
     name: 'Workspace',
     menuItems: [
       {
-        name: 'Discover',
+        name: 'Search and Discovery',
         href: `/workspace/${currentWorkspace}/chat`,
         description: 'Search through your documents',
         enabled: currentWorkspace !== '',
         visible: true,
-        Icon: HomeIcon,
+        Icon: ChatBubbleBottomCenterIcon,
       },
       {
-        name: 'Files',
+        name: 'Models',
+        href: `/workspace/${currentWorkspace}/flow`,
+        description: 'Custom Workflows, Agents and Models',
+        enabled: currentWorkspace !== '',
+        visible: true,
+        Icon: CubeTransparentIcon,
+      },
+      {
+        name: 'File Management',
         href: `/workspace/${currentWorkspace}/files`,
         description: 'File Management',
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: ServerStackIcon,
+      },
+      {
+        name: 'Integrations',
+        href: '/',
+        description: 'Integrated Services',
+        enabled: true,
+        visible: true,
+        Icon: PuzzlePieceIcon,
       },
       {
         name: 'Settings',
@@ -41,20 +59,7 @@ export const workspaceMenu = (currentWorkspace: string) => [
     name: 'platform',
     menuItems: [
       {
-        name: 'Support',
-        href: `/support`,
-        description: 'Status and Monitoring',
-        enabled: true,
-        visible: true,
-        Icon: ServerStackIcon,
-      },
-    ],
-  },
-  {
-    name: 'account',
-    menuItems: [
-      {
-        name: 'Manage',
+        name: 'Manage Workspaces',
         href: '/workspaces',
         description: 'Main Page',
         enabled: true,
@@ -77,6 +82,14 @@ export const workspaceMenu = (currentWorkspace: string) => [
         enabled: true,
         visible: true,
         Icon: ChartPieIcon,
+      },
+      {
+        name: 'Support',
+        href: `/support`,
+        description: 'Status and Monitoring',
+        enabled: true,
+        visible: true,
+        Icon: ServerStackIcon,
       },
     ],
   },

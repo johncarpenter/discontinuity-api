@@ -15,32 +15,30 @@ import { Text } from '@/components/Base/text'
 import Markdown from 'react-markdown'
 import { useRef, useState, useEffect } from 'react'
 import SourcesPanel from '../SourcesPanel'
-import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
+import { DirectListenerType, useDirect } from '@/lib/client/useDirect'
 import { Button } from '@/components/Base/button'
+import { flows } from '@prisma/client'
 
-type ChatPanelProps = {
+type FlowPanelProps = {
   workspaceId: string
   token: string
+  flow: flows
 }
 
-export default function ChatPanel({ workspaceId, token }: ChatPanelProps) {
-  const listener: StreamListenerType = {
+export default function FlowPanel({ workspaceId, token, flow }: FlowPanelProps) {
+  const listener: DirectListenerType = {
     onError: (error: Error) => {
       console.error(error)
-      setIsBusy(false)
     },
-    onStartStream: () => {
-      setIsBusy(true)
-    },
-    onStopStream: () => {
-      setIsBusy(false)
+    onBusy: (isBusy: boolean) => {
+      setIsBusy(isBusy)
     },
   }
 
-  const cachedId = localStorage.getItem(`${workspaceId}-threadId`)
+  const cachedId = localStorage.getItem(`${flow.id}-threadId`)
 
-  const { messages, addUserMessage, resetChat } = useStreaming(
-    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
+  const { messages, addUserMessage, resetChat } = useDirect(
+    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/flow/${flow.id}`,
     workspaceId,
     {
       Authorization: `Bearer ${token}`,
@@ -72,7 +70,7 @@ export default function ChatPanel({ workspaceId, token }: ChatPanelProps) {
         <div className="sticky top-10 lg:top-0  dark:bg-gray-800 dark:text-white h-16 w-full">
           <div className="flex flex-row p-4 bg-gray-200">
             <ChatBubbleLeftIcon className="h-8 w-8 mr-2 text-gray-400" />
-            <h3>Search and Discovery</h3>
+            <h3>Model: {flow.name}</h3>
             <Button onClick={resetChat} plain={true} className="ml-auto">
               <PencilSquareIcon className="h-6 w-6 ml-auto text-gray-600" />
             </Button>
