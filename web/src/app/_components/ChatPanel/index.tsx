@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import {
   ChatBubbleLeftIcon,
@@ -37,17 +38,27 @@ export default function ChatPanel({ workspaceId, token }: ChatPanelProps) {
     },
   }
 
-  const cachedId = localStorage.getItem(`${workspaceId}-threadId`)
+  const [threadId] = useState<string | undefined>(() => {
+    if (typeof window !== 'undefined') {
+      const cachedId = localStorage.getItem(`${workspaceId}-threadId`)
+      return cachedId || undefined
+    }
+    return undefined
+  })
 
-  const { messages, addUserMessage, resetChat } = useStreaming(
+  const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
     workspaceId,
     {
       Authorization: `Bearer ${token}`,
     },
     listener,
-    cachedId || undefined
+    threadId
   )
+
+  useEffect(() => {
+    loadInitialMessages()
+  }, [])
 
   const [isBusy, setIsBusy] = useState(false)
   const [input, setInput] = useState('')
@@ -94,7 +105,7 @@ export default function ChatPanel({ workspaceId, token }: ChatPanelProps) {
                   <div className="flex flex-col p-2">
                     <Text>{message.role === 'user' ? 'You' : 'AI'}</Text>
                     <div className="p-2">
-                      {isBusy && index == messages.length - 1 && (
+                      {isBusy && index == messages?.length - 1 && (
                         <div className="flex p-4 items-start">
                           <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 animate-spin" />{' '}
                           <div className="text-sm text-gray-600 mt-2 ml-4"> Searching... </div>

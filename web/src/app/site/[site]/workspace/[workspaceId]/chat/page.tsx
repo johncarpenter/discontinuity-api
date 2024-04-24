@@ -34,7 +34,7 @@ async function loginIfNotAuthenticated(workspace: any) {
   const { access_token } = await token.json()
 
   setCookie(cookieName, access_token, {
-    maxAge: 60 * 60 * 24 * 7,
+    maxAge: 60 * 60 * 24,
     path: '/',
   })
 

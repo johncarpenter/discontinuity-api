@@ -2,7 +2,6 @@
 'use client'
 import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useLocalStorage } from '@/lib/client/useLocalStorage'
 import { Message } from './useStreaming'
 
 export type DirectListenerType = {
@@ -13,15 +12,19 @@ export type DirectListenerType = {
 
 export const useDirect = (
   url: string,
-  workspaceId: string,
   headers?: Record<string, string>,
   listener?: DirectListenerType,
-  threadId?: string,
   flowId?: string
 ) => {
   const [data, setData] = useState<string | undefined>(undefined)
 
-  const [thread, setThread] = useLocalStorage(`${flowId}-threadId`, threadId)
+  const [thread, setThread] = useState<string | undefined>(() => {
+    if (typeof window !== 'undefined') {
+      const cachedId = localStorage.getItem(`${flowId}-threadId`)
+      return cachedId || undefined
+    }
+    return undefined
+  })
 
   const newMessageRef = useRef<string>('')
 
@@ -29,7 +32,7 @@ export const useDirect = (
 
   const resetChat = useCallback(() => {
     setMessages([])
-    setThread(null)
+    setThread(undefined)
   }, [setThread])
 
   useEffect(() => {
@@ -38,39 +41,38 @@ export const useDirect = (
     }
   }, [messages, thread])
 
-  // useEffect(() => {
-  //   // Retrieve initial messages
-  //   async function retrieveHistory(thread: string) {
-  //     const history = await fetch(
-  //       `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/history/${thread}`,
-  //       {
-  //         method: 'GET',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           ...headers,
-  //         },
-  //       }
-  //     )
-  //     setMessages(await history.json())
-  //   }
-  //   if (thread) {
-  //     console.log('Retrieving history for thread:', thread)
-  //     const cached = localStorage.getItem(`${thread}-messages`)
+  const loadInitialMessages = useCallback(() => {
+    // Retrieve initial messages
+    async function retrieveHistory(thread: string) {
+      const history = await fetch(
+        `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/history/${thread}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            ...headers,
+          },
+        }
+      )
+      setMessages(await history.json())
+    }
+    if (thread) {
+      const cached = localStorage.getItem(`${thread}-messages`)
 
-  //     if (cached) {
-  //       setMessages(JSON.parse(cached))
-  //     } else {
-  //       retrieveHistory(thread)
-  //     }
-  //   }
-  // }, [thread, headers])
-
-  const appendMessages = (messageList: Message[]) => {
-    setMessages((prevMessages) => [...prevMessages, ...messageList])
-  }
+      if (cached) {
+        setMessages(JSON.parse(cached))
+      } else {
+        retrieveHistory(thread)
+      }
+    }
+  }, [thread, headers])
 
   const addUserMessage = useCallback(
     (message: string) => {
+      const appendMessages = (messageList: Message[]) => {
+        setMessages((prevMessages) => [...prevMessages, ...messageList])
+      }
+
       appendMessages([
         {
           content: message,
@@ -107,6 +109,7 @@ export const useDirect = (
 
           setData(undefined)
           setThread(data.chatId)
+          localStorage.setItem(`${flowId}-threadId`, data.chatId)
           setMessages((prevMessages) => {
             const lastMessage = prevMessages.slice(-1)[0]
             lastMessage.content = JSON.stringify(data.json)
@@ -129,8 +132,8 @@ export const useDirect = (
 
       fetchData()
     },
-    [listener, url, headers, setThread, appendMessages, setMessages]
+    [listener, url, headers, flowId]
   )
 
-  return { messages, data, addUserMessage, resetChat }
+  return { messages, data, addUserMessage, resetChat, loadInitialMessages }
 }

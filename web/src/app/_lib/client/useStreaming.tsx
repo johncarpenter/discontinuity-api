@@ -3,7 +3,6 @@
 import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
-import { useLocalStorage } from '@/lib/client/useLocalStorage'
 
 export type Message = {
   content: string
@@ -40,7 +39,12 @@ export const useStreaming = (
   const [data, setData] = useState<string | undefined>(undefined)
   const [controller, setController] = useState<AbortController | null>(null)
 
-  const [thread, setThread] = useLocalStorage(`${workspaceId}-threadId`, threadId)
+  const [thread, setThread] = useState<string | undefined>(() => {
+    if (typeof window !== 'undefined') {
+      const cachedId = localStorage.getItem(`${workspaceId}-threadId`)
+      return cachedId || undefined
+    }
+  })
 
   const newMessageRef = useRef<string>('')
 
@@ -48,8 +52,9 @@ export const useStreaming = (
 
   const resetChat = useCallback(() => {
     setMessages([])
-    setThread(null)
-  }, [setThread])
+    setThread(undefined)
+    localStorage.removeItem(`${workspaceId}-threadId`)
+  }, [workspaceId])
 
   useEffect(() => {
     if (messages.length > 0 && thread) {
@@ -57,8 +62,7 @@ export const useStreaming = (
     }
   }, [messages, thread])
 
-  useEffect(() => {
-    // Retrieve initial messages
+  const loadInitialMessages = useCallback(() => {
     async function retrieveHistory(thread: string) {
       const history = await fetch(
         `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/history/${thread}`,
@@ -72,17 +76,30 @@ export const useStreaming = (
       )
       setMessages(await history.json())
     }
-    if (thread) {
-      console.log('Retrieving history for thread:', thread)
-      const cached = localStorage.getItem(`${thread}-messages`)
 
+    function retrieveThreadId() {
+      const saved = localStorage.getItem(`${workspaceId}-threadId`)
+
+      if (saved && saved !== 'undefined') {
+        return JSON.parse(saved)
+      }
+      return undefined
+    }
+
+    const localThreadId = threadId || retrieveThreadId()
+
+    if (localThreadId) {
+      setThread(localThreadId)
+      const cached = localStorage.getItem(`${localThreadId}-messages`)
+
+      // This will only pull from localstorage, but we may want to sync it with the server?
       if (cached) {
         setMessages(JSON.parse(cached))
       } else {
-        retrieveHistory(thread)
+        retrieveHistory(localThreadId)
       }
     }
-  }, [headers, thread])
+  }, [headers, threadId, workspaceId])
 
   const appendMessages = (messageList: Message[]) => {
     setMessages((prevMessages) => [...prevMessages, ...messageList])
@@ -159,6 +176,7 @@ export const useStreaming = (
                 }
                 // 4 is the thread id
                 else if (control === '4') {
+                  localStorage.setItem(`${workspaceId}-threadId`, msg['thread'])
                   setThread(msg['thread'])
                 }
               } catch (error) {
@@ -182,7 +200,7 @@ export const useStreaming = (
 
       fetchData()
     },
-    [listener, url, headers, thread, setThread]
+    [listener, url, headers, thread, workspaceId]
   )
 
   const stopFetching = useCallback(() => {
@@ -201,5 +219,5 @@ export const useStreaming = (
     }
   }, [controller])
 
-  return { messages, data, addUserMessage, stopFetching, resetChat }
+  return { messages, data, addUserMessage, stopFetching, resetChat, loadInitialMessages }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import {
   ChatBubbleLeftIcon,
@@ -35,17 +36,26 @@ export default function FlowPanel({ workspaceId, token, flow }: FlowPanelProps) 
     },
   }
 
-  const cachedId = localStorage.getItem(`${flow.id}-threadId`)
+  const [threadId] = useState<string | undefined>(() => {
+    if (typeof window !== 'undefined') {
+      const cachedId = localStorage.getItem(`${flow.id}-threadId`)
+      return cachedId || undefined
+    }
+    return undefined
+  })
 
-  const { messages, addUserMessage, resetChat } = useDirect(
+  const { messages, addUserMessage, resetChat, loadInitialMessages } = useDirect(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/flow/${flow.id}`,
-    workspaceId,
     {
       Authorization: `Bearer ${token}`,
     },
     listener,
-    cachedId || undefined
+    threadId || undefined
   )
+
+  useEffect(() => {
+    loadInitialMessages()
+  }, [])
 
   const [isBusy, setIsBusy] = useState(false)
   const [input, setInput] = useState('')
