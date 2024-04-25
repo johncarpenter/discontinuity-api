@@ -65,12 +65,15 @@ export const useStreaming = (
 
   const loadInitialMessages = useCallback(() => {
     async function retrieveHistory(thread: string) {
+      const token = await getAccessToken(workspaceId)
+
       const history = await fetch(
         `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/history/${thread}`,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
             ...headers,
           },
         }

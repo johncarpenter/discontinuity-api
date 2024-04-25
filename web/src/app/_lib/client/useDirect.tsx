@@ -46,12 +46,15 @@ export const useDirect = (
   const loadInitialMessages = useCallback(() => {
     // Retrieve initial messages
     async function retrieveHistory(thread: string) {
+      const token = await getAccessToken(workspaceId)
+
       const history = await fetch(
         `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/history/${thread}`,
         {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
             ...headers,
           },
         }
@@ -67,7 +70,7 @@ export const useDirect = (
         retrieveHistory(thread)
       }
     }
-  }, [thread, headers])
+  }, [thread, workspaceId, headers])
 
   const addUserMessage = useCallback(
     (message: string) => {

@@ -53,6 +53,32 @@ export const getWorkspace = async (ownerId, slug) =>
     },
   })
 
+export const getWorkspaceById = async (ownerId, id) =>
+  await prisma.workspaces.findFirst({
+    select: {
+      ownerId: true,
+      name: true,
+      slug: true,
+      id: true,
+      apikeys: {
+        select: {
+          name: true,
+          client_id: true,
+          client_secret: true,
+          permissions: true,
+        },
+        where: {
+          name: 'default',
+        },
+      },
+    },
+    where: {
+      deletedAt: null,
+      id,
+      ownerId,
+    },
+  })
+
 export const getWorkspaces = async (id) =>
   await prisma.workspaces.findMany({
     select: {

@@ -1,5 +1,5 @@
 import loginIfNotAuthenticated from '@/lib/server/loginIfNotAuthenticated'
-import { getWorkspace } from '@/prisma/services/workspace'
+import { getWorkspaceById } from '@/prisma/services/workspace'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 import { setCookie, getCookie, hasCookie } from 'cookies-next'
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { workspaceId:
 
   const { workspaceId } = params
 
-  const workspace = await getWorkspace(orgId, workspaceId)
+  const workspace = await getWorkspaceById(orgId, workspaceId)
 
   // Check if there is a cookie jwt
   const cookieName = `dsc-jwt-${workspace.id}`
