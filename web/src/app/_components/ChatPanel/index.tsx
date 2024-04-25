@@ -21,10 +21,9 @@ import { Button } from '@/components/Base/button'
 
 type ChatPanelProps = {
   workspaceId: string
-  token: string
 }
 
-export default function ChatPanel({ workspaceId, token }: ChatPanelProps) {
+export default function ChatPanel({ workspaceId }: ChatPanelProps) {
   const listener: StreamListenerType = {
     onError: (error: Error) => {
       console.error(error)
@@ -49,9 +48,7 @@ export default function ChatPanel({ workspaceId, token }: ChatPanelProps) {
   const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
     workspaceId,
-    {
-      Authorization: `Bearer ${token}`,
-    },
+    {},
     listener,
     threadId
   )

@@ -7,16 +7,8 @@ import { flows, workspaces } from '@prisma/client'
 import { SiOpenai } from 'react-icons/si'
 import { Badge } from '@/components/Base/badge'
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
-import {
-  BeakerIcon,
-  CodeBracketIcon,
-  EllipsisVerticalIcon,
-  FlagIcon,
-  StarIcon,
-  XCircleIcon,
-} from '@heroicons/react/24/outline'
+import { BeakerIcon, CodeBracketIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import { Fragment } from 'react'
-import clsx from 'clsx'
 // Wait for the playlists
 
 export default async function FlowsTable({ workspace }: { workspace: workspaces }) {
@@ -79,19 +71,15 @@ export default async function FlowsTable({ workspace }: { workspace: workspaces 
                   <MenuItems className="absolute z-100 right-0 mt-3 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
                       <MenuItem>
-                        <a href="#" className="text-gray-700 flex px-4 py-2 text-sm">
-                          <BeakerIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                          <span>Monitor & Test</span>
-                        </a>
+                        <BeakerIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                        <span>Monitor & Test</span>
                       </MenuItem>
                       <MenuItem>
-                        <a href="#" className="text-gray-700 flex px-4 py-2 text-sm">
-                          <CodeBracketIcon
-                            className="mr-3 h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                          <span>Edit</span>
-                        </a>
+                        <CodeBracketIcon
+                          className="mr-3 h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                        <span>Edit</span>
                       </MenuItem>
                     </div>
                   </MenuItems>
