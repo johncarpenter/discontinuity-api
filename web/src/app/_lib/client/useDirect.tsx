@@ -3,6 +3,7 @@
 import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Message } from './useStreaming'
+import getAccessToken from './getAccessToken'
 
 export type DirectListenerType = {
   onMessage?: (message: string) => void
@@ -12,6 +13,7 @@ export type DirectListenerType = {
 
 export const useDirect = (
   url: string,
+  workspaceId: string,
   headers?: Record<string, string>,
   listener?: DirectListenerType,
   flowId?: string
@@ -94,10 +96,14 @@ export const useDirect = (
       const fetchData = async () => {
         try {
           listener?.onBusy?.(true)
+
+          const token = await getAccessToken(workspaceId)
+
           const response = await fetch(url, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
               ...headers,
             },
             body: JSON.stringify({
@@ -132,7 +138,7 @@ export const useDirect = (
 
       fetchData()
     },
-    [listener, url, headers, flowId]
+    [listener, workspaceId, url, headers, flowId]
   )
 
   return { messages, data, addUserMessage, resetChat, loadInitialMessages }

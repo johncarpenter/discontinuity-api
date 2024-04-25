@@ -3,6 +3,7 @@
 import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
+import getAccessToken from './getAccessToken'
 
 export type Message = {
   content: string
@@ -133,10 +134,13 @@ export const useStreaming = (
 
       const fetchData = async () => {
         try {
+          const token = await getAccessToken(workspaceId)
+
           await fetchEventSource(url, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
               Accept: 'text/event-stream',
               ...headers,
             },

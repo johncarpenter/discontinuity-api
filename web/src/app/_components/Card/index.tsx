@@ -51,7 +51,7 @@ const Card = ({ children, danger }: CardProps) => {
   return danger ? (
     <div className="flex flex-col justify-between rounded border-2 border-red-600">{children}</div>
   ) : (
-    <div className="flex flex-col justify-between overflow-hidden rounded border bg-white shadow sm:rounded-lg">
+    <div className="flex flex-col justify-between rounded border bg-white shadow sm:rounded-lg">
       {children}
     </div>
   )

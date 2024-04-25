@@ -48,11 +48,9 @@ const WorkspaceFlowPage = async ({ params }: WorkspaceFlowPageProps) => {
   const workspace = await getWorkspace(organizationId, params.workspaceId)
   const flow = await getFlowLink(params.flowId, workspace.id)
 
-  const token = await loginIfNotAuthenticated(workspace)
-
   return (
     <div className="">
-      <FlowPanel workspaceId={workspace.id} token={token} flow={flow} />
+      <FlowPanel workspaceId={workspace.id} flow={flow} />
     </div>
   )
 }

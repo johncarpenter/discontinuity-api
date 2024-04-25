@@ -1,8 +1,22 @@
+'use server'
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getFlowLinks } from '@/prisma/services/flow'
 import moment from 'moment'
 import { Button } from '@/components/Base/button'
 import { flows, workspaces } from '@prisma/client'
+import { SiOpenai } from 'react-icons/si'
+import { Badge } from '@/components/Base/badge'
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
+import {
+  BeakerIcon,
+  CodeBracketIcon,
+  EllipsisVerticalIcon,
+  FlagIcon,
+  StarIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline'
+import { Fragment } from 'react'
+import clsx from 'clsx'
 // Wait for the playlists
 
 export default async function FlowsTable({ workspace }: { workspace: workspaces }) {
@@ -12,60 +26,81 @@ export default async function FlowsTable({ workspace }: { workspace: workspaces 
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <div className="mt-8 flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table className="min-w-full divide-y divide-gray-300">
-              <thead>
-                <tr>
-                  <th
-                    scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
-                  >
-                    Name
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Description
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Created
-                  </th>
-                  <th scope="col" className="relative py-3.5 pl-3 pr-0">
-                    <span className="sr-only">Manage</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {flowList.map((flow: flows) => (
-                  <tr key={flow.id}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                      {flow.name}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {flow.description}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {moment(flow.createdAt).format('MMMM D, YYYY')}
-                    </td>
+      <ul className="divide-y divide-gray-100">
+        {flowList.map((flow: flows) => (
+          <li key={flow.id} className="flex items-center gap-x-6 py-5">
+            <div className="flex-shrink-0">
+              <SiOpenai className="h-8 w-8 text-gray-600" />
+            </div>
+            <div className="flex flex-1 items-start gap-x-3">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-x-6">
+                  <p className="text-sm font-semibold leading-6 text-gray-900">{flow.name}</p>
+                  <p>
+                    <Badge color="amber">OpenAI</Badge>
+                    <Badge color="amber">Text</Badge>
+                  </p>
+                </div>
+                <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
+                  <p className="whitespace-nowrap">Description</p>
+                  <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 fill-current">
+                    <circle cx={1} cy={1} r={1} />
+                  </svg>
+                  <p className="truncate">
+                    Created {moment(flow.createdAt).format('MMMM D, YYYY')}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0">
-                      <Button type="plain" href={`/workspace/${workspace.slug}/flow/${flow.id}`}>
-                        Launch
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+            <div className="flex flex-none items-center gap-x-4">
+              <Button
+                color="light"
+                type="plain"
+                href={`/workspace/${workspace.slug}/flow/${flow.id}`}
+              >
+                Launch<span className="sr-only">, {flow.name}</span>
+              </Button>
+
+              <Menu as="div" className="relative flex-none">
+                <MenuButton className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
+                  <span className="sr-only">Open options</span>
+                  <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+                </MenuButton>
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <MenuItems className="absolute z-100 right-0 mt-3 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1">
+                      <MenuItem>
+                        <a href="#" className="text-gray-700 flex px-4 py-2 text-sm">
+                          <BeakerIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                          <span>Monitor & Test</span>
+                        </a>
+                      </MenuItem>
+                      <MenuItem>
+                        <a href="#" className="text-gray-700 flex px-4 py-2 text-sm">
+                          <CodeBracketIcon
+                            className="mr-3 h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
+                          <span>Edit</span>
+                        </a>
+                      </MenuItem>
+                    </div>
+                  </MenuItems>
+                </Transition>
+              </Menu>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

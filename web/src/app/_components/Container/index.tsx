@@ -46,7 +46,7 @@ const Title = ({ subtitle, title }: ContentProps) => {
 }
 
 const Content = ({ children }: ContentProps) => {
-  return <div className="flex h-full flex-col space-y-5 overflow-y-auto p-3">{children}</div>
+  return <div className="flex h-full flex-col space-y-5  p-3">{children}</div>
 }
 
 Content.Container = Container

@@ -22,11 +22,10 @@ import { flows } from '@prisma/client'
 
 type FlowPanelProps = {
   workspaceId: string
-  token: string
   flow: flows
 }
 
-export default function FlowPanel({ workspaceId, token, flow }: FlowPanelProps) {
+export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
   const listener: DirectListenerType = {
     onError: (error: Error) => {
       console.error(error)
@@ -46,9 +45,8 @@ export default function FlowPanel({ workspaceId, token, flow }: FlowPanelProps) 
 
   const { messages, addUserMessage, resetChat, loadInitialMessages } = useDirect(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/flow/${flow.id}`,
-    {
-      Authorization: `Bearer ${token}`,
-    },
+    workspaceId,
+    {},
     listener,
     threadId || undefined
   )
