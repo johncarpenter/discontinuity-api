@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import { DocumentIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import { Badge } from '@/components/Base/badge'
-import Image from 'next/image'
 
 export type FileCardProps = {
   snippet: string
@@ -28,7 +28,7 @@ export default function FileCard({ snippet, filename, href, type, date }: FileCa
       <div className="flex flex-col items-center justify-center">
         <div className="p-4">
           {type === 'jpg' || type === 'jpeg' || type === 'png' ? (
-            <Image src={href} width={120} height={120} alt="image" />
+            <img src={href} className="size-40" alt={snippet} />
           ) : (
             <p className="text-sm text-gray-700">" {snippet} "</p>
           )}
