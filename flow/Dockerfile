@@ -21,7 +21,6 @@ ENV DATABASE_USER=flow
 ENV AWS_REGION=us-west-2
 
 # Latest version of flowise 1.6.6 updated Apr 26, 2024
-# Auto-deploy as of Apr 26, 2024
 RUN npm install -g flowise@1.6.6
 
 WORKDIR /data
