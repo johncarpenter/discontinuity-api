@@ -41,7 +41,7 @@ jobs:
           gcloud config set project ${{ secrets.GCP_PROJECT }}
           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }} 
           gcloud container images add-tag gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:${{ github.sha }} gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:latest --quiet
-          gcloud run deploy discontinuity-flow --image gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-api:latest
+          gcloud run deploy discontinuity-flow --image gcr.io/${{ secrets.GCP_PROJECT }}/discontinuity-flow:latest --platform managed --region europe-west1
   # deploy:
   #   name: Deploy and Rollout
   #   needs: setup-build-publish
