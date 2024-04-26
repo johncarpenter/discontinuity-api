@@ -43,7 +43,7 @@ async def default_agent(workspaceId:str, filter:str = "metadata->>'category' in 
     )
     
      
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
     
     return agent_executor
 

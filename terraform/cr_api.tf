@@ -75,6 +75,10 @@ resource "google_cloud_run_v2_service" "api" {
         name  = "LANGCHAIN_PROJECT"
         value = "python-prod"
       }
+      env {
+        name  = "COHERE_API_KEY"
+        value = var.cohere_api_key
+      }
     }
   }
 

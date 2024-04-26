@@ -70,4 +70,7 @@ variable "aws_access_key_id" {
 variable "aws_secret_access_key" {
   type = string
 }
+variable "cohere_api_key" {
+  type = string
+}
 

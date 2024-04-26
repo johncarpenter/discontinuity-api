@@ -17,6 +17,12 @@ resource "google_cloud_run_v2_service" "flow" {
     }
 
     containers {
+      resources {
+        limits = {
+          cpu    = "1"
+          memory = "4096Mi"
+        }
+      }
       volume_mounts {
         name       = "cloudsql"
         mount_path = "/cloudsql"

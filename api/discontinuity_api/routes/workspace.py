@@ -79,9 +79,9 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
             msg = chunk[action]
             if action == "steps":
                 for agentstep in msg:
-                    logger.info(f"Agentstep: {agentstep}") 
                     if(agentstep.observation['context']):
-                        sources = reduceSourceDocumentsToUniqueFiles(sources=agentstep.observation['context'])                
+                        docs = agentstep.observation['context']
+                        sources = reduceSourceDocumentsToUniqueFiles(sources=docs, threshold=0.15)                
                         yield stream_chunk(sources, "data")  
             elif action == "output":
                 response += msg
@@ -293,16 +293,23 @@ def get_stream_part_code(stream_part_type: str) -> str:
     }
     return stream_part_types[stream_part_type]
 
-def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
+def reduceSourceDocumentsToUniqueFiles(sources: list[Document], threshold: float = 0.25):
     # Iterate through to document list and return only unique filenames
     unique_files = {}
     for source in sources:
-        metadata = source.metadata['metadata']
-        if metadata['file'] not in unique_files:
-            unique_files[metadata['file']] = {
-                "pageContent": source.page_content,
-                "metadata": metadata
-            }
+        
+        includeRecord = True
+        if(source.metadata["relevance_score"] is not None and source.metadata['relevance_score'] < threshold):
+            logger.info(f"relevant score: {source.metadata['relevance_score']} skipping")
+            includeRecord = False
+
+        if includeRecord:
+            metadata = source.metadata['metadata']
+            if metadata['file'] not in unique_files:
+                unique_files[metadata['file']] = {
+                    "pageContent": source.page_content,
+                    "metadata": metadata
+                }
     
     return list(unique_files.values())
 

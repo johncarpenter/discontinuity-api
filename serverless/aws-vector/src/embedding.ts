@@ -9,7 +9,10 @@ import { S3, GetObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs";
 import { UnstructuredLoader } from "langchain/document_loaders/fs/unstructured";
 import OpenAI from "openai";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import {
+  RecursiveCharacterTextSplitter,
+  TokenTextSplitter,
+} from "langchain/text_splitter";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -272,7 +275,13 @@ function appendMetadata(
 }
 
 async function splitLargeDocuments(documents: Document<Record<string, any>>[]) {
-  const splitter = new RecursiveCharacterTextSplitter({
+  // const splitter = new RecursiveCharacterTextSplitter({
+  //   chunkSize: 1024,
+  //   chunkOverlap: 50,
+  // });
+
+  const splitter = new TokenTextSplitter({
+    encodingName: "gpt2",
     chunkSize: 1024,
     chunkOverlap: 50,
   });

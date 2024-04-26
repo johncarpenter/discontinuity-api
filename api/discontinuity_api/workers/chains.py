@@ -12,6 +12,8 @@ from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
 from langchain.retrievers.document_compressors import EmbeddingsFilter
 import json
+from langchain_cohere import CohereRerank
+from langchain_community.llms import Cohere
 
 from discontinuity_api.vector.base import get_postgres_vector_db_2
 
@@ -76,25 +78,19 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = "metadata->>'cat
         llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
  
         vector = await get_postgres_vector_db_2(workspaceId)
-        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":filter})
+        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":filter}) 
 
-        
-        embeddings = OpenAIEmbeddings()
-        embeddings_filter = EmbeddingsFilter(embeddings=embeddings, similarity_threshold=0.75, k=3)
-        
+
+        #llm = Cohere(temperature=0)
+        compressor = CohereRerank()
         compression_retriever = ContextualCompressionRetriever(
-            base_compressor=embeddings_filter, base_retriever=retriever
+            base_compressor=compressor, base_retriever=retriever
         )
-
-        compressor = LLMChainExtractor.from_llm(llm)
-        compression_retriever_2 = ContextualCompressionRetriever(
-            base_compressor=compressor, base_retriever=compression_retriever
-        )
-
+        logger.info("Using Cohere rerank algorithm for the workspace")
 
         prompt = PromptTemplate.from_template(STANDARD_PROMPT)
 
-        history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever_2, contextualize_history_prompt())
+        history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, contextualize_history_prompt())
 
        
 
@@ -115,24 +111,16 @@ async def defaultChain(workspaceId:str, filter:str = "metadata->>'category' in (
     retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":filter})
 
     
-    embeddings = OpenAIEmbeddings()
-    embeddings_filter = EmbeddingsFilter(embeddings=embeddings, similarity_threshold=0.75, k=3)
-    
+    compressor = CohereRerank()
     compression_retriever = ContextualCompressionRetriever(
-        base_compressor=embeddings_filter, base_retriever=retriever
+        base_compressor=compressor, base_retriever=retriever
     )
-
-    compressor = LLMChainExtractor.from_llm(llm)
-    compression_retriever_2 = ContextualCompressionRetriever(
-        base_compressor=compressor, base_retriever=compression_retriever
-    )
-
+    logger.info("Using Cohere rerank algorithm for the workspace")
 
     prompt = PromptTemplate.from_template(STANDARD_PROMPT)
 
-    history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever_2, contextualize_history_prompt())
-
-    
+    history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, contextualize_history_prompt())
+   
 
     question_answer_chain = create_stuff_documents_chain(llm, prompt)
     
