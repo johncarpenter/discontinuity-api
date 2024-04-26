@@ -59,10 +59,10 @@ export async function PUT(req: NextRequest, { params }: { params: { workspaceId:
   if (!id || !name || !endpoint || !type) {
     return NextResponse.json({ error: 'Missing Parameters' }, { status: 400 })
   }
-  const key = await updateFlowLink(id, workspaceId, name, endpoint, description, tags, type)
+  const key = await updateFlowLink(id, orgId, workspaceId, name, endpoint, description, tags, type)
 
   if (apikey && apikey != '') {
-    await updateApiKey(workspaceId, apikey)
+    await updateApiKey(id, orgId, workspaceId, apikey)
   }
 
   return NextResponse.json({ key })

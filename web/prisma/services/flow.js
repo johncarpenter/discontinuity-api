@@ -1,4 +1,5 @@
 import prisma from '@/prisma/index'
+import { getWorkspace } from './workspace'
 
 export const createFlowLink = async (
   workspaceId,
@@ -82,8 +83,18 @@ export const getFlowLinks = async (id, ownerId) => {
   })
 }
 
-export const updateFlowLink = async (id, workspaceId, name, endpoint, description, tags, type) => {
-  const flowLink = await getFlowLink(id, workspaceId)
+export const updateFlowLink = async (
+  flowId,
+  orgId,
+  workspaceSlug,
+  name,
+  endpoint,
+  description,
+  tags,
+  type
+) => {
+  const workspace = getWorkspace(orgId, workspaceSlug)
+  const flowLink = await getFlowLink(flowId, workspace.id)
 
   if (flowLink) {
     return await prisma.flows.update({
@@ -101,7 +112,7 @@ export const updateFlowLink = async (id, workspaceId, name, endpoint, descriptio
   }
 }
 
-export const updateApiKey = async (id, workspaceId, apikey) => {
+export const updateApiKey = async (flowId, orgId, workspaceSlug, apikey) => {
   const flowLink = await getFlowLink(id, workspaceId)
 
   if (flowLink) {
