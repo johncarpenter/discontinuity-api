@@ -228,14 +228,15 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     
 
     payload = {"question": message.message}
-    headers = {"Authorization": f"Bearer {flow.apikey}"}
+    if flow.apikey is not None and flow.apikey != "":
+        headers = {"Authorization": f"Bearer {flow.apikey}"}
 
     ## Reformat the output to be more readable
 
     ## Store the messages in the history
 
     try:
-        response = requests.post(flow.endpoint, json=payload, headers=headers)    
+        response = requests.post(flow.endpoint, json=payload, headers=headers | {})    
         return response.json()
     except requests.exceptions.RequestException as e:
         print(e)

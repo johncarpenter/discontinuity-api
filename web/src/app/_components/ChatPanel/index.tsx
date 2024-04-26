@@ -18,6 +18,7 @@ import { useRef, useState, useEffect } from 'react'
 import SourcesPanel from '../SourcesPanel'
 import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
 import { Button } from '@/components/Base/button'
+import ChatEmptyState from './emptystate'
 
 type ChatPanelProps = {
   workspaceId: string
@@ -89,6 +90,13 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
 
         <div className="px-4 overflow-auto mb-16 flex-1 h-full overflow-y-scroll">
           <div className="flex flex-col justify-end">
+            {!isBusy && messages?.length == 0 && (
+              <div className="flex h-[75vh]">
+                <div className="p-4 m-auto">
+                  <ChatEmptyState />
+                </div>
+              </div>
+            )}
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">

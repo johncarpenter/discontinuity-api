@@ -25,6 +25,8 @@ model flows {
   description   String?
   endpoint      String
   apikey        String
+  tags          String?
+  type          FlowTypes   @default(TEXTGEN)
   workspaceId   String
   name          String
   createdAt     DateTime? @default(now())
@@ -45,4 +47,18 @@ model workspaces {
   apikeys       apikeys[]
   flows         flows[]
 
+}
+
+
+enum FlowTypes {
+  OPENAI
+  ANTHROPIC
+  GEMINI
+  IMAGEGEN
+  TEXTGEN
+  AGENT
+  CODEGEN
+  CODEINTEPRETER
+  RAG
+  OTHERML
 }

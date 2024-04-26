@@ -17,14 +17,14 @@ import { flows, FlowTypes } from '@prisma/client'
 import { Textarea } from '@/app/_components/Base/textarea'
 import { Select } from '@/app/_components/Base/select'
 
-type AddFlowDialogProps = {
+type EditFlowDialogProps = {
   workspaceId: string
-  flow?: flows
+  flow: flows
+  open: boolean
+  onClose: () => void
 }
 
-export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
-  const [isOpen, setIsOpen] = useState(false)
-
+export function EditFlowDialog({ workspaceId, flow, open, onClose }: EditFlowDialogProps) {
   const [name, setName] = useState(flow?.name || '')
   const [endpoint, setEndpoint] = useState(flow?.endpoint || '')
   const [apikey, setApikey] = useState('')
@@ -36,22 +36,19 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
   const router = useRouter()
 
   // Add workspace via API
-  function addFlowLink() {
+  function putFlowLink() {
     api(`/api/workspace/${workspaceId}/flow`, {
-      body: { name, endpoint, apikey, tags, description, type },
-      method: 'POST',
+      body: { id: flow.id, name, endpoint, apikey, tags, description, type },
+      method: 'PUT',
     }).then(() => {
-      setIsOpen(false)
+      onClose()
       router.refresh()
     })
   }
 
   return (
     <>
-      <Button color="secondary" type="button" onClick={() => setIsOpen(true)}>
-        Add Model
-      </Button>
-      <Dialog open={isOpen} onClose={setIsOpen}>
+      <Dialog open={open} onClose={onClose}>
         <DialogTitle>Add Custom Model</DialogTitle>
         <DialogDescription>This connect a custom model to your Workspace</DialogDescription>
         <DialogBody>
@@ -113,18 +110,17 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
             <Label>API Key for Flow Instance</Label>
             <Input
               name="apikey"
-              placeholder="000-000-000-000"
-              required
+              placeholder="hidden"
               value={apikey}
               onChange={(event) => setApikey(event.target.value)}
             />
           </Field>
         </DialogBody>
         <DialogActions>
-          <Button plain onClick={() => setIsOpen(false)}>
+          <Button plain onClick={() => onClose()}>
             Cancel
           </Button>
-          <Button onClick={() => addFlowLink()}>Add</Button>
+          <Button onClick={() => putFlowLink()}>Update</Button>
         </DialogActions>
       </Dialog>
     </>

@@ -21,7 +21,7 @@ ENV DATABASE_USER=flow
 ENV AWS_REGION=us-west-2
 
 # You can install a specific version like: flowise@1.0.0
-RUN npm install -g flowise@1.6.2
+RUN npm install -g flowise@1.6.6
 
 WORKDIR /data
 

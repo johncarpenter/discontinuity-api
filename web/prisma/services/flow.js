@@ -1,6 +1,14 @@
 import prisma from '@/prisma/index'
 
-export const createFlowLink = async (workspaceId, name, endpoint, apikey, description) => {
+export const createFlowLink = async (
+  workspaceId,
+  name,
+  endpoint,
+  apikey,
+  description,
+  tags,
+  type
+) => {
   return await prisma.flows.create({
     data: {
       workspaceId,
@@ -8,6 +16,8 @@ export const createFlowLink = async (workspaceId, name, endpoint, apikey, descri
       apikey,
       description,
       name,
+      tags,
+      type,
     },
   })
 }
@@ -32,6 +42,8 @@ export const getFlowLink = async (id, workspaceId) => {
       id: true,
       name: true,
       description: true,
+      tags: true,
+      type: true,
       endpoint: true,
       createdAt: true,
       updatedAt: true,
@@ -53,6 +65,8 @@ export const getFlowLinks = async (id, ownerId) => {
       id: true,
       name: true,
       description: true,
+      tags: true,
+      type: true,
       endpoint: true,
       createdAt: true,
       updatedAt: true,
@@ -66,4 +80,38 @@ export const getFlowLinks = async (id, ownerId) => {
       },
     },
   })
+}
+
+export const updateFlowLink = async (id, workspaceId, name, endpoint, description, tags, type) => {
+  const flowLink = await getFlowLink(id, workspaceId)
+
+  if (flowLink) {
+    return await prisma.flows.update({
+      data: {
+        name,
+        endpoint,
+        description,
+        tags,
+        type,
+      },
+      where: { id: id },
+    })
+  } else {
+    throw new Error('Unable to find flow link in active workspace')
+  }
+}
+
+export const updateApiKey = async (id, workspaceId, apikey) => {
+  const flowLink = await getFlowLink(id, workspaceId)
+
+  if (flowLink) {
+    return await prisma.flows.update({
+      data: {
+        apikey,
+      },
+      where: { id: id },
+    })
+  } else {
+    throw new Error('Unable to find flow link in active workspace')
+  }
 }
