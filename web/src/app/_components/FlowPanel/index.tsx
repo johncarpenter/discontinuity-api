@@ -16,6 +16,7 @@ import { DirectListenerType, useDirect } from '@/lib/client/useDirect'
 import { Button } from '@/components/Base/button'
 import { flows } from '@prisma/client'
 import { RenderMarkdown } from '@/lib/client/renderMarkdown'
+import FlowEmptyState from './emptystate'
 
 type FlowPanelProps = {
   workspaceId: string
@@ -84,6 +85,13 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
 
         <div className="px-4 overflow-auto mb-16 flex-1 h-full overflow-y-scroll">
           <div className="flex flex-col justify-end">
+            {!isBusy && messages?.length == 0 && (
+              <div className="flex h-[75vh]">
+                <div className="p-4 m-auto">
+                  <FlowEmptyState flow={flow} />
+                </div>
+              </div>
+            )}
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
