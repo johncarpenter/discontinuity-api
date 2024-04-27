@@ -47,6 +47,15 @@ resource "google_cloud_run_v2_service" "flow" {
         value = "whd2eud2jcn8XQG_vhm"
       }
 
+      env {
+        name  = "S3_STORAGE_ACCESS_KEY_ID"
+        value = var.flow_s3_storage_access_key_id
+      }
+
+      env {
+        name  = "S3_STORAGE_SECRET_ACCESS_KEY"
+        value = var.flow_s3_storage_secret_access_key
+      }
 
     }
 

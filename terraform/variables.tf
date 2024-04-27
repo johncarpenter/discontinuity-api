@@ -73,4 +73,9 @@ variable "aws_secret_access_key" {
 variable "cohere_api_key" {
   type = string
 }
-
+variable "flow_s3_storage_access_key_id" {
+  type = string
+}
+variable "flow_s3_storage_secret_access_key" {
+  type = string
+}
