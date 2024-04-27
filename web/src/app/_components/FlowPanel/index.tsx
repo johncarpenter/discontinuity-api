@@ -111,7 +111,7 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
                       </Markdown> */}
                       <div
                         className={style.markdown}
-                        dangerouslySetInnerHTML={{ __html: message.content }}
+                        dangerouslySetInnerHTML={{ __html: message?.content }}
                       ></div>
                       {message.sources?.length > 0 && (
                         <>
