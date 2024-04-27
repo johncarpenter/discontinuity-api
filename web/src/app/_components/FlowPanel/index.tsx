@@ -17,6 +17,7 @@ import { Button } from '@/components/Base/button'
 import { flows } from '@prisma/client'
 import { RenderMarkdown } from '@/lib/client/renderMarkdown'
 import FlowEmptyState from './emptystate'
+import toast from 'react-hot-toast'
 
 type FlowPanelProps = {
   workspaceId: string
@@ -26,27 +27,26 @@ type FlowPanelProps = {
 export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
   const listener: DirectListenerType = {
     onError: (error: Error) => {
-      console.error(error)
+      setIsBusy(false)
+      if (error?.message.includes('uthoriz')) {
+        toast.error(
+          'You are not authorized to access this flow. Check your API is correct on the flow server'
+        )
+      } else {
+        toast.error("We're having trouble connecting to the server. Please try again later.")
+      }
     },
     onBusy: (isBusy: boolean) => {
       setIsBusy(isBusy)
     },
   }
 
-  const [threadId] = useState<string | undefined>(() => {
-    if (typeof window !== 'undefined') {
-      const cachedId = localStorage.getItem(`${flow.id}-threadId`)
-      return cachedId || undefined
-    }
-    return undefined
-  })
-
   const { messages, addUserMessage, resetChat, loadInitialMessages } = useDirect(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/flow/${flow.id}`,
     workspaceId,
+    flow.id,
     {},
-    listener,
-    threadId || undefined
+    listener
   )
 
   useEffect(() => {

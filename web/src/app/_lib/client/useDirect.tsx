@@ -14,11 +14,11 @@ export type DirectListenerType = {
 export const useDirect = (
   url: string,
   workspaceId: string,
+  flowId: string,
   headers?: Record<string, string>,
-  listener?: DirectListenerType,
-  flowId?: string
+  listener?: DirectListenerType
 ) => {
-  const [data, setData] = useState<string | undefined>(undefined)
+  const [data] = useState<string | undefined>(undefined)
 
   const [thread, setThread] = useState<string | undefined>(() => {
     if (typeof window !== 'undefined') {
@@ -114,11 +114,21 @@ export const useDirect = (
             }),
           })
 
+          if (!response.ok) {
+            // Server down errors
+            throw new Error('Failed to fetch')
+          }
+
           const data = await response.json()
 
-          const resultText = data.json ? data.json : data.text.replace(/\\/g, '')
+          if (data?.success === false) {
+            throw new Error(data.message)
+          }
 
-          setData(undefined)
+          const resultText = data.json
+            ? '``` ' + JSON.stringify(data.json) + '```'
+            : data.text.replace(/\\/g, '')
+
           setThread(data.chatId)
           localStorage.setItem(`${flowId}-threadId`, data.chatId)
           setMessages((prevMessages) => {
@@ -138,6 +148,14 @@ export const useDirect = (
           } else {
             listener?.onError?.(error)
           }
+
+          setMessages((prevMessages) => {
+            const lastMessage = prevMessages.slice(-1)[0]
+            lastMessage.content =
+              'There was an error processing the request. Please try again later.'
+
+            return [...prevMessages.slice(0, -1), lastMessage]
+          })
         }
       }
 
