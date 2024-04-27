@@ -116,7 +116,7 @@ export const useDirect = (
 
           const data = await response.json()
 
-          const resultText = data.text ?? data.json
+          const resultText = `${data.text}${data.json}`
 
           setData(undefined)
           setThread(data.chatId)
