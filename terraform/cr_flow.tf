@@ -33,10 +33,10 @@ resource "google_cloud_run_v2_service" "flow" {
           memory = "4096Mi"
         }
       }
-      # volume_mounts {
-      #   name       = "cloudsql"
-      #   mount_path = "/cloudsql"
-      # }
+      volume_mounts {
+        name       = "bucket"
+        mount_path = "/mnt/bucket"
+      }
       image = "gcr.io/${var.project_id}/discontinuity-flow:latest"
       name  = "flow"
       env {
@@ -55,16 +55,6 @@ resource "google_cloud_run_v2_service" "flow" {
       env {
         name  = "FLOWISE_SECRETKEY_OVERWRITE"
         value = "whd2eud2jcn8XQG_vhm"
-      }
-
-      env {
-        name  = "S3_STORAGE_ACCESS_KEY_ID"
-        value = var.flow_s3_storage_access_key_id
-      }
-
-      env {
-        name  = "S3_STORAGE_SECRET_ACCESS_KEY"
-        value = var.flow_s3_storage_secret_access_key
       }
 
       env {

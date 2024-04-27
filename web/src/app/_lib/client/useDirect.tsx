@@ -116,12 +116,14 @@ export const useDirect = (
 
           const data = await response.json()
 
+          const resultText = data.text ?? data.json
+
           setData(undefined)
           setThread(data.chatId)
           localStorage.setItem(`${flowId}-threadId`, data.chatId)
           setMessages((prevMessages) => {
             const lastMessage = prevMessages.slice(-1)[0]
-            lastMessage.content = JSON.stringify(data.json)
+            lastMessage.content = JSON.stringify(resultText)
 
             return [...prevMessages.slice(0, -1), lastMessage]
           })
