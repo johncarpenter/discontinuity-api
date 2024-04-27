@@ -1,7 +1,8 @@
 resource "google_cloud_run_v2_service" "flow" {
-  name     = "discontinuity-flow-service"
-  location = var.region
-  ingress  = "INGRESS_TRAFFIC_ALL"
+  name         = "discontinuity-flow-service"
+  location     = var.region
+  ingress      = "INGRESS_TRAFFIC_ALL"
+  launch_stage = "BETA"
 
   template {
     scaling {
@@ -9,11 +10,20 @@ resource "google_cloud_run_v2_service" "flow" {
       min_instance_count = 1
     }
 
+    # volumes {
+    #   name = "cloudsql"
+    #   cloud_sql_instance {
+    #     instances = [google_sql_database_instance.default.connection_name]
+    #   }
+    # }
     volumes {
-      name = "cloudsql"
-      cloud_sql_instance {
-        instances = [google_sql_database_instance.default.connection_name]
+      name = "bucket"
+
+      gcs {
+        bucket    = google_storage_bucket.default.name
+        read_only = false
       }
+
     }
 
     containers {
@@ -23,10 +33,10 @@ resource "google_cloud_run_v2_service" "flow" {
           memory = "4096Mi"
         }
       }
-      volume_mounts {
-        name       = "cloudsql"
-        mount_path = "/cloudsql"
-      }
+      # volume_mounts {
+      #   name       = "cloudsql"
+      #   mount_path = "/cloudsql"
+      # }
       image = "gcr.io/${var.project_id}/discontinuity-flow:latest"
       name  = "flow"
       env {
@@ -55,6 +65,17 @@ resource "google_cloud_run_v2_service" "flow" {
       env {
         name  = "S3_STORAGE_SECRET_ACCESS_KEY"
         value = var.flow_s3_storage_secret_access_key
+      }
+
+      env {
+        name  = "BLOB_STORAGE_PATH"
+        value = "/mnt/bucket"
+      }
+
+      env {
+        name  = "STORAGE_TYPE"
+        value = "local"
+
       }
 
     }
@@ -94,4 +115,9 @@ resource "google_cloud_run_domain_mapping" "flow" {
   metadata {
     namespace = var.project_id
   }
+}
+
+resource "google_storage_bucket" "default" {
+  name     = "discontinuity-flow-storage"
+  location = "US"
 }

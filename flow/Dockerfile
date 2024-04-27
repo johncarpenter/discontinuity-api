@@ -20,10 +20,10 @@ ENV DATABASE_USER=flow
 #ENV OVERRIDE_DATABASE=false
 ENV AWS_REGION=us-west-2
 
-ENV STORAGE_TYPE=s3
+#ENV STORAGE_TYPE=s3
 
-ENV S3_STORAGE_BUCKET_NAME=discontinuity-flowise-main
-ENV S3_STORAGE_REGION=us-west-2
+#ENV S3_STORAGE_BUCKET_NAME=discontinuity-flowise-main
+#ENV S3_STORAGE_REGION=us-west-2
 
 # Latest version of flowise 1.6.6 updated Apr 26, 2024
 RUN npm install -g flowise@1.6.6
