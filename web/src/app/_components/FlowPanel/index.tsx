@@ -106,9 +106,13 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
                           <div className="text-sm text-gray-600 mt-2 ml-4"> Searching... </div>
                         </div>
                       )}
-                      <Markdown remarkPlugins={[remarkMath, remarkGfm]} className={style.markdown}>
+                      {/* <Markdown remarkPlugins={[remarkMath, remarkGfm]} className={style.markdown}>
                         {message.content}
-                      </Markdown>
+                      </Markdown> */}
+                      <div
+                        className={style.markdown}
+                        dangerouslySetInnerHTML={{ __html: message.content }}
+                      ></div>
                       {message.sources?.length > 0 && (
                         <>
                           <h4 className="mt-2">Sources</h4>
