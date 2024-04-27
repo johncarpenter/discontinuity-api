@@ -9,11 +9,11 @@ import {
   UserIcon,
 } from '@heroicons/react/24/outline'
 import style from '@/css/markdown.module.css'
-import remarkMath from 'remark-math'
-import remarkGfm from 'remark-gfm'
+//import remarkMath from 'remark-math'
+//import remarkGfm from 'remark-gfm'
 import { Text } from '@/components/Base/text'
 
-import Markdown from 'react-markdown'
+//import Markdown from 'react-markdown'
 import { useRef, useState, useEffect } from 'react'
 import SourcesPanel from '../SourcesPanel'
 import { DirectListenerType, useDirect } from '@/lib/client/useDirect'
