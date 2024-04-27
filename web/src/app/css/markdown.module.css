@@ -17,3 +17,18 @@
     color: #1a73e8;
     text-decoration: underline;
 }
+
+.markdown table{
+    border-collapse: collapse;
+    width: 100%;
+    @apply bg-slate-200 text-sm;
+}
+
+.markdown td, .markdown th{
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.markdown img{
+   @apply mx-auto w-2/3;
+}

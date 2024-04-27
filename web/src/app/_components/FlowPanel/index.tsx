@@ -8,17 +8,14 @@ import {
   SparklesIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
-import style from '@/css/markdown.module.css'
-//import remarkMath from 'remark-math'
-//import remarkGfm from 'remark-gfm'
 import { Text } from '@/components/Base/text'
 
-//import Markdown from 'react-markdown'
 import { useRef, useState, useEffect } from 'react'
 import SourcesPanel from '../SourcesPanel'
 import { DirectListenerType, useDirect } from '@/lib/client/useDirect'
 import { Button } from '@/components/Base/button'
 import { flows } from '@prisma/client'
+import { RenderMarkdown } from '@/lib/client/renderMarkdown'
 
 type FlowPanelProps = {
   workspaceId: string
@@ -106,13 +103,7 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
                           <div className="text-sm text-gray-600 mt-2 ml-4"> Searching... </div>
                         </div>
                       )}
-                      {/* <Markdown remarkPlugins={[remarkMath, remarkGfm]} className={style.markdown}>
-                        {message.content}
-                      </Markdown> */}
-                      <div
-                        className={style.markdown}
-                        dangerouslySetInnerHTML={{ __html: message?.content }}
-                      ></div>
+                      <RenderMarkdown content={message.content} />
                       {message.sources?.length > 0 && (
                         <>
                           <h4 className="mt-2">Sources</h4>

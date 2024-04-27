@@ -22,17 +22,21 @@ export default function Sidebar({ workspaces }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
 
-  const [currentWorkspace, setCurrentWorkspace] = useState(
-    workspaces && workspaces[0] ? workspaces[0].slug : ''
-  )
+  const [currentWorkspace, setCurrentWorkspace] = useState(() => {
+    if (!pathname.includes('/workspace/')) {
+      const pathParts = pathname.split('/')
+      return pathParts[1]
+    }
+
+    return workspaces && workspaces[0] ? workspaces[0].slug : ''
+  })
 
   const router = useRouter()
 
   const setWorkspace = (workspace: string) => {
     setCurrentWorkspace(workspace)
-    if (!pathname.includes('/workspace/')) return
-    const currentPath = pathname.split('/').pop()
-    router.push(`/workspace/${workspace}/${currentPath}`)
+
+    router.push(`/workspace/${workspace}/flow`)
     setSidebarOpen(false)
   }
 
