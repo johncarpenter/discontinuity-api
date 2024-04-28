@@ -1,8 +1,10 @@
 import Sidebar from '@/components/Sidebar'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspaces } from '@/prisma/services/workspace'
+import { WorkspaceProvider } from '@/app/_lib/client/workspaceProvider'
+import Loading from './loading'
 
 type AuthProps = {
   children: React.ReactNode
@@ -14,14 +16,18 @@ export default async function AuthLayout({ children }: AuthProps) {
   const workspaces = await getWorkspaces(organizationId)
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
-      <nav>
-        <Sidebar workspaces={workspaces} />
-      </nav>
-      <main className="lg:pl-72">
-        <Toaster />
-        <div>{children}</div>
-      </main>
-    </div>
+    <WorkspaceProvider>
+      <div className="flex flex-col min-h-screen bg-slate-50">
+        <nav>
+          <Sidebar workspaces={workspaces} />
+        </nav>
+        <main className="lg:pl-72">
+          <Toaster />
+          <div>
+            <Suspense fallback={<Loading />}>{children}</Suspense>
+          </div>
+        </main>
+      </div>
+    </WorkspaceProvider>
   )
 }

@@ -13,6 +13,7 @@ import {
   XCircleIcon,
 } from '@heroicons/react/20/solid'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export function AvatarImage() {
   const { user } = useUser()
@@ -70,34 +71,34 @@ export default function Avatar() {
           <div className="py-1">
             {menuItems.map((item, index) => (
               <Menu.Item key={index}>
-                <a
+                <Link
                   href={item.href}
                   className="text-gray-600 hover:bg-gray-400 hover:text-white group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
                 >
                   <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
                   {item.name}
-                </a>
+                </Link>
               </Menu.Item>
             ))}
 
             <Menu.Item key={98}>
-              <a
+              <Link
                 href={`/organization`}
                 className="text-gray-600 hover:bg-gray-400 hover:text-white group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
               >
                 <ArchiveBoxIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
                 Organization
-              </a>
+              </Link>
             </Menu.Item>
             {user && user?.organizationMemberships?.length > 1 && (
               <Menu.Item key={98}>
-                <a
+                <Link
                   href={'/org-selection'}
                   className="text-gray-600 hover:bg-gray-400 hover:text-white group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
                 >
                   <ArrowRightCircleIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
                   Switch Organization
-                </a>
+                </Link>
               </Menu.Item>
             )}
             <Menu.Item key={99}>

@@ -1,5 +1,5 @@
 'use client'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { classNames } from '@/utils/classnames'
@@ -13,6 +13,7 @@ import { Field } from '@/components/Base/fieldset'
 import { Select } from '@/components/Base/select'
 import { Button } from '../Base/button'
 import { useRouter } from 'next/navigation'
+import { useWorkspace } from '@/app/_lib/client/workspaceProvider'
 
 export type SidebarProps = {
   workspaces: workspaces[]
@@ -20,25 +21,30 @@ export type SidebarProps = {
 
 export default function Sidebar({ workspaces }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const pathname = usePathname()
 
-  const [currentWorkspace, setCurrentWorkspace] = useState(() => {
-    if (!pathname.includes('/workspace/')) {
-      const pathParts = pathname.split('/')
-      return pathParts[1]
-    }
-
-    return workspaces && workspaces[0] ? workspaces[0].slug : ''
-  })
+  const [workspace, setWorkspace] = useWorkspace()
 
   const router = useRouter()
 
-  const setWorkspace = (workspace: string) => {
-    setCurrentWorkspace(workspace)
+  const changeWorkspace = (workspace: string) => {
+    setWorkspace(workspaces.find((w) => w.slug === workspace) || workspaces[0])
 
     router.push(`/workspace/${workspace}/flow`)
     setSidebarOpen(false)
   }
+
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (workspaces.length > 0 && !workspace) {
+      const path = pathname.split('/')
+      if (path[1] === 'workspace') {
+        const workspace = workspaces.find((w) => w.slug === path[2])
+        if (workspace) setWorkspace(workspace)
+        else setWorkspace(workspaces[0])
+      }
+    }
+  }, [setWorkspace, workspace, workspaces, pathname])
 
   function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
     return (
@@ -48,8 +54,8 @@ export default function Sidebar({ workspaces }: SidebarProps) {
           {workspaces.length > 0 ? (
             <Select
               name="status"
-              value={currentWorkspace}
-              onChange={(e) => setWorkspace(e.target.value)}
+              value={workspace?.slug}
+              onChange={(e) => changeWorkspace(e.target.value)}
             >
               {workspaces.map((workspace: workspaces) => (
                 <option key={workspace.id} value={workspace.slug}>
@@ -132,30 +138,31 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                       <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <ul className="-mx-2 space-y-1">
-                            {workspaceMenu(currentWorkspace).map((menu, index) => (
-                              <div key={index}>
-                                <span className="text-xs uppercase text-gray-500 ">
-                                  {menu.name}
-                                </span>
-                                <li>
-                                  <ul className="-mx-2 space-y-1">
-                                    {menu.menuItems.map((item) => (
-                                      <li key={item.name}>
-                                        <MenuItem
-                                          setSidebarOpen={setSidebarOpen}
-                                          name={item.name}
-                                          href={item.href}
-                                          Icon={item.Icon}
-                                          active={pathname == item.href}
-                                          enabled={item.enabled}
-                                          visible={item.visible}
-                                        />
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </li>
-                              </div>
-                            ))}
+                            {workspace?.slug &&
+                              workspaceMenu(workspace.slug).map((menu, index) => (
+                                <div key={index}>
+                                  <span className="text-xs uppercase text-gray-500 ">
+                                    {menu.name}
+                                  </span>
+                                  <li>
+                                    <ul className="-mx-2 space-y-1">
+                                      {menu.menuItems.map((item) => (
+                                        <li key={item.name}>
+                                          <MenuItem
+                                            setSidebarOpen={setSidebarOpen}
+                                            name={item.name}
+                                            href={item.href}
+                                            Icon={item.Icon}
+                                            active={pathname == item.href}
+                                            enabled={item.enabled}
+                                            visible={item.visible}
+                                          />
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </li>
+                                </div>
+                              ))}
                           </ul>
                         </li>
                         <li className="-mx-6 mt-auto">
@@ -191,28 +198,29 @@ export default function Sidebar({ workspaces }: SidebarProps) {
               <ul className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul className="-mx-2 space-y-1">
-                    {workspaceMenu(currentWorkspace).map((menu, index) => (
-                      <div key={index}>
-                        <span className="text-xs uppercase text-gray-500 ">{menu.name}</span>
-                        <li>
-                          <ul className="-mx-2 space-y-1">
-                            {menu.menuItems.map((item) => (
-                              <li key={item.name}>
-                                <MenuItem
-                                  setSidebarOpen={setSidebarOpen}
-                                  name={item.name}
-                                  href={item.href}
-                                  Icon={item.Icon}
-                                  active={pathname == item.href}
-                                  enabled={item.enabled}
-                                  visible={item.visible}
-                                />
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      </div>
-                    ))}
+                    {workspace?.slug &&
+                      workspaceMenu(workspace.slug).map((menu, index) => (
+                        <div key={index}>
+                          <span className="text-xs uppercase text-gray-500 ">{menu.name}</span>
+                          <li>
+                            <ul className="-mx-2 space-y-1">
+                              {menu.menuItems.map((item) => (
+                                <li key={item.name}>
+                                  <MenuItem
+                                    setSidebarOpen={setSidebarOpen}
+                                    name={item.name}
+                                    href={item.href}
+                                    Icon={item.Icon}
+                                    active={pathname == item.href}
+                                    enabled={item.enabled}
+                                    visible={item.visible}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        </div>
+                      ))}
                   </ul>
                 </li>
 
