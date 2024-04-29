@@ -37,3 +37,5 @@ jobs:
           UNSTRUCTURED_URL: ${{ secrets.UNSTRUCTURED_URL }}
           UNSTRUCTURED_API_KEY: ${{ secrets.UNSTRUCTURED_API_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
+          QDRANT_URL: ${{ secrets.QDRANT_URL }}
