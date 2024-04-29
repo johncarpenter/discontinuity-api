@@ -3,6 +3,7 @@ import { Document } from "langchain/document";
 import {
   getFaissVectorStore,
   getPostgresVectorStore,
+  getQdrantVectorStore,
   persistVectorStore,
 } from "./utils";
 import { S3, GetObjectCommand } from "@aws-sdk/client-s3";
@@ -114,7 +115,7 @@ export async function handler(event: S3Event) {
   documents = await splitLargeDocuments(documents);
 
   // Calculate the embedding vector
-  await calculateEmbedding(folder, documents);
+  await calculateEmbeddingQdrant(folder, documents);
 
   console.log("Embedding calculated for file");
 }
@@ -294,6 +295,15 @@ async function calculateEmbedding(
   documents: Document<Record<string, any>>[]
 ) {
   const vectorstore = await getPostgresVectorStore(folder);
+
+  await vectorstore.addDocuments(documents);
+}
+
+async function calculateEmbeddingQdrant(
+  folder: string,
+  documents: Document<Record<string, any>>[]
+) {
+  const vectorstore = await getQdrantVectorStore(folder);
 
   await vectorstore.addDocuments(documents);
 }

@@ -80,6 +80,22 @@ resource "google_cloud_run_v2_service" "api" {
         name  = "COHERE_API_KEY"
         value = var.cohere_api_key
       }
+      env {
+        name  = "QDRANT_API_KEY"
+        value = var.qdrant_api_key
+      }
+      env {
+        name  = "QDRANT_URL"
+        value = var.qdrant_url
+      }
+      env {
+        name  = "UPSTASH_REDIS_REST_URL"
+        value = var.upstash_redis_rest_url
+      }
+      env {
+        name  = "UPSTASH_REDIS_REST_TOKEN"
+        value = var.upstash_redis_rest_token
+      }
     }
   }
 

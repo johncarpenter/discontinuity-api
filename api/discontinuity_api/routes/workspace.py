@@ -10,7 +10,7 @@ from discontinuity_api.database.api import getFlow
 from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.tools import get_agent_for_workspace
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
-from discontinuity_api.vector import add_document, get_postgres_vector_db, query_index, get_faiss_vector_db, get_postgres_vector_db_2, get_postgres_history
+from discontinuity_api.vector import query_index, get_faiss_vector_db, get_redis_history, get_qdrant_vector_db
 from discontinuity_api.utils import JWTBearer
 from langchain.docstore.document import Document
 from fastapi import APIRouter
@@ -23,6 +23,10 @@ import requests
 from sse_starlette.sse import EventSourceResponse
 import json
 from langchain_core.messages import HumanMessage, AIMessage
+
+from qdrant_client import models
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -66,7 +70,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
 
     thread = message.thread or str(uuid.uuid4())
 
-    history = get_postgres_history(table_name=workspace.id, session_id=thread)
+    history = get_redis_history(session_id=thread)
 
     history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
     
@@ -81,7 +85,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
                 for agentstep in msg:
                     if(agentstep.observation['context']):
                         docs = agentstep.observation['context']
-                        sources = reduceSourceDocumentsToUniqueFiles(sources=docs, threshold=0.15)                
+                        sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
                         yield stream_chunk(sources, "data")  
             elif action == "output":
                 response += msg
@@ -101,7 +105,7 @@ async def query(thread: str, workspace=Depends(JWTBearer())):
     logger.info(f"Querying workspace {workspace.id}")
 
     # Get the vector db for the workspace
-    history = get_postgres_history(table_name=workspace.id, session_id=thread)
+    history = get_redis_history(session_id=thread)
     
     formattedHistory = []
     for message in history.messages:
@@ -171,41 +175,6 @@ async def insert(document: Doc,s3: BaseClient = Depends(s3Client), workspace=Dep
         return JSONResponse(content="Object has been uploaded to bucket successfully", status_code=status.HTTP_201_CREATED)
     else:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="File could not be uploaded")
-
-@router.post("/search")
-async def search(message: Message, workspace=Depends(JWTBearer())):
-    """Query the model with RAG the workspace model"""
-
-    # Check if the workspace slug file exists in the local directory
-    logger.info(f"Searching {message.message} in workspace {workspace.slug}")
-
-    # Get the vector db for the workspace
-    db = await get_postgres_vector_db_2(workspace.id)
-
-    docs_with_score = await query_index(index=db, query=message.message)
-    
-    response = []
-    for doc, score in docs_with_score:
-        response.append({"content": doc.page_content, "score": score, "metadata": doc.metadata})
-
-    logger.info(f"Search response: {response}")
-        
-    return response
-
-@router.post("/query")
-async def query(message: Message, workspace=Depends(JWTBearer())):
-    """Query the model with RAG the workspace model"""
-
-    # Check if the workspace slug file exists in the local directory
-    logger.info(f"Querying workspace {workspace.id}")
-
-    # Get the vector db for the workspace
-    db = await get_postgres_vector_db_2(workspace.id)
-
-    response  = retrieval_qa(index=db, query=message.message)
-    
-    logger.info(f"Query response: {response}")
-    return {"text":response}
 
 
 @router.post("/flow/{flow_id}")
@@ -293,18 +262,13 @@ def get_stream_part_code(stream_part_type: str) -> str:
     }
     return stream_part_types[stream_part_type]
 
-def reduceSourceDocumentsToUniqueFiles(sources: list[Document], threshold: float = 0.25):
+def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
     # Iterate through to document list and return only unique filenames
     unique_files = {}
-    for source in sources:
-        
+    for source in sources:        
         includeRecord = True
-        if(source.metadata["relevance_score"] is not None and source.metadata['relevance_score'] < threshold):
-            logger.info(f"relevant score: {source.metadata['relevance_score']} skipping")
-            includeRecord = False
-
         if includeRecord:
-            metadata = source.metadata['metadata']
+            metadata = source.metadata
             if metadata['file'] not in unique_files:
                 unique_files[metadata['file']] = {
                     "pageContent": source.page_content,
@@ -315,11 +279,6 @@ def reduceSourceDocumentsToUniqueFiles(sources: list[Document], threshold: float
 
 def build_filter(filter: dict):
 
-    filter_str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')"
-
-    if not filter:
-        return filter_str
-   
-    for key, value in filter.items():
-        filter_str += f" and metadata->>'{key}' like ('%{value}%')"
-    return filter_str
+    return models.Filter(
+        should=[models.FieldCondition(key="metadata.category", match=models.MatchAny(any=["NarrativeText","ImageDescription","Transcription","ListItem"]))]
+    )

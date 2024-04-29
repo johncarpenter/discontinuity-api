@@ -51,7 +51,9 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
       })
 
       if (uploadResponse.ok) {
-        toast.error('There was an error uploading the file. Please try again')
+        toast.success(
+          'File uploaded successfully. Loading the file into the workspace will take betwen 1-5 minutes'
+        )
       }
     } else {
       toast.error('There was an error uploading the file. Please try again')

@@ -2,6 +2,10 @@ import * as fs from "fs";
 import { S3, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 import { OpenAIEmbeddings } from "@langchain/openai";
+import {
+  QdrantLibArgs,
+  QdrantVectorStore,
+} from "@langchain/community/vectorstores/qdrant";
 
 import path from "path";
 const s3Client = new S3();
@@ -108,6 +112,21 @@ export async function getPostgresVectorStore(tableName: string) {
   };
 
   const pgstore = await PGVectorStore.initialize(await getEmbeddings(), config);
+
+  return pgstore;
+}
+
+export async function getQdrantVectorStore(tableName: string) {
+  const config: QdrantLibArgs = {
+    collectionName: tableName,
+    apiKey: process.env.QDRANT_API_KEY || "",
+    url: process.env.QDRANT_URL || "",
+  };
+
+  const pgstore = await QdrantVectorStore.fromExistingCollection(
+    await getEmbeddings(),
+    config
+  );
 
   return pgstore;
 }

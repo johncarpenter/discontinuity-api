@@ -19,6 +19,9 @@ provider:
     UNSTRUCTURED_URL: ${env:UNSTRUCTURED_URL}
     UNSTRUCTURED_API_KEY: ${env:UNSTRUCTURED_API_KEY}
     DATABASE_URL: ${env:DATABASE_URL}
+    QDRANT_API_KEY: ${env:QDRANT_API_KEY}
+    QDRANT_URL: ${env:QDRANT_URL}
+
   iamRoleStatements:
     - Effect: Allow
       Action:

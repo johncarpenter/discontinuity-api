@@ -2,39 +2,56 @@ import Image from 'next/image'
 
 export default function MarketingHero() {
   return (
-    <div className="relative isolate px-6 pt-4 lg:px-8">
-      <div className="mx-auto max-w-4xl ">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-x-2">
-            <h1 className="mt-10 pb-10 text-6xl font-bold tracking-normal text-gray-900">
-              Jump start company-wide AI initiatives faster with the Bridge platform.
-            </h1>
-          </div>
-          <div className="flex items-center justify-center gap-x-2">
-            <Image src="/images/bridge_logo_full.png" width={300} height={120} alt="Bridge Logo" />
-            {/* <p className="pb-2 text-4xl font-bold tracking-tight  sm:text-6xl bg-gradient-to-r from-sky-800 to-orange-400 via-sky-700  bg-clip-text text-transparent">
-              Bridge
-            </p> */}
-          </div>
-
-          <p className="mt-6 text-lg leading-8 text-gray-600">
-            Bridge is a web-based platform with a full suite of tools for building, deploying, and
-            managing AI workflows, agents, and models. It is designed to be easy to use and flexible
-            enough to meet the needs of any organization.
-          </p>
-        </div>
-      </div>
-      <div
-        className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+    <div className="relative isolate overflow-hidden bg-white">
+      <svg
+        className="absolute inset-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
         aria-hidden="true"
       >
-        <div
-          className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-secondary-100 to-secondary-300 opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-          style={{
-            clipPath:
-              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-          }}
+        <defs>
+          <pattern
+            id="0787a7c5-978c-4f66-83c7-11c213f99cb7"
+            width={200}
+            height={200}
+            x="50%"
+            y={-1}
+            patternUnits="userSpaceOnUse"
+          >
+            <path d="M.5 200V.5H200" fill="none" />
+          </pattern>
+        </defs>
+        <rect
+          width="100%"
+          height="100%"
+          strokeWidth={0}
+          fill="url(#0787a7c5-978c-4f66-83c7-11c213f99cb7)"
         />
+      </svg>
+      <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-8">
+        <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:flex-shrink-0 lg:pt-8">
+          <div className="flex flex-col gap-x-2 mt-10 pb-10 ">
+            <span className=" text-secondary-600 uppercase">Ready to get started in AI?</span>
+            <h1 className="text-6xl font-bold tracking-normal text-gray-900">
+              Jump start your company-wide AI initiatives with the Bridge platform.
+            </h1>
+          </div>
+          <p className="mt-6 text-lg leading-8 text-gray-600">Bridge connects your teams</p>
+          <div className="mt-10 flex items-center gap-x-6">
+            Get started Learn more <span aria-hidden="true">→</span>
+          </div>
+        </div>
+        <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
+          <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
+            <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+              <Image
+                src="/images/screenshot_1.png"
+                width={2432}
+                height={1442}
+                className="w-[76rem] rounded-md shadow-2xl ring-1 ring-gray-900/10"
+                alt="Application screenshot"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

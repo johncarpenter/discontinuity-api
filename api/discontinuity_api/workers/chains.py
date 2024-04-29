@@ -15,7 +15,8 @@ import json
 from langchain_cohere import CohereRerank
 from langchain_community.llms import Cohere
 
-from discontinuity_api.vector.base import get_postgres_vector_db_2
+
+from discontinuity_api.vector.base import get_qdrant_vector_db
 
 logger = logging.getLogger(__name__)
 
@@ -71,14 +72,14 @@ def format_docs(docs):
     return "\n\n".join(formattedDocs)
     
 
-async def get_chain_for_workspace(workspaceId:str, filter:str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')" ):
+async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
     # Each workspace will have it's own chain, so we need to create a new chain for each workspace
     # We will use the workspaceId as the chain name
     if(workspaceId=="clumutd7f0002tsdezd06430g"): # Test workspace on dev
         llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
  
-        vector = await get_postgres_vector_db_2(workspaceId)
-        retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":filter}) 
+        vector = get_qdrant_vector_db(workspaceId)
+        retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 15, "filter":filter, "score_threshold":0.85})
 
 
         #llm = Cohere(temperature=0)
@@ -91,8 +92,7 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = "metadata->>'cat
         prompt = PromptTemplate.from_template(STANDARD_PROMPT)
 
         history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, contextualize_history_prompt())
-
-       
+      
 
         question_answer_chain = create_stuff_documents_chain(llm, prompt)
         
@@ -105,10 +105,11 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = "metadata->>'cat
         return await defaultChain(workspaceId, filter)
     
 
-async def defaultChain(workspaceId:str, filter:str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')"):
+async def defaultChain(workspaceId:str, filter:str = None):
     llm = ChatOpenAI(streaming=True,temperature=0)
-    vector = await get_postgres_vector_db_2(workspaceId)
-    retriever = vector.as_retriever(search_type="similarity", search_kwargs={"k": 15, "filter":filter})
+    
+    vector = get_qdrant_vector_db(workspaceId)
+    retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 15, "filter":filter, "score_threshold":0.85})
 
     
     compressor = CohereRerank()
@@ -141,3 +142,4 @@ def contextualize_history_prompt():
         ]
     )
     return contextualize_q_prompt
+

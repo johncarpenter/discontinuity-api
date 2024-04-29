@@ -9,7 +9,6 @@ from langchain.tools.retriever import create_retriever_tool
 from  langchain.chains.retrieval_qa.base import RetrievalQA
 
 from discontinuity_api.workers.chains import contextualize_history_prompt, get_chain_for_workspace
-from discontinuity_api.vector.base import get_postgres_vector_db_2
 from langchain_core.prompts import  PromptTemplate
 from langchain.agents import (
     Tool,

@@ -73,9 +73,15 @@ variable "aws_secret_access_key" {
 variable "cohere_api_key" {
   type = string
 }
-variable "flow_s3_storage_access_key_id" {
+variable "qdrant_api_key" {
   type = string
 }
-variable "flow_s3_storage_secret_access_key" {
+variable "qdrant_url" {
+  type = string
+}
+variable "upstash_redis_rest_url" {
+  type = string
+}
+variable "upstash_redis_rest_token" {
   type = string
 }

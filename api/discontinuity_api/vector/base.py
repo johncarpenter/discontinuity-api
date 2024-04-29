@@ -13,6 +13,12 @@ import textwrap
 import openai
 import os
 import faiss
+from qdrant_client import QdrantClient
+from langchain_community.vectorstores import Qdrant
+
+from langchain_community.chat_message_histories import UpstashRedisChatMessageHistory
+
+
 
 environment = os.getenv("ENVIRONMENT")
 
@@ -56,64 +62,32 @@ def get_postgres_vector_db(
 
     return vector_store
 
-async def get_postgres_vector_db_2(
-    table_name: str, embeddings=OpenAIEmbeddings()
+
+def get_qdrant_vector_db(table_name: str, embeddings=OpenAIEmbeddings()
 ) -> VectorStore:
-    logger.info("Using production vector database")
+    logger.info("Using qdrant vector database")
 
     # we need to create a new vector database if it does not exist
-    if not os.getenv("VECTORDB_URL"):
-        raise Exception("Vector Env not set")
+    if not os.getenv("QDRANT_URL") or not os.getenv("QDRANT_API_KEY"):
+        raise Exception("QDrant Env not set")
     
-    
-    engine = await PostgresEngine.afrom_instance(
-        project_id='discontinuity-ai', region='europe-west1', instance='discontinuity-api-db', database='discontinuity-rag' , user='discontinuity-rag', password='2UZF9gAycs2UCWz'
+    client = QdrantClient(url=os.getenv("QDRANT_URL"), api_key=os.getenv("QDRANT_API_KEY"))   
+    qdrant = Qdrant(client=client, collection_name=table_name, embeddings=embeddings, content_payload_key="content", metadata_payload_key="metadata")
+
+    return qdrant
+
+
+def get_redis_history(session_id:str) -> VectorStore:
+
+    if not os.getenv("UPSTASH_REDIS_REST_URL") or not os.getenv("UPSTASH_REDIS_REST_TOKEN"):
+        raise Exception("Redis Env not set")
+
+    URL = os.getenv("UPSTASH_REDIS_REST_URL")
+    TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
+
+    history = UpstashRedisChatMessageHistory(
+        url=URL, token=TOKEN, ttl=10, session_id=session_id
     )
-
-
-    # Initialize PostgresVectorStore
-    custom_store = await PostgresVectorStore.create(
-        engine=engine,
-        table_name=table_name,
-        embedding_service=embeddings,
-        metadata_columns=["metadata"],
-        # Connect to a existing VectorStore by customizing the table schema:
-        id_column="id",
-        content_column="pageContent",
-        embedding_column="embedding",
-    )
-
-
-    return custom_store
-
-
-def get_postgres_history(
-    table_name: str, session_id:str) -> VectorStore:
-    logger.info(f"Access history for {session_id} in {table_name}")
-
-    # we need to create a new vector database if it does not exist
-    if not os.getenv("VECTORDB_URL"):
-        raise Exception("Vector Env not set")
-    
-    
-    engine = PostgresEngine.from_instance(
-        project_id='discontinuity-ai', region='europe-west1', instance='discontinuity-api-db', database='discontinuity-rag' , user='discontinuity-rag', password='2UZF9gAycs2UCWz'
-    )
-    
-    TABLE_NAME = f"{table_name}_history"
-
-
-    try:
-        history = PostgresChatMessageHistory.create_sync(            
-            engine, session_id=session_id, table_name=TABLE_NAME
-        )
-    except Exception as e:
-        logger.warning(f"Table {TABLE_NAME} does not exist. Creating new table")
-        engine.init_chat_history_table(table_name=TABLE_NAME)
-        history = PostgresChatMessageHistory.create_sync(            
-            engine, session_id=session_id, table_name=TABLE_NAME
-        )
-
 
     return history
 
