@@ -3,7 +3,7 @@ frameworkVersion: "3"
 
 # Uncomment this line to read the env variables from a .env local file. This is used for deploying just this
 # component to a test account
-useDotenv: true
+#useDotenv: true
 
 provider:
   name: aws
