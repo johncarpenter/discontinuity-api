@@ -4,6 +4,8 @@ import Advisory from './Advisory'
 import { Metadata } from 'next'
 import FeatureTechnicalSection from '../_components/FeatureTechnicalSection'
 import GettingStarted from './GettingStarted'
+//import MarketingFeature from './MarketingFeature'
+//import MarketingHero from './MarketingHero'
 
 export const metadata: Metadata = {
   title: 'Discontinuity.ai | AI Architects | MLOps | Data Science',
@@ -18,8 +20,9 @@ export default function Home() {
   return (
     <>
       <MarketingLayout>
-        <div id="prototyping" />
         <Advisory />
+        <div id="prototyping" />
+        {/* <MarketingFeature /> */}
         <GettingStarted />
         <div id="technical" />
         <FeatureTechnicalSection />

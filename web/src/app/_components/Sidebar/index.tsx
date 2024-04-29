@@ -37,11 +37,11 @@ export default function Sidebar({ workspaces }: SidebarProps) {
 
   useEffect(() => {
     if (workspaces.length > 0 && !workspace) {
+      setWorkspace(workspaces[0])
       const path = pathname.split('/')
       if (path[1] === 'workspace') {
         const workspace = workspaces.find((w) => w.slug === path[2])
         if (workspace) setWorkspace(workspace)
-        else setWorkspace(workspaces[0])
       }
     }
   }, [setWorkspace, workspace, workspaces, pathname])
@@ -123,12 +123,12 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10">
                     <div className="flex h-16 shrink-0 items-center">
                       <span className="sr-only">discontinuity.ai</span>
-                      <div className="mr-3">
+                      <div className="mr-3 mt-3">
                         <Image
                           priority
-                          src="/images/glitch.svg"
+                          src="/images/bridge_logo_full.png"
                           height={90}
-                          width={300}
+                          width={240}
                           alt="Discontinuity AI"
                         />
                       </div>
@@ -138,31 +138,30 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                       <ul className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <ul className="-mx-2 space-y-1">
-                            {workspace?.slug &&
-                              workspaceMenu(workspace.slug).map((menu, index) => (
-                                <div key={index}>
-                                  <span className="text-xs uppercase text-gray-500 ">
-                                    {menu.name}
-                                  </span>
-                                  <li>
-                                    <ul className="-mx-2 space-y-1">
-                                      {menu.menuItems.map((item) => (
-                                        <li key={item.name}>
-                                          <MenuItem
-                                            setSidebarOpen={setSidebarOpen}
-                                            name={item.name}
-                                            href={item.href}
-                                            Icon={item.Icon}
-                                            active={pathname == item.href}
-                                            enabled={item.enabled}
-                                            visible={item.visible}
-                                          />
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </li>
-                                </div>
-                              ))}
+                            {workspaceMenu(workspace?.slug).map((menu, index) => (
+                              <div key={index}>
+                                <span className="text-xs uppercase text-gray-500 ">
+                                  {menu.name}
+                                </span>
+                                <li>
+                                  <ul className="-mx-2 space-y-1">
+                                    {menu.menuItems.map((item) => (
+                                      <li key={item.name}>
+                                        <MenuItem
+                                          setSidebarOpen={setSidebarOpen}
+                                          name={item.name}
+                                          href={item.href}
+                                          Icon={item.Icon}
+                                          active={pathname == item.href}
+                                          enabled={item.enabled}
+                                          visible={item.visible}
+                                        />
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </li>
+                              </div>
+                            ))}
                           </ul>
                         </li>
                         <li className="-mx-6 mt-auto">
@@ -180,15 +179,15 @@ export default function Sidebar({ workspaces }: SidebarProps) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-800 px-6 bg-gradient-to-br from-primary-800 to-primary-700">
             <div className="flex h-16 shrink-0 items-center">
               <span className="sr-only">discontinuity.ai</span>
-              <div className="mr-3">
+              <div className="mr-3 mt-3">
                 <Image
                   priority
-                  src="/images/glitch.svg"
-                  height={90}
-                  width={300}
+                  src="/images/bridge_logo_full.png"
+                  height={70}
+                  width={200}
                   alt="Discontinuity AI"
                 />
               </div>
@@ -198,29 +197,28 @@ export default function Sidebar({ workspaces }: SidebarProps) {
               <ul className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul className="-mx-2 space-y-1">
-                    {workspace?.slug &&
-                      workspaceMenu(workspace.slug).map((menu, index) => (
-                        <div key={index}>
-                          <span className="text-xs uppercase text-gray-500 ">{menu.name}</span>
-                          <li>
-                            <ul className="-mx-2 space-y-1">
-                              {menu.menuItems.map((item) => (
-                                <li key={item.name}>
-                                  <MenuItem
-                                    setSidebarOpen={setSidebarOpen}
-                                    name={item.name}
-                                    href={item.href}
-                                    Icon={item.Icon}
-                                    active={pathname == item.href}
-                                    enabled={item.enabled}
-                                    visible={item.visible}
-                                  />
-                                </li>
-                              ))}
-                            </ul>
-                          </li>
-                        </div>
-                      ))}
+                    {workspaceMenu(workspace?.slug).map((menu, index) => (
+                      <div key={index}>
+                        <span className="text-xs uppercase text-gray-500 ">{menu.name}</span>
+                        <li>
+                          <ul className="-mx-2 space-y-1">
+                            {menu.menuItems.map((item) => (
+                              <li key={item.name}>
+                                <MenuItem
+                                  setSidebarOpen={setSidebarOpen}
+                                  name={item.name}
+                                  href={item.href}
+                                  Icon={item.Icon}
+                                  active={pathname == item.href}
+                                  enabled={item.enabled}
+                                  visible={item.visible}
+                                />
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                      </div>
+                    ))}
                   </ul>
                 </li>
 
@@ -244,7 +242,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
           <div className="flex-1 text-sm font-semibold leading-6 text-white">
             <Image
               priority
-              src="/images/glitch.svg"
+              src="/images/bridge_logo_full.png"
               height={45}
               width={150}
               alt="Discontinuity AI"

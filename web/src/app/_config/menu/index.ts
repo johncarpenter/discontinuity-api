@@ -9,7 +9,7 @@ import {
   PuzzlePieceIcon,
 } from '@heroicons/react/24/outline'
 
-export const workspaceMenu = (currentWorkspace: string) => [
+export const workspaceMenu = (currentWorkspace?: string) => [
   {
     name: 'Workspace',
     menuItems: [
