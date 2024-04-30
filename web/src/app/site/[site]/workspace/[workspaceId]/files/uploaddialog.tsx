@@ -33,6 +33,9 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
     onDragLeave: () => {
       setDrag(false)
     },
+    onError: () => {
+      toast.error('There was a problem uploading the file. Please try again.')
+    },
   })
 
   // Add workspace via API
@@ -49,6 +52,8 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
     const body = JSON.stringify({ filename: file.name, contentType: file.type })
 
     const response = await fetch(`/api/workspace/${workspaceId}/files`, { method: 'POST', body })
+
+    console.log(response)
 
     if (response.ok) {
       const { url, fields } = await response.json()
