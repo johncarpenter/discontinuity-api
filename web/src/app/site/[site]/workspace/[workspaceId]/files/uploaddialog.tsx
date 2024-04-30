@@ -11,23 +11,38 @@ import {
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import Dropzone from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 import toast from 'react-hot-toast'
-import { DocumentIcon } from '@heroicons/react/24/outline'
+import { DocumentIcon, SparklesIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 
 export function UploadDialog({ workspaceId }: { workspaceId: string }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [drag, setDrag] = useState(false)
 
   const router = useRouter()
 
-  // Add workspace via API
-  async function uploadFile(uploadFiles: File[]) {
-    uploadFiles.forEach((file) => {
-      uploadSingleFile(file)
-    })
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      uploadFile(acceptedFiles)
+    },
+    onDragEnter: () => {
+      setDrag(true)
+    },
+    onDragLeave: () => {
+      setDrag(false)
+    },
+  })
 
-    setIsOpen(false)
-    router.refresh()
+  // Add workspace via API
+  function uploadFile(uploadFiles: File[]) {
+    setIsUploading(true)
+    Promise.all(uploadFiles.map(uploadSingleFile)).then(() => {
+      setIsUploading(false)
+      router.refresh()
+      setIsOpen(false)
+    })
   }
 
   async function uploadSingleFile(file: File) {
@@ -38,7 +53,6 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
     if (response.ok) {
       const { url, fields } = await response.json()
 
-      console.log('Uploading to:', url, fields)
       const formData = new FormData()
       Object.entries(fields).forEach(([key, value]) => {
         formData.append(key, value as string)
@@ -67,21 +81,29 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
       </Button>
       <Dialog open={isOpen} onClose={setIsOpen}>
         <DialogTitle>File Upload</DialogTitle>
-        <DialogDescription>Add Files to Vector</DialogDescription>
+        <DialogDescription>Add Files to Context Database</DialogDescription>
         <DialogBody>
-          <div className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-            <Dropzone onDrop={uploadFile} minSize={0} maxSize={5242880}>
-              {({ getRootProps, getInputProps }) => (
-                <div {...getRootProps()}>
-                  <div className="absolute inset-0 bg-gray-100 bg-opacity-50 rounded-lg flex flex-col items-center">
-                    <input {...getInputProps()} />
-                    <DocumentIcon className="h-12 w-12 p-2" />
-                    <p className="text-md text-gray-600">Drag and drop your files here</p>
-                  </div>
+          {isUploading ? (
+            <div className="flex p-4 items-start">
+              <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 animate-spin" />{' '}
+              <div className="text-sm text-gray-600 mt-2 ml-4"> Uploading... </div>
+            </div>
+          ) : (
+            <div
+              className={clsx(drag && 'border-red-400', [
+                'relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+              ])}
+            >
+              <div {...getRootProps({ className: 'dropzone' })} className="w-full h-full">
+                <input {...getInputProps()} />
+                <div className="absolute inset-0 bg-gray-100 bg-opacity-50 rounded-lg flex flex-col items-center">
+                  <input {...getInputProps()} />
+                  <DocumentIcon className="h-12 w-12 p-2" />
+                  <p className="text-md text-gray-600">Drag and drop your files here</p>
                 </div>
-              )}
-            </Dropzone>
-          </div>
+              </div>
+            </div>
+          )}
         </DialogBody>
         <DialogActions>
           <Button plain onClick={() => setIsOpen(false)}>

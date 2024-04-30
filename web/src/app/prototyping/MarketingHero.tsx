@@ -29,7 +29,18 @@ export default function MarketingHero() {
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-8">
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:flex-shrink-0 lg:pt-8">
           <div className="flex flex-col gap-x-2 mt-10 pb-10 ">
-            <span className=" text-secondary-600 uppercase">Ready to get started in AI?</span>
+            <Image
+              src="/images/bridge_logo_full.png"
+              width={400}
+              height={120}
+              alt="Bridge Logo"
+              className="mb-4"
+            />
+            <div className="my-3">
+              <span className="rounded-full bg-primary-500/10 px-3 py-1 text-sm font-semibold leading-6 text-primary-400 ring-1 ring-inset ring-primary-500/20">
+                Beta testing
+              </span>
+            </div>
             <h1 className="text-6xl font-bold tracking-normal text-gray-900">
               Jump start your company-wide AI initiatives with the Bridge platform.
             </h1>
