@@ -2,7 +2,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 const navigation = {
   solutions: [
-    { name: 'Prototyping', href: '/prototyping' },
     { name: 'Advisory', href: '/advisory' },
     { name: 'Training Courses and Education', href: '/training' },
   ],
@@ -59,7 +58,10 @@ const navigation = {
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900" aria-labelledby="footer-heading">
+    <footer
+      className="bg-gradient-to-br from-primary-800 to-primary-700"
+      aria-labelledby="footer-heading"
+    >
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
@@ -90,8 +92,15 @@ export default function Footer() {
           <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
-                <h3 className="text-sm font-semibold leading-6 text-white">Solutions</h3>
+                <h3 className="text-sm font-semibold leading-6 text-white">Products</h3>
                 <ul className="mt-6 space-y-4">
+                  <li key="bridge">
+                    <a href="/">
+                      <p className="pb-2 text-md font-bold bg-gradient-to-r from-sky-800 to-orange-400 via-sky-700  bg-clip-text text-transparent">
+                        Bridge Platform
+                      </p>
+                    </a>
+                  </li>
                   {navigation.solutions.map((item) => (
                     <li key={item.name}>
                       <a

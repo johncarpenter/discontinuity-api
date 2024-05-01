@@ -9,6 +9,8 @@ import {
   PuzzlePieceIcon,
 } from '@heroicons/react/24/outline'
 
+import { LuLayoutDashboard } from 'react-icons/lu'
+
 export const workspaceMenu = (currentWorkspace?: string) => [
   {
     name: 'Workspace',
@@ -58,6 +60,14 @@ export const workspaceMenu = (currentWorkspace?: string) => [
   {
     name: 'platform',
     menuItems: [
+      {
+        name: 'Workflow Editor',
+        href: '/editor',
+        description: 'No-code workflow editor',
+        enabled: true,
+        visible: true,
+        Icon: LuLayoutDashboard,
+      },
       {
         name: 'Manage Workspaces',
         href: '/workspaces',

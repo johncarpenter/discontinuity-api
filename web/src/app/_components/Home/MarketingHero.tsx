@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { LuArrowUpRightFromCircle, LuCircleDashed } from 'react-icons/lu'
 
 export default function MarketingHero() {
   return (
@@ -29,32 +30,36 @@ export default function MarketingHero() {
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-8">
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:flex-shrink-0 lg:pt-8">
           <div className="flex flex-col gap-x-2 mt-10 pb-10 ">
-            <Image
-              src="/images/bridge_logo_full.png"
-              width={400}
-              height={120}
-              alt="Bridge Logo"
-              className="mb-4"
-            />
             <div className="my-3">
-              <span className="rounded-full bg-primary-500/10 px-3 py-1 text-sm font-semibold leading-6 text-primary-400 ring-1 ring-inset ring-primary-500/20">
-                Beta testing
-              </span>
+              <div className="flex items-center gap-x-2 pb-2">
+                <LuCircleDashed className="w-12 h-12 text-gray-800" />
+                <LuArrowUpRightFromCircle className="w-12 h-12 text-gray-800" />
+              </div>
+
+              <h1 className="text-6xl font-bold tracking-wide leading-snug text-gray-900">
+                Jump start your company-wide AI initiatives with the Bridge platform.
+              </h1>
             </div>
-            <h1 className="text-6xl font-bold tracking-normal text-gray-900">
-              Jump start your company-wide AI initiatives with the Bridge platform.
-            </h1>
+
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              Bridge is designed for businesses in non-tech industries looking to explore and
+              implement AI solutions without disruption. With our intuitive web-based app, you can
+              create, host, and manage AI agents and workflows effortlessly.
+            </p>
           </div>
-          <p className="mt-6 text-lg leading-8 text-gray-600">Bridge connects your teams</p>
           <div className="mt-10 flex items-center gap-x-6">
-            Get started Learn more <span aria-hidden="true">→</span>
+            <a href="#beta">
+              <span className="rounded-full bg-primary-500/10 px-3 py-1 text-sm font-semibold leading-6 text-primary-400 ring-1 ring-inset ring-primary-500/20">
+                Sign up for Beta Access Now<span aria-hidden="true">→</span>
+              </span>
+            </a>
           </div>
         </div>
         <div className="mx-auto mt-16 flex max-w-2xl sm:mt-24 lg:ml-10 lg:mr-0 lg:mt-0 lg:max-w-none lg:flex-none xl:ml-32">
           <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
             <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
               <Image
-                src="/images/screenshot_1.png"
+                src="/images/screenshot_2.png"
                 width={2432}
                 height={1442}
                 className="w-[76rem] rounded-md shadow-2xl ring-1 ring-gray-900/10"

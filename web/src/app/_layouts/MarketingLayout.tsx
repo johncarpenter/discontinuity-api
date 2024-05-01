@@ -3,6 +3,7 @@ import React from 'react'
 import NavBar from '@/components/NavBar'
 import Footer from '@/components/Footer'
 import { BubbleChat } from 'flowise-embed-react'
+import Banner from '../_components/Banner/page'
 
 type MarketingLayoutProps = {
   children: React.ReactNode
@@ -12,6 +13,7 @@ export default function MarketingLayout({ children }: MarketingLayoutProps) {
   return (
     <div className="flex flex-col min-h-screen">
       <header>
+        <Banner show={true} />
         <NavBar />
       </header>
       <main>

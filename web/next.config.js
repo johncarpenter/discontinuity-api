@@ -26,6 +26,11 @@ const nextConfig = {
         destination: '/training',
         permanent: true,
       },
+      {
+        source: '/prototyping',
+        destination: '/',
+        permanent: true,
+      },
     ]
   },
   webpack: (config, options) => {

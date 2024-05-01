@@ -1,14 +1,17 @@
-import Hero from './_components/Hero'
 import MarketingLayout from '@/layouts/MarketingLayout'
-import ContactForm from '@/components/ContactForm'
-import FeatureSection from '@/components/FeatureSection'
-import BlogSlider from './_components/BlogSlider'
 import { Metadata } from 'next'
-import FeatureDetailSection from '@/components/FeatureDetailSection'
+import MarketingHero from '@/components/Home/MarketingHero'
+import Features from '@/components/Home/Features'
+import SupportedModels from '@/components/Home/SupportedModels'
+import Benefits from '@/components/Home/Benefits'
+import ContactFormBeta from '@/components/Home/Contact'
 
 export const metadata: Metadata = {
+  title: 'Discontinuity.ai | AI Architects | MLOps | Data Science',
+  description:
+    'Needs some help on strategy, architecture, or implementation of AI/ML within your organization? We can help.',
   alternates: {
-    canonical: 'https://discontinuity.ai',
+    canonical: 'https://discontinuity.ai/prototyping',
   },
 }
 
@@ -16,22 +19,15 @@ export default function Home() {
   return (
     <>
       <MarketingLayout>
-        <Hero />
-        <section id="detail">
-          <FeatureDetailSection />
-        </section>
-        <section id="features">
-          <FeatureSection />
-        </section>
-        {/* <Testimonial /> */}
+        <div id="top" />
+        <MarketingHero />
+        <SupportedModels />
+        <div id="benefits" />
+        <Benefits />
+        <Features />
 
-        <section id="blog">
-          <BlogSlider />
-        </section>
-
-        <section id="contact">
-          <ContactForm />
-        </section>
+        <div id="beta" />
+        <ContactFormBeta />
       </MarketingLayout>
     </>
   )

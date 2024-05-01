@@ -24,6 +24,8 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
 
   const { getRootProps, getInputProps } = useDropzone({
+    maxFiles: 3,
+    maxSize: 5 * 1024 * 1024, // 5MB
     onDrop: (acceptedFiles) => {
       uploadFile(acceptedFiles)
     },
@@ -35,6 +37,9 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
     },
     onError: () => {
       toast.error('There was a problem uploading the file. Please try again.')
+    },
+    onDropRejected: () => {
+      toast.error('Contact support for help in processing files larger than 5mb')
     },
   })
 
@@ -89,10 +94,12 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
         <DialogDescription>Add Files to Context Database</DialogDescription>
         <DialogBody>
           {isUploading ? (
-            <div className="flex p-4 items-start">
-              <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 animate-spin" />{' '}
-              <div className="text-sm text-gray-600 mt-2 ml-4"> Uploading... </div>
-            </div>
+            <>
+              <div className="flex p-4 items-start">
+                <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 animate-spin" />{' '}
+                <div className="text-sm text-gray-600 mt-2 ml-4"> Uploading... </div>
+              </div>
+            </>
           ) : (
             <div
               className={clsx(drag && 'border-red-400', [
@@ -109,6 +116,10 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
               </div>
             </div>
           )}
+          <p className="text-sm text-gray-400 p-2">
+            Larger files could take between 1-5 min to process. Contact support for help pipelining
+            larger files or data sets.
+          </p>
         </DialogBody>
         <DialogActions>
           <Button plain onClick={() => setIsOpen(false)}>
