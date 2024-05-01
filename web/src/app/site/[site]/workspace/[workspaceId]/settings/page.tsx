@@ -7,6 +7,7 @@ import { getWorkspace } from '@/prisma/services/workspace'
 import ApiKeysTable from '@/components/ApiKeysTable'
 import { AddApiKeyDialog } from './addapikeydialog'
 import { Text } from '@/components/Base/text'
+import { CopyToClipboard } from '@/app/_components/CopyToClipboard'
 
 type WorkspaceSettingsPageProps = {
   params: {
@@ -31,8 +32,9 @@ const WorkspaceSettingsPage = async ({ params }: WorkspaceSettingsPageProps) => 
           <div className="flex-1">
             <Text className="text-gray-800">Workspace Name</Text>
           </div>
-          <div className="flex-shrink">
+          <div className="flex-shrink flex">
             <Text className="text-gray-500">{workspace.id}</Text>
+            <CopyToClipboard copyText={workspace.id} />
           </div>
         </div>
       </Card>

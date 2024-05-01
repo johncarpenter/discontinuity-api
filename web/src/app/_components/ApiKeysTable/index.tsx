@@ -2,6 +2,7 @@ import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getApiKeys } from '@/prisma/services/apikey'
 import { Button } from '@/components/Base/button'
 import { apikeys } from '@prisma/client'
+import { CopyToClipboard } from '@/components/CopyToClipboard'
 // Wait for the playlists
 
 export default async function ApiKeysTable({ workspaceId }: { workspaceId: string }) {
@@ -42,25 +43,28 @@ export default async function ApiKeysTable({ workspaceId }: { workspaceId: strin
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
                 {apiKeys.map((key: apikeys) => (
-                  <tr key={key.id}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                      {key.name}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {key.client_id}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                      {key.client_secret}
-                    </td>
+                  <>
+                    {key.name !== 'default' && (
+                      <tr key={key.id}>
+                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                          {key.name}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                          {key.client_id}
+                        </td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 flex">
+                          ****
+                          <CopyToClipboard copyText={key.client_secret} />
+                        </td>
 
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0">
-                      {key.name !== 'default' && (
-                        <Button type="plain" href={`/workspace/settings`}>
-                          Delete
-                        </Button>
-                      )}
-                    </td>
-                  </tr>
+                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0">
+                          <Button type="plain" href={`/workspace/settings`}>
+                            Delete
+                          </Button>
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))}
               </tbody>
             </table>
