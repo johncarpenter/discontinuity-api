@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/Base/dialog'
-import { Field, Fieldset, Label, Legend, Description } from '@/components/Base/fieldset'
+import { Field, Fieldset, Label, Legend } from '@/components/Base/fieldset'
 import { Input } from '@/components/Base/input'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
