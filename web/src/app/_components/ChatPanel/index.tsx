@@ -20,7 +20,6 @@ import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
 import { Button } from '@/components/Base/button'
 import ChatEmptyState from './emptystate'
 import { Textarea } from '@/components/Base/textarea'
-import { Field } from '@/components/Base/fieldset'
 
 type ChatPanelProps = {
   workspaceId: string
