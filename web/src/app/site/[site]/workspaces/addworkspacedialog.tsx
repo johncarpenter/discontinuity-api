@@ -40,7 +40,7 @@ export function AddWorkspaceDialog() {
       <Button color="secondary" type="button" onClick={() => setIsOpen(true)}>
         Add Workspace
       </Button>
-      <Dialog open={isOpen} onClose={setIsOpen}>
+      <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>
         <DialogTitle>Add Workspace</DialogTitle>
         <DialogDescription>This will add a new workspace to your organization.</DialogDescription>
         <DialogBody className="space-y-8">

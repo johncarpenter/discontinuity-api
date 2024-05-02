@@ -1,0 +1,11 @@
+
+
+@layer component{
+    .text-lighter{
+        @apply dark:text-gray-300/50 text-gray-600/50;
+    }
+
+    .text-normal{
+        @apply dark:text-gray-300 text-gray-600;
+    }
+}

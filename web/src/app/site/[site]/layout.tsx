@@ -17,16 +17,18 @@ export default async function AuthLayout({ children }: AuthProps) {
 
   return (
     <WorkspaceProvider>
-      <div className="flex flex-col min-h-screen bg-slate-50">
-        <nav>
-          <Sidebar workspaces={workspaces} />
-        </nav>
-        <main className="lg:pl-72">
-          <Toaster />
-          <div>
-            <Suspense fallback={<Loading />}>{children}</Suspense>
-          </div>
-        </main>
+      <div className="dark dark:[color-scheme:dark] dark:prose-dark">
+        <div className="flex flex-col min-h-screen bg-slate-50  dark:bg-gray-800">
+          <nav>
+            <Sidebar workspaces={workspaces} />
+          </nav>
+          <main className="lg:pl-72">
+            <Toaster />
+            <div>
+              <Suspense fallback={<Loading />}>{children}</Suspense>
+            </div>
+          </main>
+        </div>
       </div>
     </WorkspaceProvider>
   )

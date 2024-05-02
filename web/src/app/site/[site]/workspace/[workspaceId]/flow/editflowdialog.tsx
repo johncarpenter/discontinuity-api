@@ -48,7 +48,7 @@ export function EditFlowDialog({ workspaceId, flow, open, onClose }: EditFlowDia
 
   return (
     <>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} darkMode={true}>
         <DialogTitle>Add Custom Model</DialogTitle>
         <DialogDescription>This connect a custom model to your Workspace</DialogDescription>
         <DialogBody>

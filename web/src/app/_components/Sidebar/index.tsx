@@ -179,15 +179,15 @@ export default function Sidebar({ workspaces }: SidebarProps) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-800 px-6 bg-gradient-to-br from-primary-800 to-primary-700">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 bg-gradient-to-br from-primary-800 to-primary-700  dark:from-black dark:to-black">
             <div className="flex h-16 shrink-0 items-center">
               <span className="sr-only">discontinuity.ai</span>
               <div className="mr-3 mt-3">
                 <Image
                   priority
                   src="/images/bridge_logo_full.png"
-                  height={70}
-                  width={200}
+                  height={86}
+                  width={256}
                   alt="Discontinuity AI"
                 />
               </div>

@@ -70,12 +70,12 @@ module.exports = {
             },
             h1: {
               fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
+              letterSpacing: theme('letterSpacing.normal'),
               color: theme('colors.gray.900'),
             },
             h2: {
               fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
+              letterSpacing: theme('letterSpacing.normal'),
               color: theme('colors.gray.900'),
             },
             h3: {
@@ -138,20 +138,20 @@ module.exports = {
             },
             h1: {
               fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
+              letterSpacing: theme('letterSpacing.normal'),
               color: theme('colors.gray.100'),
             },
             h2: {
               fontWeight: '700',
-              letterSpacing: theme('letterSpacing.tight'),
-              color: theme('colors.gray.100'),
+              letterSpacing: theme('letterSpacing.normal'),
+              color: theme('colors.gray.200'),
             },
             h3: {
               fontWeight: '600',
-              color: theme('colors.gray.100'),
+              color: theme('colors.gray.300'),
             },
             'h4,h5,h6': {
-              color: theme('colors.gray.100'),
+              color: theme('colors.gray.400'),
             },
             pre: {
               backgroundColor: theme('colors.gray.800'),
@@ -190,5 +190,5 @@ module.exports = {
       }),
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 }

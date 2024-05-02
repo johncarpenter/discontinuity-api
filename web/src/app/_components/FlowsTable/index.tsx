@@ -18,25 +18,24 @@ import { ServerIcon } from '@heroicons/react/24/outline'
 const TypeIcon = ({ type }: { type: FlowTypes }) => {
   switch (type) {
     case FlowTypes.AGENT:
-      return <SiMeta className="h-8 w-8 text-gray-600" />
+      return <SiMeta className="h-8 w-8 text-gray-600 dark:text-white/50" />
     case FlowTypes.ANTHROPIC:
-      return <ServerIcon className="h-8 w-8 text-gray-600" />
+      return <ServerIcon className="h-8 w-8 text-gray-600 dark:text-white/50" />
     case FlowTypes.CODEGEN:
-      return <SiGithubcopilot className="h-8 w-8 text-gray-600" />
+      return <SiGithubcopilot className="h-8 w-8 text-gray-600 dark:text-white/50" />
     case FlowTypes.GEMINI:
     case FlowTypes.IMAGEGEN:
-      return <SiGooglegemini className="h-8 w-8 text-gray-600" />
+      return <SiGooglegemini className="h-8 w-8 text-gray-600 dark:text-white/50" />
     case FlowTypes.TEXTGEN:
     case FlowTypes.CODEINTEPRETER:
     case FlowTypes.OPENAI:
-      return <SiOpenai className="h-8 w-8 text-gray-600" />
+      return <SiOpenai className="h-8 w-8 text-gray-600 dark:text-white/50" />
     case FlowTypes.OTHERML:
-      return <SiPython className="h-8 w-8 text-gray-600" />
+      return <SiPython className="h-8 w-8 text-gray-600 dark:text-white/50" />
     case FlowTypes.RAG:
-      return <SiElastic className="h-8 w-8 text-gray-600" />
-
+      return <SiElastic className="h-8 w-8 text-gray-600 dark:text-white/50" />
     default:
-      return <ServerIcon className="h-8 w-8 text-gray-600" />
+      return <ServerIcon className="h-8 w-8 text-gray-600 dark:text-white/50" />
   }
 }
 
@@ -47,7 +46,7 @@ export default async function FlowsTable({ workspace }: { workspace: workspaces 
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
-      <ul className="divide-y divide-gray-100">
+      <ul className="divide-y divide-gray-600/80">
         {flowList.map((flow: flows) => (
           <li key={flow.id} className="flex items-center gap-x-6 py-5">
             <div className="flex-shrink-0">
@@ -56,16 +55,16 @@ export default async function FlowsTable({ workspace }: { workspace: workspaces 
             <div className="flex flex-1 items-start gap-x-3">
               <div className="flex flex-col">
                 <div className="flex items-center gap-x-6">
-                  <p className="text-sm font-semibold leading-6 text-gray-900">{flow.name}</p>
+                  <p className="text-base text-normal">{flow.name}</p>
                   <p>
                     {flow.tags?.split(',').map((tag) => (
-                      <Badge key={tag} color="amber">
+                      <Badge key={tag} color="amber" className="mx-1">
                         {tag}
                       </Badge>
                     ))}
                   </p>
                 </div>
-                <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
+                <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-lighter">
                   <p className="whitespace-nowrap">{flow.description}</p>
                   <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 fill-current">
                     <circle cx={1} cy={1} r={1} />
@@ -78,11 +77,7 @@ export default async function FlowsTable({ workspace }: { workspace: workspaces 
             </div>
 
             <div className="flex flex-none items-center gap-x-4">
-              <Button
-                color="light"
-                type="plain"
-                href={`/workspace/${workspace.slug}/flow/${flow.id}`}
-              >
+              <Button type="plain" href={`/workspace/${workspace.slug}/flow/${flow.id}`}>
                 Launch<span className="sr-only">, {flow.name}</span>
               </Button>
 

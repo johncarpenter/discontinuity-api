@@ -41,9 +41,9 @@ export const workspaceMenu = (currentWorkspace?: string) => [
       },
       {
         name: 'Integrations',
-        href: '/',
+        href: '/integrations',
         description: 'Integrated Services',
-        enabled: true,
+        enabled: false,
         visible: true,
         Icon: PuzzlePieceIcon,
       },
@@ -79,17 +79,17 @@ export const workspaceMenu = (currentWorkspace?: string) => [
 
       {
         name: 'Reports',
-        href: '/',
+        href: '/reports',
         description: 'Analysis and Reporting',
-        enabled: true,
+        enabled: false,
         visible: true,
         Icon: FolderIcon,
       },
       {
         name: 'Analytics',
-        href: '/',
+        href: '/analytics',
         description: 'Dashboards',
-        enabled: true,
+        enabled: false,
         visible: true,
         Icon: ChartPieIcon,
       },

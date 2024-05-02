@@ -1,6 +1,9 @@
-.markdown p {
-    line-height: 1.5em;
-    margin-top: 8px;
+.markdown {
+    @apply prose-dark text-white/60 text-lg;    
+}
+
+.markdown p {    
+    margin-top: 8px; 
   }
 
 .markdown ol, .markdown ul{

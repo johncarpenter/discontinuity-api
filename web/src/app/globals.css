@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @import "css/clerk.overrides.css";
-
+@import "css/typography.module.css";
 
 
 @layer base {
@@ -12,7 +12,7 @@
   }
 
   h2 {
-    @apply font-serif text-xl font-bold md:text-3xl;
+    @apply font-libre text-xl font-bold md:text-3xl;
   }
 
   h3 {
@@ -26,6 +26,11 @@
   body {
     @apply font-libre text-sm md:text-base;
   }
+
+  .card-normal {
+    @apply divide-y divide-gray-200 dark:divide-gray-600/60 rounded border bg-white dark:bg-gray-700 dark:border-gray-500 shadow sm:rounded-lg
+  }
+  
 }
 
 :root {

@@ -49,9 +49,9 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
   return (
     <>
       <Button color="secondary" type="button" onClick={() => setIsOpen(true)}>
-        Add Model
+        Add Flow
       </Button>
-      <Dialog open={isOpen} onClose={setIsOpen}>
+      <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>
         <DialogTitle>Add Custom Model</DialogTitle>
         <DialogDescription>This connect a custom model to your Workspace</DialogDescription>
         <DialogBody>

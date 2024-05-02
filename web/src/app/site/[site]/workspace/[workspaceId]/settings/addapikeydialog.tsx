@@ -42,7 +42,7 @@ export function AddApiKeyDialog({ workspaceId }: { workspaceId: string }) {
       <Button color="secondary" type="button" onClick={() => setIsOpen(true)}>
         Create API Key
       </Button>
-      <Dialog open={isOpen} onClose={setIsOpen}>
+      <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>
         <DialogTitle>Create API Key</DialogTitle>
         <DialogDescription>This will add a new API key to your organization.</DialogDescription>
         <DialogBody>

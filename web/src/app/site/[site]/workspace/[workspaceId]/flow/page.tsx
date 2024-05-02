@@ -1,7 +1,7 @@
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import Card from '@/components/Card'
 
-import Container from '@/components/Container'
+import Content from '@/components/Container'
 import PageHeader from '@/components/PageHeader'
 import FlowsTable from '@/components/FlowsTable'
 import { AddFlowDialog } from './addflowdialog'
@@ -20,21 +20,24 @@ const WorkspaceFlowTablePage = async ({ params }: WorkspaceFlowTablePageProps) =
 
   return (
     <div className="">
-      <Container>
+      <Content>
         <PageHeader title="Models" breadcrumbs={[]} />
-
-        <Card>
-          <Card.Title
-            title={'Your Custom Models, Agents and Workflows'}
-            subtitle={'Link to all custom models, agents and workflows for the Workspace.'}
-          >
-            <Card.Action>
-              <AddFlowDialog workspaceId={workspace.id} />
-            </Card.Action>
-          </Card.Title>
-          <FlowsTable workspace={workspace} />
-        </Card>
-      </Container>
+        <Content.Container>
+          <Card>
+            <Card.Title
+              title={'Your custom models, agents and workflows'}
+              subtitle={
+                'Workflows are specific to your workspace and can be used to connect to external services, APIs, and databases.'
+              }
+            >
+              <Card.Action>
+                <AddFlowDialog workspaceId={workspace.id} />
+              </Card.Action>
+            </Card.Title>
+            <FlowsTable workspace={workspace} />
+          </Card>
+        </Content.Container>
+      </Content>
     </div>
   )
 }

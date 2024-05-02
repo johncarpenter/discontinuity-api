@@ -41,7 +41,7 @@ export const DeleteDialog = ({ workspaceId, filename }: DeleteDialogProps) => {
       <Button plain type="button" onClick={() => setIsOpen(true)}>
         Delete
       </Button>
-      <Dialog open={isOpen} onClose={setIsOpen}>
+      <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>
         <DialogTitle>Are you sure you want to delete this file?</DialogTitle>
         <DialogDescription>
           It will no longer be referenced in your vector database

@@ -91,7 +91,7 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
       <Button color="secondary" type="button" onClick={() => setIsOpen(true)}>
         Upload Files
       </Button>
-      <Dialog open={isOpen} onClose={setIsOpen}>
+      <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>
         <DialogTitle>File Upload</DialogTitle>
         <DialogDescription>Add Files to Context Database</DialogDescription>
         <DialogBody>

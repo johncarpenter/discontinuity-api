@@ -11,6 +11,16 @@ export function Text({ className, ...props }: React.ComponentPropsWithoutRef<'p'
   )
 }
 
+export function Subtitle({ className, ...props }: React.ComponentPropsWithoutRef<'p'>) {
+  return (
+    <p
+      {...props}
+      data-slot="text"
+      className={clsx(className, 'text-base/3 text-zinc-500 sm:text-sm/3 dark:text-zinc-400')}
+    />
+  )
+}
+
 export function TextLink({ className, ...props }: React.ComponentPropsWithoutRef<typeof Link>) {
   return (
     <Link

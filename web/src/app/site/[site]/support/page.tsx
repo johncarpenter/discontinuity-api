@@ -11,17 +11,17 @@ export default function SupportPage() {
       <LicenseCard />
       <Card>
         <Card.Title title="Contact Support" subtitle="Get help with your account" />
-        <div className="isolate bg-white px-6 py-8 sm:py-32 lg:px-8">
+        <div className="isolate  px-6 py-8 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-lg space-y-16">
             <div className="flex gap-x-6">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-600">
                 <ChatBubbleLeftRightIcon className="h-6 w-6 text-white" aria-hidden="true" />
               </div>
               <div>
-                <h3 className="text-base font-semibold leading-7 text-gray-900">
+                <h3 className="text-base font-semibold leading-7 text-normal">
                   Email priority support
                 </h3>
-                <p className="mt-2 leading-7 text-gray-600">
+                <p className="mt-2 leading-7 text-lighter">
                   For customers with active licenses, we offer email support with a 24 hour response
                 </p>
                 <p className="mt-4">
@@ -39,8 +39,8 @@ export default function SupportPage() {
                 <BugAntIcon className="h-6 w-6 text-white" aria-hidden="true" />
               </div>
               <div>
-                <h3 className="text-base font-semibold leading-7 text-gray-900">Sales support</h3>
-                <p className="mt-2 leading-7 text-gray-600">
+                <h3 className="text-base font-semibold leading-7 text-normal">Sales support</h3>
+                <p className="mt-2 leading-7 text-lighter">
                   Do you want to learn more about our products? We are happy to help you with any
                   questions you may have.
                 </p>

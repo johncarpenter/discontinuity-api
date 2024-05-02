@@ -104,8 +104,8 @@ const styles = {
       '[--btn-icon:theme(colors.zinc.400)] data-[active]:[--btn-icon:theme(colors.zinc.500)] data-[hover]:[--btn-icon:theme(colors.zinc.500)]',
     ],
     primary: [
-      'text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.primary.600)] [--btn-border:theme(colors.primary.700/90%)]',
-      '[--btn-icon:theme(colors.primary.300)] data-[active]:[--btn-icon:theme(colors.primary.200)] data-[hover]:[--btn-icon:theme(colors.primary.200)]',
+      'text-white [--btn-hover-overlay:theme(colors.white/20%)] [--btn-bg:theme(colors.primary.600)] [--btn-border:theme(colors.primary.700/90%)]',
+      '[--btn-icon:theme(colors.primary.200)] data-[active]:[--btn-icon:theme(colors.primary.100)] data-[hover]:[--btn-icon:theme(colors.primary.100)]',
     ],
     secondary: [
       'text-white [--btn-hover-overlay:theme(colors.white/10%)] [--btn-bg:theme(colors.secondary.600)] [--btn-border:theme(colors.secondary.700/90%)]',
