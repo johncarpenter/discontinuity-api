@@ -14,6 +14,7 @@ import {
   RecursiveCharacterTextSplitter,
   TokenTextSplitter,
 } from "langchain/text_splitter";
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -33,6 +34,8 @@ const s3 = new S3({
   },
   region: "us-west-2",
 });
+
+const pdfType = ["pdf"];
 
 const unstructuredFileTypes = [
   "eml",
@@ -95,7 +98,11 @@ export async function handler(event: S3Event) {
 
   const tmpFile = await downloadS3fileLocally(bucket, key);
 
-  if (unstructuredFileTypes.includes(ext.toLowerCase())) {
+  if (pdfType.includes(ext.toLowerCase())) {
+    console.log("Processing with embedded pdf");
+    // Extract the document from the S3 object using unstructured API
+    documents = await extractDocumentsPdf(tmpFile);
+  } else if (unstructuredFileTypes.includes(ext.toLowerCase())) {
     console.log("Processing with unstructured API");
     // Extract the document from the S3 object using unstructured API
     documents = await extractDocumentsUsingUnstructured(tmpFile);
@@ -234,10 +241,32 @@ async function extractDocumentsFromAudio(tmpfile: string) {
   return [document];
 }
 
+/**
+ * This function will extract context from pdf using unstructured API
+ * @param tmpfile
+ */
+async function extractDocumentsPdf(tmpfile: string) {
+  const loader = new PDFLoader(tmpfile);
+
+  const docs = await loader.load();
+
+  docs.forEach((doc) => {
+    doc.metadata = {
+      ...doc.metadata,
+      source: "pdf",
+      mediaType: "text",
+      category: "NarrativeText",
+    };
+  });
+
+  return docs;
+}
+
 async function extractDocumentsUsingUnstructured(tmpfile: string) {
   const options = {
     apiUrl: UNSTRUCTURED_URL || "",
     apiKey: UNSTRUCTURED_API_KEY || "",
+    strategy: "fast",
   };
 
   const loader = new UnstructuredLoader(tmpfile, options);

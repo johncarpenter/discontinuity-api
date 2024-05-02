@@ -24,7 +24,7 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
 
   const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 3,
+    maxFiles: 50,
     maxSize: 5 * 1024 * 1024, // 5MB
     onDrop: (acceptedFiles) => {
       uploadFile(acceptedFiles)
@@ -39,7 +39,9 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
       toast.error('There was a problem uploading the file. Please try again.')
     },
     onDropRejected: () => {
-      toast.error('Contact support for help in processing files larger than 5mb')
+      toast.error(
+        'Contact support for help in processing files larger than 5mb, or more than 50 at a time'
+      )
     },
   })
 

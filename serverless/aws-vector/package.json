@@ -47,10 +47,12 @@
     "@langchain/google-vertexai": "^0.0.2",
     "@langchain/openai": "^0.0.25",
     "@qdrant/js-client-rest": "^1.9.0",
+    "@types/pdf-parse": "^1.1.4",
     "@vercel/postgres": "^0.5.1",
     "faiss-node": "^0.5.1",
     "google-auth-library": "^8.9.0",
     "langchain": "^0.1.30",
+    "pdf-parse": "^1.1.1",
     "pg": "^8.11.4",
     "pickleparser": "^0.2.1"
   }

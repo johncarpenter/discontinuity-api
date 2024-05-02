@@ -66,30 +66,45 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     logger.info(f"Using filter {filter}")
 
     # Get the vector db for the workspace
-    chain = await get_agent_for_workspace(workspace.id, filter)
+    chain = await get_chain_for_workspace(workspace.id, filter)
 
     thread = message.thread or str(uuid.uuid4())
 
     history = get_redis_history(session_id=thread)
 
     history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
-    
+
     async def generator():
         response = '' 
         sources = []
-        yield stream_chunk({"thread":thread}, "assistant_message")
         async for chunk in chain.astream({"input":message.message, "chat_history":history.messages}):    
+           # logger.info(f"Chunk: {chunk}")    
             action = list(chunk.keys())[0]
             msg = chunk[action]
-            if action == "steps":
-                for agentstep in msg:
-                    if(agentstep.observation['context']):
-                        docs = agentstep.observation['context']
-                        sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
-                        yield stream_chunk(sources, "data")  
-            elif action == "output":
+            if action == "context":
+                sources = reduceSourceDocumentsToUniqueFiles(sources=msg) 
+                yield stream_chunk(sources, "data")  
+            elif action == "answer":
                 response += msg
                 yield stream_chunk(msg, "text")
+    
+    # async def generator():
+    #     response = '' 
+    #     sources = []
+    #     yield stream_chunk({"thread":thread}, "assistant_message")
+    #     async for chunk in chain.astream({"input":message.message, "chat_history":history.messages}): 
+    #         logger.info(f"Chunk: {chunk}")   
+    #         action = list(chunk.keys())[0]
+    #         msg = chunk[action]
+    #         if action == "steps":
+    #             for agentstep in msg:
+    #                 if(agentstep.observation['context']):
+    #                     docs = agentstep.observation['context']
+    #                     sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
+    #                     yield stream_chunk(sources, "data")  
+    #         elif action == "output":
+    #             response += msg
+    #             yield stream_chunk(msg, "text")
             
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 

@@ -14,23 +14,15 @@ from langchain.retrievers.document_compressors import EmbeddingsFilter
 import json
 from langchain_cohere import CohereRerank
 from langchain_community.llms import Cohere
+from discontinuity_api.utils.prompts import STANDARD_PROMPT
+from langchain import hub
 
 
 from discontinuity_api.vector.base import get_qdrant_vector_db
 
 logger = logging.getLogger(__name__)
 
-STANDARD_PROMPT = """
-System: You are a conversational chat bot assistant that uses the Documents as context to answer the users questions. The Documents are a list of files that have been provided to you by the user. You can use the Documents to help answer the users questions. Do your best to answer the question based on the context provided. If you reference a Document let the user know which document you are referencing. If you reference information that is not in the Documents, let the user know that you are providing information that is not in the Documents and they should verify the information.
- 
-All output should be in markdown format.
 
-Documents:
-{context}
-
-Question:
-{input}
-"""
 def retrieval_qa(index: VectorStore, query: str, prompt_template:str = STANDARD_PROMPT) -> str:
     PROMPT = PromptTemplate(
         template=prompt_template, input_variables=["context", "question", "chatHistory"]
@@ -79,7 +71,7 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
         llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
  
         vector = get_qdrant_vector_db(workspaceId)
-        retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 15, "filter":filter, "score_threshold":0.85})
+        retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.50})
 
 
         #llm = Cohere(temperature=0)
@@ -90,11 +82,12 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
         logger.info("Using Cohere rerank algorithm for the workspace")
 
         prompt = PromptTemplate.from_template(STANDARD_PROMPT)
+        retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
 
         history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, contextualize_history_prompt())
       
 
-        question_answer_chain = create_stuff_documents_chain(llm, prompt)
+        question_answer_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
         
         rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
  
@@ -106,10 +99,11 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
     
 
 async def defaultChain(workspaceId:str, filter:str = None):
-    llm = ChatOpenAI(streaming=True,temperature=0)
+    llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
     
     vector = get_qdrant_vector_db(workspaceId)
-    retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 15, "filter":filter, "score_threshold":0.85})
+    retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.50})
+
 
     
     compressor = CohereRerank()
@@ -119,11 +113,12 @@ async def defaultChain(workspaceId:str, filter:str = None):
     logger.info("Using Cohere rerank algorithm for the workspace")
 
     prompt = PromptTemplate.from_template(STANDARD_PROMPT)
+    retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
 
     history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, contextualize_history_prompt())
    
 
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
+    question_answer_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
     
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 

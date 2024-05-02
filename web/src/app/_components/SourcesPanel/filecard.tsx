@@ -30,7 +30,9 @@ export default function FileCard({ snippet, filename, href, type, date }: FileCa
           {type === 'jpg' || type === 'jpeg' || type === 'png' ? (
             <img src={href} className="size-40" alt={snippet} />
           ) : (
-            <p className="text-sm text-gray-700">" {snippet} "</p>
+            <p className="text-sm text-gray-700">
+              " {snippet.length > 30 ? `${snippet.substring(0, 30)}...` : snippet} "
+            </p>
           )}
         </div>
         <div className="flex w-full  justify-between space-x-2 p-2">

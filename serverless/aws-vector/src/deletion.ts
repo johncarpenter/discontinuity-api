@@ -1,5 +1,5 @@
 import { S3Event } from "aws-lambda";
-import { getPostgresVectorStore } from "./utils";
+import { getQdrantClient, getQdrantVectorStore } from "./utils";
 
 /**
  * Triggered when an AWS Object is uploaded to the S3 bucket (specified in the serverless.yml file)
@@ -29,8 +29,21 @@ export async function handler(event: S3Event) {
       },
     };
 
-    const vectorstore = await getPostgresVectorStore(folder);
-    await vectorstore.delete(filter);
+    const client = getQdrantClient(folder);
+
+    const records = await client.scroll(folder, {
+      filter: {
+        must: [{ key: "metadata.file", match: { value: file } }],
+      },
+    });
+
+    const pointIds = records.points.map((record) => record.id);
+
+    console.log("Deleting record", JSON.stringify(pointIds));
+
+    const del = await client.delete(folder, {
+      points: pointIds,
+    });
 
     console.log(`File ${file} removed from index`);
   } catch (error) {

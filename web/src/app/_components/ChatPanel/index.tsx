@@ -19,6 +19,8 @@ import SourcesPanel from '../SourcesPanel'
 import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
 import { Button } from '@/components/Base/button'
 import ChatEmptyState from './emptystate'
+import { Textarea } from '@/components/Base/textarea'
+import { Field } from '@/components/Base/fieldset'
 
 type ChatPanelProps = {
   workspaceId: string
@@ -134,28 +136,25 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
             <div ref={messagesEndRef} />
           </div>
         </div>
-        <div className="w-full  p-4 h-24  bottom-0 right-auto left-auto  dark:bg-gray-800 dark:text-white pt-">
-          <div className="flex flex-col w-full relative border-2 border-secondary-500 dark:text-white rounded-2xl">
-            <LightBulbIcon className="absolute lg:left-3 left-2 lg:top-3 top-2 w-6 h-6" />
-            <input
-              type="text"
+        <div className="w-full p-4 bottom-0 right-auto left-auto  dark:bg-gray-700 dark:text-white ">
+          <div className="flex flex-row w-full border-1 border-grey-700 dark:text-white rounded-md p-2 dark:bg-gray-700">
+            <LightBulbIcon className="lg:left-3 left-2 lg:top-3 top-2 w-8 h-8 flex-0 text-black/50 justify-center my-auto" />
+
+            <Textarea
               name="chat"
               id="chat"
-              className="m-0 w-full resize-none border-0 bg-transparent outline-none ring-0 dark:bg-transparent py-[10px] pr-10 md:py-3.5 md:pr-12 max-h-52 placeholder-black/50 dark:placeholder-white/50 pl-10 md:pl-[55px]"
+              resizable={true}
+              rows={2}
+              className="w-full flex-1 placeholder-black/50 dark:placeholder-white/80 border-none bg-transparent  dark:text-white border-orange-500"
               placeholder="Ask about Discontinuity.AI"
               onChange={(e) => setInput(e.target.value)}
               value={input}
               onKeyUp={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !e.shiftKey && input.length > 0) {
                   handleNewQuery(input)
                 }
               }}
             />
-            <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-              <kbd className="inline-flex items-center rounded border border-gray-200 px-1 font-sans text-xs text-gray-400">
-                Enter
-              </kbd>
-            </div>
           </div>
         </div>
       </div>

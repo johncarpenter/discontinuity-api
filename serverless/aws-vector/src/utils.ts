@@ -7,6 +7,8 @@ import {
   QdrantVectorStore,
 } from "@langchain/community/vectorstores/qdrant";
 
+import { QdrantClient } from "@qdrant/js-client-rest";
+
 import path from "path";
 const s3Client = new S3();
 
@@ -129,4 +131,14 @@ export async function getQdrantVectorStore(tableName: string) {
   );
 
   return pgstore;
+}
+
+export function getQdrantClient(tableName: string) {
+  const config: QdrantLibArgs = {
+    collectionName: tableName,
+    apiKey: process.env.QDRANT_API_KEY || "",
+    url: process.env.QDRANT_URL || "",
+  };
+
+  return new QdrantClient(config);
 }
