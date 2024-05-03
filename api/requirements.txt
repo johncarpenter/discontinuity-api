@@ -48,6 +48,7 @@ langchain-core==0.1.43
 langchain-google-cloud-sql-pg==0.4.0
 langchain-openai==0.1.1
 langchain-text-splitters==0.0.1
+langchainhub==0.1.15
 langsmith==0.1.40
 marshmallow==3.21.1
 marshmallow-enum==1.5.1
