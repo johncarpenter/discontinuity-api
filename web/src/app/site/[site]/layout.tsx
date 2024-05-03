@@ -23,7 +23,12 @@ export default async function AuthLayout({ children }: AuthProps) {
             <Sidebar workspaces={workspaces} />
           </nav>
           <main className="lg:pl-72">
-            <Toaster />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: { minWidth: '450px', background: '#121212', color: '#ffffff' },
+              }}
+            />
             <div>
               <Suspense fallback={<Loading />}>{children}</Suspense>
             </div>

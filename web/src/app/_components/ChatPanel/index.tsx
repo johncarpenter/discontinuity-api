@@ -10,6 +10,7 @@ import { StreamListenerType, useStreaming } from '@/lib/client/useStreaming'
 import ChatEmptyState from './emptystate'
 import { RenderMarkdown } from '@/lib/client/renderMarkdown'
 import ChatInput from '@/components/ChatInput'
+import { useFocusFiles } from '@/lib/client/workspaceProvider'
 
 type ChatPanelProps = {
   workspaceId: string
@@ -56,8 +57,10 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const [focusFiles] = useFocusFiles()
+
   const handleNewQuery = (message: string) => {
-    addUserMessage(message)
+    addUserMessage(message, { files: JSON.stringify(focusFiles) })
   }
 
   useEffect(() => {
@@ -112,7 +115,11 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
           </div>
         </div>
         <div className="w-full sm:p-6 mx-auto">
-          <ChatInput onHandleMessage={(val) => handleNewQuery(val)} onReset={() => resetChat()} />
+          <ChatInput
+            workspaceId={workspaceId}
+            onHandleMessage={(val) => handleNewQuery(val)}
+            onReset={() => resetChat()}
+          />
         </div>
       </div>
     </>

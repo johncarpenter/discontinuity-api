@@ -109,7 +109,11 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
           </div>
         </div>
         <div className="w-full sm:p-6 mx-auto">
-          <ChatInput onHandleMessage={(val) => handleNewQuery(val)} onReset={() => resetChat()} />
+          <ChatInput
+            workspaceId={workspaceId}
+            onHandleMessage={(val) => handleNewQuery(val)}
+            onReset={() => resetChat()}
+          />
         </div>
       </div>
     </>

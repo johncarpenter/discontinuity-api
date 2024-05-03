@@ -33,6 +33,7 @@
     "serverless": "^3.38.0",
     "serverless-add-api-key": "^4.2.0",
     "serverless-esbuild": "^1.52.1",
+    "serverless-plugin-datadog": "^5.62.0",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"

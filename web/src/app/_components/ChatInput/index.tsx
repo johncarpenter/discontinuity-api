@@ -1,22 +1,28 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { PencilSquareIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon, ArrowRightCircleIcon } from '@heroicons/react/24/outline'
 import { Text } from '@/components/Base/text'
 
 import { useState } from 'react'
 import { Button } from '@/components/Base/button'
 
 import { LuUpload } from 'react-icons/lu'
+import { UploadFileDialog } from '@/components/Dialogs/uploadFiles'
+import { useFocusFiles } from '@/lib/client/workspaceProvider'
+import { StarIcon } from '@heroicons/react/20/solid'
+import { FocusedFilesDialog } from '@/components/Dialogs/focusedFiles'
 
 type ChatInputProps = {
-  initialValue?: string
+  workspaceId: string
   onReset: () => void
   onHandleMessage: (message: string) => void
 }
 
-export default function ChatInput({ initialValue, onHandleMessage, onReset }: ChatInputProps) {
-  const [input, setInput] = useState<string>(initialValue ?? '')
+export default function ChatInput({ workspaceId, onHandleMessage, onReset }: ChatInputProps) {
+  const [input, setInput] = useState<string>('')
+
+  const [focusFiles, setFocusFiles] = useFocusFiles()
 
   const onHandleMessageInternal = () => {
     setInput('')
@@ -27,6 +33,12 @@ export default function ChatInput({ initialValue, onHandleMessage, onReset }: Ch
     const rows = text.split(/\r|\r\n|\n/).length
 
     return rows > 10 ? 10 : rows < 3 ? 3 : rows
+  }
+
+  const fileListener = {
+    onFileSuccess: (filename: string) => {
+      setFocusFiles([...(focusFiles || []), filename])
+    },
   }
 
   return (
@@ -56,20 +68,28 @@ export default function ChatInput({ initialValue, onHandleMessage, onReset }: Ch
           </div>
           <div className="grid grid-cols-2 items-center w-full outline-none focus:outline-none">
             <div className="flex flex-row w-fullrounded-md  text-white/50 ">
-              <Button plain={true} className="mr-4">
+              <UploadFileDialog workspaceId={workspaceId} listener={fileListener}>
                 <div className="flex-1 flex flex-row">
                   <LuUpload className="w-4 h-4 text-white/50 my-auto mr-2" />
                   <Text className="text-white/50">Add Files</Text>
                 </div>
-              </Button>
+              </UploadFileDialog>
+              {focusFiles && focusFiles.length > 0 && (
+                <FocusedFilesDialog>
+                  <div className="flex-1 flex flex-row">
+                    <StarIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
+                    <Text className="text-white/50">Focused Files</Text>
+                  </div>
+                </FocusedFilesDialog>
+              )}
             </div>
-            {/* <Button
+            <Button
               onClick={() => onHandleMessageInternal()}
               plain={true}
               className="ml-auto text-white/50"
             >
-              <ArrowRightCircleIcon className="lg:right-3 right-2 lg:top-3 top-2 w-6 h-6 flex-0  justify-center my-auto text-white/50" /> 
-            </Button> */}
+              <ArrowRightCircleIcon className="lg:right-3 right-2 lg:top-3 top-2 w-6 h-6 flex-0  justify-center my-auto text-white/50" />
+            </Button>
           </div>
         </div>
       </div>

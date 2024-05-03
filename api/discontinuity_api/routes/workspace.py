@@ -2,8 +2,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 from fastapi.params import Depends
-from fastapi import HTTPException, Depends, status
-from fastapi.responses import JSONResponse
+from fastapi import HTTPException, Depends, Request, status
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 import logging
 from discontinuity_api.database.api import getFlow
@@ -37,6 +37,7 @@ BASE_API_URL = "https://flow.discontinuity.ai/api/v1/prediction/"
 
 class Message(BaseModel):
     message: str
+    overrideConfig: Optional[dict] = None
 
 class Doc(BaseModel):
     filename: Optional[str] = None
@@ -57,6 +58,7 @@ class ChatMessage(BaseModel):
     message: str
     thread: Optional[str] = None
     filter: Optional[dict] = {}
+
 
 @router.post("/agent")
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
@@ -131,40 +133,6 @@ async def query(thread: str, workspace=Depends(JWTBearer())):
             formattedHistory.append({"role": UserEnum.COMPUTER.value, "content": message.content, "created": message.created, "id": message.id, "sources": message.additional_kwargs.get("sources", [])})
 
     return formattedHistory
-
-
-
-@router.post("/stream")
-async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
-    logger.info(f"Streaming Chat for {workspace.id}")
-   
-    filter = build_filter(message.filter)
-    logger.info(f"Using filter {filter}")
-
-    # Get the vector db for the workspace
-    chain = await get_chain_for_workspace(workspace.id, filter)
-
-    formattedHistory = []
-    for hist in message.history:
-        if(hist.role == UserEnum.USER.value):
-            formattedHistory.append(HumanMessage(content=hist.content,id=hist.id))
-        elif(hist.role == UserEnum.COMPUTER.value):
-            formattedHistory.append(AIMessage(content=hist.content,id=hist.id))
-        
-
-    async def generator():
-        async for chunk in chain.astream({"input":message.message, "chat_history":formattedHistory}):    
-            #logger.info(f"Chunk: {chunk}")    
-            action = list(chunk.keys())[0]
-            msg = chunk[action]
-            if action == "context":
-                yield stream_chunk(reduceSourceDocumentsToUniqueFiles(sources=msg), "data")  
-            elif action == "answer":
-                yield stream_chunk(msg, "text")
-
-
-    return EventSourceResponse(generator())
-
 
 
 @router.post("/text")
@@ -295,6 +263,20 @@ def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
 
 def build_filter(filter: dict):
 
-    return models.Filter(
-        should=[models.FieldCondition(key="metadata.category", match=models.MatchAny(any=["NarrativeText","ImageDescription","Transcription","ListItem"]))]
+    logger.info(f"Building filter from {filter}")
+
+    baseFilter =  models.Filter(
+        must=[models.FieldCondition(key="metadata.category", match=models.MatchAny(any=["NarrativeText","ImageDescription","Transcription","ListItem"]))]
     )
+
+    if filter:
+        if "category" in filter:
+            baseFilter.must.append(models.FieldCondition(key="metadata.category", match=models.MatchAny(any=filter["category"])))
+
+        if "files" in filter:
+            baseFilter.must.append(models.FieldCondition(key="metadata.file", match=models.MatchAny(any=json.loads(filter["files"]))))
+
+        if "page" in filter:
+            baseFilter.must.append(models.FieldCondition(key="metadata.page", match=models.MatchAny(any=filter["page"])))
+
+    return baseFilter

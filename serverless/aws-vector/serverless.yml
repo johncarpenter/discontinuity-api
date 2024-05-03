@@ -21,6 +21,8 @@ provider:
     DATABASE_URL: ${env:DATABASE_URL}
     QDRANT_API_KEY: ${env:QDRANT_API_KEY}
     QDRANT_URL: ${env:QDRANT_URL}
+    #DATADOG_API_KEY: ${env:DATADOG_API_KEY}
+    #DD_SITE: ${env:DD_SITE}
 
   iamRoleStatements:
     - Effect: Allow
@@ -46,7 +48,7 @@ package:
 
 plugins:
   - serverless-esbuild
-
+  - serverless-plugin-datadog
 functions:
   embedding:
     handler: dist/embedding.handler
@@ -60,3 +62,11 @@ functions:
       - s3:
           bucket: ${env:S3_AWS_BUCKET}
           event: s3:ObjectRemoved:*
+# custom:
+#   datadog:
+#     site: ${env:DD_SITE}
+#     apikey: ${env:DATADOG_API_KEY}
+#     enableXrayTracing: false
+#     enableDDTracing: true
+#     enableDDLogs: true
+#     subscribeToAccessLogs: true
