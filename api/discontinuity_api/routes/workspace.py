@@ -275,7 +275,7 @@ def build_filter(filter: dict):
             baseFilter.should.append(models.FieldCondition(key="metadata.category", match=models.MatchAny(any=filter["category"])))
 
         if "files" in filter and filter["files"] and len(filter["files"]) > 0:
-            baseFilter.must.append(models.FieldCondition(key="metadata.file", match=models.MatchAny(any=json.loads(filter["files"]))))
+            baseFilter.must.append(models.FieldCondition(key="metadata.file", match=models.MatchAny(any=filter["files"])))
 
         if "page" in filter:
             baseFilter.should.append(models.FieldCondition(key="metadata.page", match=models.MatchAny(any=filter["page"])))
