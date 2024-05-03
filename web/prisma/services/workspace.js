@@ -1,7 +1,6 @@
 import prisma from '@/prisma/index'
 import slugify from 'slugify'
 import { createApiKey } from '@/prisma/services/apikey'
-import { create } from 'domain'
 
 export const countWorkspaces = async (slug) =>
   await prisma.workspaces.count({
