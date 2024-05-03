@@ -1,6 +1,7 @@
 import prisma from '@/prisma/index'
 import slugify from 'slugify'
 import { createApiKey } from '@/prisma/services/apikey'
+import { create } from 'domain'
 
 export const countWorkspaces = async (slug) =>
   await prisma.workspaces.count({
@@ -60,6 +61,8 @@ export const getWorkspaceById = async (ownerId, id) =>
       name: true,
       slug: true,
       id: true,
+      createdAt: true,
+      deletedAt: true,
       apikeys: {
         select: {
           name: true,
@@ -83,6 +86,7 @@ export const getWorkspaces = async (id) =>
   await prisma.workspaces.findMany({
     select: {
       createdAt: true,
+      deletedAt: true,
       name: true,
       slug: true,
       id: true,
@@ -101,15 +105,29 @@ export const getWorkspaces = async (id) =>
     },
   })
 
-export const deleteWorkspace = async (ownerId, slug) => {
-  const workspace = await getWorkspace(ownerId, slug)
+export const archiveWorkspace = async (ownerId, id) => {
+  const workspace = await getWorkspaceById(ownerId, id)
 
   if (workspace) {
-    await prisma.workspace.update({
-      data: { deletedAt: new Date() },
+    await prisma.workspaces.update({
+      data: { deletedAt: new Date(), slug: `${workspace.slug}-deleted` },
       where: { id: workspace.id },
     })
-    return slug
+    return id
+  } else {
+    throw new Error('Unable to find workspace')
+  }
+}
+
+export const unarchiveWorkspace = async (ownerId, id) => {
+  const workspace = await getWorkspaceById(ownerId, id)
+
+  if (workspace) {
+    await prisma.workspaces.update({
+      data: { deletedAt: null, slug: `${workspace.slug.replace('-deleted', '')}` },
+      where: { id: workspace.id },
+    })
+    return id
   } else {
     throw new Error('Unable to find workspace')
   }

@@ -13,6 +13,7 @@ import { Field, Label } from '@/components/Base/fieldset'
 import { Input } from '@/components/Base/input'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 export function AddApiKeyDialog({ workspaceId }: { workspaceId: string }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -28,9 +29,9 @@ export function AddApiKeyDialog({ workspaceId }: { workspaceId: string }) {
       method: 'POST',
     }).then((response) => {
       if (response.ok) {
-        console.log('Workspace added successfully')
+        toast.success('Workspace added successfully')
       } else {
-        console.error('Failed to add workspace')
+        toast.error('Failed to add workspace')
       }
       setIsOpen(false)
       router.refresh()

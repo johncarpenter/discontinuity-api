@@ -11,6 +11,7 @@ import {
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/client/api'
+import toast from 'react-hot-toast'
 
 export type DeleteDialogProps = {
   workspaceId: string
@@ -27,9 +28,9 @@ export const DeleteDialog = ({ workspaceId, filename }: DeleteDialogProps) => {
       method: 'DELETE',
     }).then((response) => {
       if (response.ok) {
-        console.log('file deleted successfully')
+        toast.success('File deleted')
       } else {
-        console.error('Failed to delete file')
+        toast.error('Failed to delete file')
       }
       setIsOpen(false)
       router.refresh()
