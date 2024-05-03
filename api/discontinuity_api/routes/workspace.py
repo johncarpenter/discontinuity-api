@@ -252,8 +252,8 @@ def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
     for source in sources:        
         includeRecord = True
         if includeRecord:
-            metadata = source.metadata
-            if metadata['file'] not in unique_files:
+            metadata = source.metadata           
+            if metadata['file'] not in unique_files and metadata['relevance_score'] > 0.0001:
                 unique_files[metadata['file']] = {
                     "pageContent": source.page_content,
                     "metadata": metadata

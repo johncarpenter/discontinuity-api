@@ -68,10 +68,10 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
     # Each workspace will have it's own chain, so we need to create a new chain for each workspace
     # We will use the workspaceId as the chain name
     if(workspaceId=="clumutd7f0002tsdezd06430g"): # Test workspace on dev
-        llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
+        llm = ChatOpenAI(streaming=True,temperature=0.0, model="gpt-4-turbo")
  
         vector = get_qdrant_vector_db(workspaceId)
-        retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.80})
+        retriever = vector.as_retriever(search_type="mmr", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.75,})
 
 
         #llm = Cohere(temperature=0)
@@ -99,10 +99,10 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
     
 
 async def defaultChain(workspaceId:str, filter:str = None):
-    llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
+    llm = ChatOpenAI(streaming=True,temperature=0.0, model="gpt-4-turbo")
     
     vector = get_qdrant_vector_db(workspaceId)
-    retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.80})
+    retriever = vector.as_retriever(search_type="mmr", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.75})
 
 
     
