@@ -110,7 +110,7 @@ export const useStreaming = (
   }
 
   const addUserMessage = useCallback(
-    (message: string, filter?: { [key: string]: string }) => {
+    (message: string, filter?: { [key: string]: any }) => {
       listener?.onStartStream?.()
 
       appendMessages([

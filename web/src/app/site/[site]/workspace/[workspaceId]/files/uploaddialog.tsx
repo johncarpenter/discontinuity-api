@@ -60,8 +60,6 @@ export function UploadDialog({ workspaceId }: { workspaceId: string }) {
 
     const response = await fetch(`/api/workspace/${workspaceId}/files`, { method: 'POST', body })
 
-    console.log(response)
-
     if (response.ok) {
       const { url, fields } = await response.json()
 

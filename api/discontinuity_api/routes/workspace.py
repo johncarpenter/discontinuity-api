@@ -266,17 +266,18 @@ def build_filter(filter: dict):
     logger.info(f"Building filter from {filter}")
 
     baseFilter =  models.Filter(
-        must=[models.FieldCondition(key="metadata.category", match=models.MatchAny(any=["NarrativeText","ImageDescription","Transcription","ListItem"]))]
+        should=[models.FieldCondition(key="metadata.category", match=models.MatchAny(any=["NarrativeText","ImageDescription","Transcription","ListItem"]))],
+        must = [],
     )
 
     if filter:
         if "category" in filter:
-            baseFilter.must.append(models.FieldCondition(key="metadata.category", match=models.MatchAny(any=filter["category"])))
+            baseFilter.should.append(models.FieldCondition(key="metadata.category", match=models.MatchAny(any=filter["category"])))
 
         if "files" in filter and filter["files"] and len(filter["files"]) > 0:
             baseFilter.must.append(models.FieldCondition(key="metadata.file", match=models.MatchAny(any=json.loads(filter["files"]))))
 
         if "page" in filter:
-            baseFilter.must.append(models.FieldCondition(key="metadata.page", match=models.MatchAny(any=filter["page"])))
+            baseFilter.should.append(models.FieldCondition(key="metadata.page", match=models.MatchAny(any=filter["page"])))
 
     return baseFilter

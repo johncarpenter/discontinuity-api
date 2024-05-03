@@ -60,7 +60,7 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
   const [focusFiles] = useFocusFiles()
 
   const handleNewQuery = (message: string) => {
-    addUserMessage(message, { files: focusFiles ? JSON.stringify(focusFiles) : '[]' })
+    addUserMessage(message, { files: focusFiles })
   }
 
   useEffect(() => {

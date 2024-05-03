@@ -71,11 +71,11 @@ async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
         llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
  
         vector = get_qdrant_vector_db(workspaceId)
-        retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.50})
+        retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.80})
 
 
         #llm = Cohere(temperature=0)
-        compressor = CohereRerank()
+        compressor = CohereRerank(top_n=10)
         compression_retriever = ContextualCompressionRetriever(
             base_compressor=compressor, base_retriever=retriever
         )
@@ -102,11 +102,11 @@ async def defaultChain(workspaceId:str, filter:str = None):
     llm = ChatOpenAI(streaming=True,temperature=0.5, model="gpt-4-turbo")
     
     vector = get_qdrant_vector_db(workspaceId)
-    retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.50})
+    retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.80})
 
 
     
-    compressor = CohereRerank()
+    compressor = CohereRerank(top_n=10)
     compression_retriever = ContextualCompressionRetriever(
         base_compressor=compressor, base_retriever=retriever
     )
