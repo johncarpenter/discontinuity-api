@@ -110,6 +110,7 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
         </div>
         <div className="w-full sm:p-6 mx-auto">
           <ChatInput
+            shareLink="https://discontinuity.ai"
             workspaceId={workspaceId}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}
