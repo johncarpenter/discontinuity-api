@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { PencilSquareIcon, ArrowRightCircleIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon, ArrowRightCircleIcon, ShareIcon } from '@heroicons/react/24/outline'
 import { Text } from '@/components/Base/text'
 
 import { useState } from 'react'
@@ -12,14 +12,21 @@ import { UploadFileDialog } from '@/components/Dialogs/uploadFiles'
 import { useFocusFiles } from '@/lib/client/workspaceProvider'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { FocusedFilesDialog } from '@/components/Dialogs/focusedFiles'
+import { ShareDialog } from '@/components/Dialogs/sharedialog'
 
 type ChatInputProps = {
   workspaceId: string
+  shareLink: string
   onReset: () => void
   onHandleMessage: (message: string) => void
 }
 
-export default function ChatInput({ workspaceId, onHandleMessage, onReset }: ChatInputProps) {
+export default function ChatInput({
+  workspaceId,
+  shareLink,
+  onHandleMessage,
+  onReset,
+}: ChatInputProps) {
   const [input, setInput] = useState<string>('')
 
   const [focusFiles, setFocusFiles] = useFocusFiles()
@@ -83,13 +90,21 @@ export default function ChatInput({ workspaceId, onHandleMessage, onReset }: Cha
                 </FocusedFilesDialog>
               )}
             </div>
-            <Button
-              onClick={() => onHandleMessageInternal()}
-              plain={true}
-              className="ml-auto text-white/50"
-            >
-              <ArrowRightCircleIcon className="lg:right-3 right-2 lg:top-3 top-2 w-6 h-6 flex-0  justify-center my-auto text-white/50" />
-            </Button>
+            <div className="flex flex-row ml-auto">
+              <ShareDialog shareLink={shareLink}>
+                <div className="flex-1 flex flex-row">
+                  <ShareIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
+                  <Text className="text-white/50">Share</Text>
+                </div>
+              </ShareDialog>
+              <Button
+                onClick={() => onHandleMessageInternal()}
+                plain={true}
+                className=" text-white/50"
+              >
+                <ArrowRightCircleIcon className="lg:right-3 right-2 lg:top-3 top-2 w-6 h-6 flex-0  justify-center my-auto text-white/50" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

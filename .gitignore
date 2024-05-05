@@ -93,3 +93,11 @@ terraform.rc
 cloud-sql-proxy
 # Local storage of faiss vector db
 storage
+
+node_modules
+pytest.ini
+.env
+.env.local
+.env.development
+.env.test
+.env.production

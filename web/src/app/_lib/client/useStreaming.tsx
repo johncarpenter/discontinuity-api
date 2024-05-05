@@ -10,16 +10,18 @@ export type Message = {
   role: 'user' | 'computer'
   id: string
   created: string
-  sources: Array<{
-    pageContent: string
-    metadata: {
-      file: string
-      url: string
-      type: string
-      source: string
-      date: string
-    }
-  }>
+  sources: Array<MessageData>
+}
+
+export type MessageData = {
+  pageContent: string
+  metadata: {
+    file: string
+    url: string
+    type: string
+    source: string
+    date: string
+  }
 }
 
 export type StreamListenerType = {
@@ -37,7 +39,7 @@ export const useStreaming = (
   listener?: StreamListenerType,
   threadId?: string
 ) => {
-  const [data, setData] = useState<string | undefined>(undefined)
+  const [data, setData] = useState<MessageData[]>([])
   const [controller, setController] = useState<AbortController | null>(null)
 
   const [thread, setThread] = useState<string | undefined>(() => {
@@ -173,11 +175,28 @@ export const useStreaming = (
                 }
                 // 2 is the data
                 else if (control === '2') {
+                  // todo Append to the data stream
                   setData(msg)
+
                   setMessages((prevMessages) => {
                     const lastMessage = prevMessages.slice(-1)[0]
                     lastMessage.sources = msg
+                    console.log('Sources:', lastMessage.sources)
+                    console.log('Data:', msg)
 
+                    return [...prevMessages.slice(0, -1), lastMessage]
+                  })
+                }
+                // 3 is an error
+                else if (control === '3') {
+                  listener?.onError?.(new Error('Unknown upstream error'))
+                  if (controller) {
+                    controller.abort()
+                  }
+                  setMessages((prevMessages) => {
+                    const lastMessage = prevMessages.slice(-1)[0]
+                    lastMessage.content =
+                      '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
                     return [...prevMessages.slice(0, -1), lastMessage]
                   })
                 }
@@ -190,6 +209,18 @@ export const useStreaming = (
                 console.error('Error parsing message:', error)
               }
             },
+            onerror(error) {
+              listener?.onError?.(error)
+              if (controller) {
+                controller.abort()
+              }
+              setMessages((prevMessages) => {
+                const lastMessage = prevMessages.slice(-1)[0]
+                lastMessage.content =
+                  '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
+                return [...prevMessages.slice(0, -1), lastMessage]
+              })
+            },
             onclose() {
               listener?.onStopStream?.()
             },
@@ -200,6 +231,15 @@ export const useStreaming = (
             console.log('Fetch aborted')
           } else {
             listener?.onError?.(error)
+            setMessages((prevMessages) => {
+              const lastMessage = prevMessages.slice(-1)[0]
+              lastMessage.content =
+                '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
+              return [...prevMessages.slice(0, -1), lastMessage]
+            })
+            if (controller) {
+              controller.abort()
+            }
           }
           listener?.onStopStream?.()
         }
@@ -207,7 +247,7 @@ export const useStreaming = (
 
       fetchData()
     },
-    [listener, url, headers, thread, workspaceId]
+    [listener, workspaceId, url, headers, thread, controller]
   )
 
   const stopFetching = useCallback(() => {

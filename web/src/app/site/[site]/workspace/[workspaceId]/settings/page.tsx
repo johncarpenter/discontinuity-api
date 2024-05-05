@@ -8,6 +8,7 @@ import ApiKeysTable from '@/components/ApiKeysTable'
 import { AddApiKeyDialog } from './addapikeydialog'
 import { Text } from '@/components/Base/text'
 import { CopyToClipboard } from '@/app/_components/CopyToClipboard'
+import { ClipboardIcon } from '@heroicons/react/24/outline'
 
 type WorkspaceSettingsPageProps = {
   params: {
@@ -34,7 +35,9 @@ const WorkspaceSettingsPage = async ({ params }: WorkspaceSettingsPageProps) => 
           </div>
           <div className="flex-shrink flex">
             <Text className="text-gray-500">{workspace.id}</Text>
-            <CopyToClipboard copyText={workspace.id} />
+            <CopyToClipboard copyText={workspace.id}>
+              <ClipboardIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </CopyToClipboard>
           </div>
         </div>
       </Card>

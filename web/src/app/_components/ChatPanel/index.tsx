@@ -11,15 +11,16 @@ import ChatEmptyState from './emptystate'
 import { RenderMarkdown } from '@/lib/client/renderMarkdown'
 import ChatInput from '@/components/ChatInput'
 import { useFocusFiles } from '@/lib/client/workspaceProvider'
+import { workspaces } from '@prisma/client'
 
 type ChatPanelProps = {
-  workspaceId: string
+  workspace: workspaces
+  chatId?: string
 }
 
-export default function ChatPanel({ workspaceId }: ChatPanelProps) {
+export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
   const listener: StreamListenerType = {
-    onError: (error: Error) => {
-      console.error(error)
+    onError: () => {
       setIsBusy(false)
     },
     onStartStream: () => {
@@ -31,8 +32,10 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
   }
 
   const [threadId] = useState<string | undefined>(() => {
+    if (chatId) return chatId
+
     if (typeof window !== 'undefined') {
-      const cachedId = localStorage.getItem(`${workspaceId}-threadId`)
+      const cachedId = localStorage.getItem(`${workspace.id}-threadId`)
       return cachedId || undefined
     }
     return undefined
@@ -40,7 +43,7 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
 
   const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
-    workspaceId,
+    workspace.id,
     {},
     listener,
     threadId
@@ -80,6 +83,7 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
               </div>
             )}
             {messages?.map((message, index) => {
+              console.log(message)
               return (
                 <div key={index} className="flex p-4 items-start">
                   <div className="flex items-center p-2">
@@ -94,15 +98,17 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
                     <div className="p-2">
                       {isBusy && index == messages?.length - 1 && (
                         <div className="flex p-4 items-start">
-                          <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 dark:text-white animate-spin" />{' '}
+                          <SparklesIcon className="ml-2 mt-2 h-6 w-6 text-primary-400 dark:text-gray-600 animate-spin" />{' '}
                           <div className="text-sm text-gray-600 mt-2 ml-4"> Thinking... </div>
                         </div>
                       )}
                       <RenderMarkdown content={message.content} />
+                      {index == messages.length - 1 && <div ref={messagesEndRef} />}
+
                       {message.sources?.length > 0 && (
                         <>
                           <h4 className="text-lg mt-4 dark:prose-dark">Sources</h4>
-                          <SourcesPanel workspaceId={workspaceId} documents={message.sources} />
+                          <SourcesPanel workspaceId={workspace.id} documents={message.sources} />
                         </>
                       )}
                     </div>
@@ -110,13 +116,12 @@ export default function ChatPanel({ workspaceId }: ChatPanelProps) {
                 </div>
               )
             })}
-
-            <div ref={messagesEndRef} />
           </div>
         </div>
         <div className="w-full sm:p-6 mx-auto">
           <ChatInput
-            workspaceId={workspaceId}
+            shareLink={`https://discontinuity.ai/workspace/${workspace.slug}/chat/${threadId}`}
+            workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}
           />

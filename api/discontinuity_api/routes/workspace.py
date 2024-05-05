@@ -22,7 +22,7 @@ import os
 import requests
 from sse_starlette.sse import EventSourceResponse
 import json
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 from qdrant_client import models
 
@@ -64,50 +64,68 @@ class ChatMessage(BaseModel):
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     logger.info(f"Streaming Agent for {workspace.id}")
    
-    filter = build_filter(message.filter)
+    filter, filterMessage = build_filter(message.filter)
     logger.info(f"Using filter {filter}")
-
+    
     # Get the vector db for the workspace
-    chain = await get_chain_for_workspace(workspace.id, filter)
+    # This isht e rag chain
+    #chain = await get_chain_for_workspace(workspace.id, filter)
+
+    # This is the full agent
+    agent = await get_agent_for_workspace(workspace.id, filter)
 
     thread = message.thread or str(uuid.uuid4())
 
     history = get_redis_history(session_id=thread)
 
+    if filterMessage:                
+        logger.info(f"Applying filter to the System Message: {filterMessage}")
+        history.add_message(SystemMessage(content=filterMessage, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+
     history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
 
-    async def generator():
-        response = '' 
-        sources = []
-        yield stream_chunk({"thread":thread}, "assistant_message")
-        async for chunk in chain.astream({"input":message.message, "chat_history":history.messages}):    
-           # logger.info(f"Chunk: {chunk}")    
-            action = list(chunk.keys())[0]
-            msg = chunk[action]
-            if action == "context":
-                sources = reduceSourceDocumentsToUniqueFiles(sources=msg) 
-                yield stream_chunk(sources, "data")  
-            elif action == "answer":
-                response += msg
-                yield stream_chunk(msg, "text")
-    
     # async def generator():
     #     response = '' 
     #     sources = []
     #     yield stream_chunk({"thread":thread}, "assistant_message")
-    #     async for chunk in chain.astream({"input":message.message, "chat_history":history.messages}): 
-    #         logger.info(f"Chunk: {chunk}")   
+    #     async for chunk in chain.astream({"input":message.message, "chat_history":history.messages}):    
+    #        # logger.info(f"Chunk: {chunk}")    
     #         action = list(chunk.keys())[0]
     #         msg = chunk[action]
-    #         if action == "steps":
-    #             for agentstep in msg:
-    #                 if(agentstep.observation['context']):
-    #                     docs = agentstep.observation['context']
-    #                     sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
-    #                     yield stream_chunk(sources, "data")  
-    #         elif action == "output":
+    #         if action == "context":
+    #             sources = reduceSourceDocumentsToUniqueFiles(sources=msg) 
+    #             yield stream_chunk(sources, "data")  
+    #         elif action == "answer":
     #             response += msg
     #             yield stream_chunk(msg, "text")
+    
+    async def generator():
+        response = '' 
+        sources = []
+        yield stream_chunk({"thread":thread}, "assistant_message")
+        try:
+            async for chunk in agent.astream({"input":message.message, "chat_history":history.messages}): 
+               # logger.info(f"Chunk: {chunk}")   
+                action = list(chunk.keys())[0]
+                msg = chunk[action]
+                if action == "steps":
+                
+                    for agentstep in msg:
+                        logger.info(f"Tool Log: {agentstep.action.log}")
+                        if(agentstep.observation):
+                            if('context' in agentstep.observation):
+                                docs = agentstep.observation['context']
+                                sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
+                                yield stream_chunk(sources, "data")
+                        # else:# Tool observation
+                        #     yield stream_chunk(agentstep.observation, "text")  
+                elif action == "output":
+                    response += msg
+                    yield stream_chunk(msg, "text")
+        except Exception as e:
+            logger.error(f"Error in agent stream: {e}")
+            response = "Sorry, I am having trouble processing your request. Please try again later."
+            yield stream_chunk(response, "error")
             
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 
@@ -253,7 +271,7 @@ def reduceSourceDocumentsToUniqueFiles(sources: list[Document]):
         includeRecord = True
         if includeRecord:
             metadata = source.metadata           
-            if metadata['file'] not in unique_files and metadata['relevance_score'] > 0.0001:
+            if metadata['file'] not in unique_files:
                 unique_files[metadata['file']] = {
                     "pageContent": source.page_content,
                     "metadata": metadata
@@ -270,14 +288,21 @@ def build_filter(filter: dict):
         must = [],
     )
 
+    # The filter messages is sent to the Agent to filter the responses at the llm level
+    filterMessage = None
+
     if filter:
         if "category" in filter:
-            baseFilter.should.append(models.FieldCondition(key="metadata.category", match=models.MatchAny(any=filter["category"])))
+            baseFilter.must.append(models.FieldCondition(key="metadata.category", match=models.MatchAny(any=filter["category"])))
+            filterMessage = f"Filtering for category: {filter['category']}"
 
         if "files" in filter and filter["files"] and len(filter["files"]) > 0:
             baseFilter.must.append(models.FieldCondition(key="metadata.file", match=models.MatchAny(any=filter["files"])))
+            filename = (" or ".join(filter['files']))
+            filterMessage = f"Filtering for filenames that match {filename}"   
 
         if "page" in filter:
-            baseFilter.should.append(models.FieldCondition(key="metadata.page", match=models.MatchAny(any=filter["page"])))
+            baseFilter.must.append(models.FieldCondition(key="metadata.page", match=models.MatchAny(any=filter["page"])))
+            filterMessage = f"Filtering for pages that match { filter['page']}"   
 
-    return baseFilter
+    return baseFilter, filterMessage

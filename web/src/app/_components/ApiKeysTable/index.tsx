@@ -3,6 +3,7 @@ import { getApiKeys } from '@/prisma/services/apikey'
 import { Button } from '@/components/Base/button'
 import { apikeys } from '@prisma/client'
 import { CopyToClipboard } from '@/components/CopyToClipboard'
+import { ClipboardIcon } from '@heroicons/react/24/outline'
 // Wait for the playlists
 
 export default async function ApiKeysTable({ workspaceId }: { workspaceId: string }) {
@@ -54,7 +55,9 @@ export default async function ApiKeysTable({ workspaceId }: { workspaceId: strin
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-lighter flex">
                           ****
-                          <CopyToClipboard copyText={key.client_secret} />
+                          <CopyToClipboard copyText={key.client_secret}>
+                            <ClipboardIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                          </CopyToClipboard>
                         </td>
 
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0">

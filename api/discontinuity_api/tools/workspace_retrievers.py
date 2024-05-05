@@ -17,7 +17,7 @@ from langchain.agents import (
 logger = logging.getLogger(__name__)
 
 
-async def create_workspace_retriever_tool(workspaceId:str, filter:str = "metadata->>'category' in ('NarrativeText','ImageDescription','Transcription','ListItem')"):
+async def create_workspace_retriever_tool(workspaceId:str, filter:str = None):
     """ Returns the retriever tool for the workspace """
 
     logger.info(f"Running workspace retriever tool for workspace {workspaceId}")
@@ -25,8 +25,8 @@ async def create_workspace_retriever_tool(workspaceId:str, filter:str = "metadat
     chain = await get_chain_for_workspace(workspaceId, filter)
 
     return Tool (
-        name=workspaceId,
-        description = "Query a retriever tool for the files in the workspace that the user has uploaded. Personal information for the user",
+        name='workspace_retriever',
+        description = "Useful for querying the documents that the user has uploaded to the workspace",
         coroutine=lambda x: chain.ainvoke({"input":x})   ,
         func= lambda x: NotImplementedError("This is a coroutine function"),     
         )

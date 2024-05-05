@@ -4,6 +4,8 @@ import os
 import logging
 from botocore.exceptions import ClientError
 
+logger = logging.getLogger(__name__)
+
 AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 
@@ -34,7 +36,7 @@ def uploadFileToBucket(s3_client, file_obj, bucket, folder, object_name=None):
     try:
         response = s3_client.upload_fileobj(file_obj, bucket, f"{folder}/{object_name}")
     except ClientError as e:
-        logging.error(e)
+        logger.error(e)
         return False
     return True
 
@@ -52,6 +54,25 @@ def createFileOnBucket(s3_client, data, bucket, folder, object_name):
     try:
         response = s3_client.put_object(Body=binary_data, Bucket=bucket, Key=f"{folder}/{object_name}")
     except ClientError as e:
-        logging.error(e)
+        logger.error(e)
         return False
     return True
+
+def listFilesInBucket(s3_client, bucket, folder):
+    """List files in an S3 bucket
+
+    :param bucket: Bucket to list
+    :param folder: Folder to list
+    :return: List of files in the bucket. If error, return None
+    """
+    try:
+        response = s3_client.list_objects_v2(Bucket=bucket, Prefix=folder)
+    except ClientError as e:
+        logger.error(e)
+        return None
+
+    files = []
+    for obj in response.get('Contents', []):
+        files.append(obj)
+
+    return files
