@@ -1,14 +1,15 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 from fastapi.params import Depends
 from fastapi import HTTPException, Depends, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 import logging
+from discontinuity_api.utils.s3 import listFilesInBucket
 from discontinuity_api.database.api import getFlow
 from discontinuity_api.database.dbmodels import get_db
-from discontinuity_api.tools import get_agent_for_workspace
+from discontinuity_api.tools import get_agent_for_workspace, get_data_agent_for_workspace
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
 from discontinuity_api.vector import query_index, get_faiss_vector_db, get_redis_history, get_qdrant_vector_db
 from discontinuity_api.utils import JWTBearer
@@ -105,15 +106,17 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         yield stream_chunk({"thread":thread}, "assistant_message")
         try:
             async for chunk in agent.astream({"input":message.message, "chat_history":history.messages}): 
-               # logger.info(f"Chunk: {chunk}")   
+                # logger.info(f"Chunk: {chunk}")   
                 action = list(chunk.keys())[0]
                 msg = chunk[action]
                 if action == "steps":
                 
                     for agentstep in msg:
                         logger.info(f"Tool Log: {agentstep.action.log}")
+                        
                         if(agentstep.observation):
-                            if('context' in agentstep.observation):
+                            logger.info(f"Tool Observation: {agentstep.observation}")
+                            if('context' in agentstep.observation):                             
                                 docs = agentstep.observation['context']
                                 sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
                                 yield stream_chunk(sources, "data")
@@ -123,9 +126,70 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
                     response += msg
                     yield stream_chunk(msg, "text")
         except Exception as e:
-            logger.error(f"Error in agent stream: {e}")
-            response = "Sorry, I am having trouble processing your request. Please try again later."
-            yield stream_chunk(response, "error")
+           logger.error(f"Error in agent stream: {e}")
+           response = "Sorry, I am having trouble processing your request. Please try again later."
+           yield stream_chunk(response, "error")
+            
+        history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
+
+
+    return EventSourceResponse(generator())
+
+
+@router.post("/data")
+async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
+    logger.info(f"Streaming Data Agent for {workspace.id}")
+   
+    # Check that the files exist in the workspace
+    if not message.filter['files']:
+        raise HTTPException(status_code=400, detail="No files provided")
+    
+    allFiles = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET_NAME'), folder=f"{workspace.id}/")
+    allFileNames = [file['Key'].split("/")[-1] for file in allFiles]
+    for file in message.filter['files']:
+        if file not in  allFileNames:
+            raise HTTPException(status_code=400, detail=f"File {file} not found in workspace")
+
+        
+    # This is the full agent
+    agent = get_data_agent_for_workspace(workspace.id, message.filter['files'])
+
+    thread = message.thread or str(uuid.uuid4())
+
+    history = get_redis_history(session_id=thread)
+
+    history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+   
+    async def generator():
+        response = '' 
+        sources = []
+        msg = message.message + "\n\nuUse File with ID:file-HwAG7GjI5P4xWhtKzaLnxImv"
+        yield stream_chunk({"thread":thread}, "assistant_message")
+        #try:
+        for chunk in agent.stream({"input":msg, "chat_history":history.messages}): 
+            logger.info(f"Chunk: {chunk}")   
+            action = list(chunk.keys())[0]
+            msg = chunk[action]
+            if action == "steps":
+            
+                for agentstep in msg:
+                    logger.info(f"Tool Log: {agentstep.action.log}")
+                    
+                    if(agentstep.observation):
+                        logger.info(f"Tool Observation: {agentstep.observation}")
+                        if('context' in agentstep.observation):                             
+                            docs = agentstep.observation['context']
+                            sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
+                            yield stream_chunk(sources, "data")
+                    # else:# Tool observation
+                    #     yield stream_chunk(agentstep.observation, "text")  
+            elif action == "output":
+                response += msg
+                yield stream_chunk(msg, "text")
+        #except Exception as e:
+        #    logger.error(f"Error in agent stream: {e}")
+        #    response = "Sorry, I am having trouble processing your request. Please try again later."
+        #    yield stream_chunk(response, "error")
             
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 

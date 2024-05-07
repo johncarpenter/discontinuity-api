@@ -11,14 +11,15 @@ import { LuUpload } from 'react-icons/lu'
 import { UploadFileDialog } from '@/components/Dialogs/uploadFiles'
 import { useFocusFiles } from '@/lib/client/workspaceProvider'
 import { StarIcon } from '@heroicons/react/20/solid'
-import { FocusedFilesDialog } from '@/components/Dialogs/focusedFiles'
 import { ShareDialog } from '@/components/Dialogs/sharedialog'
+import { SelectFilesDialog } from '../Dialogs/selectFiles'
 
 type ChatInputProps = {
   workspaceId: string
   shareLink: string
   onReset: () => void
   onHandleMessage: (message: string) => void
+  fileTypeFilter?: string[]
 }
 
 export default function ChatInput({
@@ -26,6 +27,7 @@ export default function ChatInput({
   shareLink,
   onHandleMessage,
   onReset,
+  fileTypeFilter,
 }: ChatInputProps) {
   const [input, setInput] = useState<string>('')
 
@@ -75,20 +77,23 @@ export default function ChatInput({
           </div>
           <div className="grid grid-cols-2 items-center w-full outline-none focus:outline-none">
             <div className="flex flex-row w-fullrounded-md  text-white/50 ">
-              <UploadFileDialog workspaceId={workspaceId} listener={fileListener}>
+              <UploadFileDialog
+                workspaceId={workspaceId}
+                listener={fileListener}
+                fileTypeFilter={fileTypeFilter}
+              >
                 <div className="flex-1 flex flex-row">
                   <LuUpload className="w-4 h-4 text-white/50 my-auto mr-2" />
                   <Text className="text-white/50">Add Files</Text>
                 </div>
               </UploadFileDialog>
-              {focusFiles && focusFiles.length > 0 && (
-                <FocusedFilesDialog>
-                  <div className="flex-1 flex flex-row">
-                    <StarIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
-                    <Text className="text-white/50">Focused Files</Text>
-                  </div>
-                </FocusedFilesDialog>
-              )}
+
+              <SelectFilesDialog workspaceId={workspaceId} fileTypeFilter={fileTypeFilter}>
+                <div className="flex-1 flex flex-row">
+                  <StarIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
+                  <Text className="text-white/50">Focused Files</Text>
+                </div>
+              </SelectFilesDialog>
             </div>
             <div className="flex flex-row ml-auto">
               <ShareDialog shareLink={shareLink}>

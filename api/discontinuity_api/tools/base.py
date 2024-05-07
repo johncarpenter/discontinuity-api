@@ -1,3 +1,7 @@
+import os
+import io
+from typing import List
+from discontinuity_api.utils.s3 import downloadFileFromBucket, s3Client
 from discontinuity_api.tools.files import Config, ListWorkspaceFiles
 from discontinuity_api.tools.agent_response import AgentResponse, parse
 from .workspace_retrievers import create_workspace_retriever_tool
@@ -8,6 +12,11 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent, tool
 from langchain.agents.format_scratchpad.openai_tools import format_to_openai_tool_messages
 from langchain.agents.format_scratchpad import format_to_openai_function_messages
 from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
+import pandas as pd
+from langchain.agents.agent_types import AgentType
+from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
+from langchain.agents.openai_assistant import OpenAIAssistantRunnable
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,22 +38,35 @@ async def default_agent(workspaceId:str, filter:str = None):
     prompt = STANDARD_AGENT_CHAT
 
     agent = create_tool_calling_agent(llm, tools, prompt)   
-    # llm_with_tools = llm.bind_tools(tools)
-
-    # agent = (
-    #     {
-    #         "input": lambda x: x["input"],
-    #         "chat_history": lambda x: x["chat_history"],
-    #         "agent_scratchpad": lambda x: format_to_openai_tool_messages(x["intermediate_steps"])
-
-    #     }
-    #     | prompt
-    #     | llm_with_tools
-    #     | OpenAIToolsAgentOutputParser()
-    # )
-    
      
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
     
     return agent_executor
 
+
+def get_data_agent_for_workspace(workspaceId:str, files:List[str] = []):
+
+    #agent =  OpenAIAssistantRunnable(assistant_id="asst_cR00IAPGsXjst2wklS9GC7kL", as_agent=True)
+    #agent_executor = AgentExecutor(agent=agent, tools=[], verbose=False)
+    #return agent_executor
+    return default_data_agent(workspaceId, files)
+
+
+def default_data_agent(workspaceId:str, files:List[str] = []): 
+    
+    logger.info(f"Running default agent for workspace {workspaceId}")
+
+    llm = ChatOpenAI(streaming=True,temperature=0, model="gpt-4")
+
+    df = [load_dataframe(workspaceId, file) for file in files]
+
+    agent = create_pandas_dataframe_agent(llm, df, agent_type=AgentType.OPENAI_FUNCTIONS)
+    
+    return agent
+
+def load_dataframe(workspaceId:str, file:str = None):
+   # Load the file from s3
+   logger.info(f"Loading file {file} from workspace {workspaceId}")
+   data = downloadFileFromBucket(s3_client=s3Client(), bucket=os.getenv('AWS_BUCKET_NAME'), folder=workspaceId, object_name=file)
+
+   return pd.read_csv(io.StringIO(data)) # use additional arguments as needed

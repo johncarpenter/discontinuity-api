@@ -3,6 +3,7 @@ from botocore.client import BaseClient
 import os
 import logging
 from botocore.exceptions import ClientError
+import chardet
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def uploadFileToBucket(s3_client, file_obj, bucket, folder, object_name=None):
         return False
     return True
 
-def createFileOnBucket(s3_client, data, bucket, folder, object_name):
+def createFileOnBucket(s3_client: BaseClient, data, bucket, folder, object_name):
     """Create a file on an S3 bucket
 
     :param bucket: Bucket to upload to
@@ -58,7 +59,7 @@ def createFileOnBucket(s3_client, data, bucket, folder, object_name):
         return False
     return True
 
-def listFilesInBucket(s3_client, bucket, folder):
+def listFilesInBucket(s3_client: BaseClient, bucket, folder):
     """List files in an S3 bucket
 
     :param bucket: Bucket to list
@@ -76,3 +77,26 @@ def listFilesInBucket(s3_client, bucket, folder):
         files.append(obj)
 
     return files
+
+def downloadFileFromBucket(s3_client: BaseClient, bucket, folder, object_name):
+    """Download a file from an S3 bucket
+
+    :param bucket: Bucket to download from
+    :param folder: Folder to download from
+    :param object_name: S3 object name
+    :return: True if file was downloaded, else False
+    """
+    try:
+        response = s3_client.get_object(Bucket=bucket, Key=f"{folder}/{object_name}")
+
+        data = response['Body'].read()
+
+        encoding = chardet.detect(data)
+        logger.info(encoding)
+
+        return data.decode(encoding['encoding'] if encoding['encoding'] is not None else 'ISO-8859-1')
+
+    except ClientError as e:
+        logger.error(e)
+        return None
+    

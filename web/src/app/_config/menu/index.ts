@@ -16,13 +16,21 @@ export const workspaceMenu = (currentWorkspace?: string) => [
     name: 'Workspace',
     menuItems: [
       {
-        name: 'Search and Discovery',
+        name: 'Document Search',
         href: `/workspace/${currentWorkspace}/chat`,
         description: 'Search through your documents',
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: ChatBubbleBottomCenterIcon,
       },
+      // {
+      //   name: 'Data Analysis',
+      //   href: `/workspace/${currentWorkspace}/data`,
+      //   description: 'Analyze your documents',
+      //   enabled: currentWorkspace !== '',
+      //   visible: true,
+      //   Icon: ChatBubbleBottomCenterIcon,
+      // },
       {
         name: 'Models',
         href: `/workspace/${currentWorkspace}/flow`,

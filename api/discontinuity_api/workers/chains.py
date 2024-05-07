@@ -67,57 +67,30 @@ def format_docs(docs):
 async def get_chain_for_workspace(workspaceId:str, filter:str = None ):
     # Each workspace will have it's own chain, so we need to create a new chain for each workspace
     # We will use the workspaceId as the chain name
-    if(workspaceId=="clumutd7f0002tsdezd06430g"): # Test workspace on dev
-        llm = ChatOpenAI(streaming=True,temperature=0.0)
- 
-        vector = get_qdrant_vector_db(workspaceId)
-        retriever = vector.as_retriever(search_type="mmr", search_kwargs={"k": 15,"filter":filter})
-  
-        rerank = CohereRerank(top_n=5)
-  
-        pipeline_compressor = DocumentCompressorPipeline(
-            transformers=[AppendMetadataCompressor(), rerank, CohereRerankFilter(score_threshold=0.001)]
-        )
-
-        compression_retriever = ContextualCompressionRetriever(
-            base_compressor=pipeline_compressor, base_retriever=retriever
-        )
-
-        rephrase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
-        retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
-
-        history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, rephrase_prompt)
-      
-
-        question_answer_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
-        
-        rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
- 
-        return rag_chain
-
-
-    else:
-        return await defaultChain(workspaceId, filter)
+    return await defaultChain(workspaceId, filter)
     
 
 async def defaultChain(workspaceId:str, filter:str = None):
     llm = ChatOpenAI(streaming=True,temperature=0.0)
-    
+ 
     vector = get_qdrant_vector_db(workspaceId)
-    retriever = vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"k": 25,"filter":filter, "score_threshold":0.75})
+    retriever = vector.as_retriever(search_type="mmr", search_kwargs={"k": 15,"filter":filter})
 
-   
-    compressor = CohereRerank(top_n=10)
-    compression_retriever = ContextualCompressionRetriever(
-        base_compressor=compressor, base_retriever=retriever
+    rerank = CohereRerank(top_n=5)
+
+    pipeline_compressor = DocumentCompressorPipeline(
+        transformers=[AppendMetadataCompressor(), rerank, CohereRerankFilter(score_threshold=0.001)]
     )
-    logger.info("Using Cohere rerank algorithm for the workspace")
 
-    prompt = PromptTemplate.from_template(STANDARD_PROMPT)
+    compression_retriever = ContextualCompressionRetriever(
+        base_compressor=pipeline_compressor, base_retriever=retriever
+    )
+
+    rephrase_prompt = hub.pull("langchain-ai/chat-langchain-rephrase")
     retrieval_qa_chat_prompt = hub.pull("langchain-ai/retrieval-qa-chat")
 
-    history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, contextualize_history_prompt())
-   
+    history_aware_retriever =  create_history_aware_retriever(llm, compression_retriever, rephrase_prompt)
+
 
     question_answer_chain = create_stuff_documents_chain(llm, retrieval_qa_chat_prompt)
     

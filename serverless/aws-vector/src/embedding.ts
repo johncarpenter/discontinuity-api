@@ -40,14 +40,11 @@ const pdfType = ["pdf"];
 const unstructuredFileTypes = [
   "eml",
   "html",
-  "json",
   "md",
   "msg",
   "rst",
   "rtf",
   "txt",
-  "xml",
-  "csv",
   "doc",
   "docx",
   "epub",
@@ -55,7 +52,6 @@ const unstructuredFileTypes = [
   "pdf",
   "ppt",
   "pptx",
-  "tsv",
   "xlsx",
 ];
 
@@ -71,6 +67,8 @@ const imageFileTypes = [
 ];
 
 const audioFileTypes = ["mp3", "wav", "flac", "ogg", "m4a", "aac"];
+
+const dataFileTypes = ["csv", "tsv", "json", "xml", "xlsx"];
 
 /**
  * Triggered when an AWS Object is uploaded to the S3 bucket (specified in the serverless.yml file)
@@ -110,6 +108,9 @@ export async function handler(event: S3Event) {
     documents = await extractDocumentsFromAudio(tmpFile);
   } else if (imageFileTypes.includes(ext.toLowerCase())) {
     documents = await extractDocumentsFromImages(tmpFile);
+  } else if (dataFileTypes.includes(ext.toLowerCase())) {
+    console.log("Data files are excluded from the embedding process.");
+    return;
   } else {
     console.error(`Unsupported file type: ${ext}`);
     return;
@@ -312,7 +313,7 @@ async function splitLargeDocuments(documents: Document<Record<string, any>>[]) {
 
   const splitter = new TokenTextSplitter({
     encodingName: "gpt2",
-    chunkSize: 1024,
+    chunkSize: 512,
     chunkOverlap: 50,
   });
 

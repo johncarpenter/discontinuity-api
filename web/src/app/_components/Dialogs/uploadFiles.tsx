@@ -15,6 +15,45 @@ import { useDropzone } from 'react-dropzone'
 import toast from 'react-hot-toast'
 import { DocumentIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
+import * as mime from 'mime-types'
+
+const allFileTypes = [
+  'pdf',
+  'eml',
+  'html',
+  'md',
+  'msg',
+  'rst',
+  'rtf',
+  'txt',
+  'doc',
+  'docx',
+  'epub',
+  'odt',
+  'pdf',
+  'ppt',
+  'pptx',
+  'xlsx',
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'tiff',
+  'bmp',
+  'heic',
+  'webp',
+  'mp3',
+  'wav',
+  'flac',
+  'ogg',
+  'm4a',
+  'aac',
+  'csv',
+  'tsv',
+  'json',
+  'xml',
+  'xlsx',
+]
 
 export type FileUploadListenerType = {
   onFileSuccess?: (filename: string) => void
@@ -25,19 +64,40 @@ export type FileUploadListenerType = {
 type UploadFileDialogProps = {
   children: React.ReactNode
   workspaceId: string
+  fileTypeFilter?: string[]
   listener?: FileUploadListenerType
 }
 
-export function UploadFileDialog({ children, workspaceId, listener }: UploadFileDialogProps) {
+export function UploadFileDialog({
+  children,
+  workspaceId,
+  fileTypeFilter,
+  listener,
+}: UploadFileDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [drag, setDrag] = useState(false)
 
   const router = useRouter()
 
+  const acceptFilter = () => {
+    fileTypeFilter = fileTypeFilter || allFileTypes
+
+    const accept = new Map<string, string[]>()
+
+    fileTypeFilter.forEach((fileType) => {
+      const mimeType = mime.lookup(fileType)
+      if (!mimeType) return
+      accept.set(mimeType, [...(accept.get(mimeType) || []), `.${fileType}`])
+    })
+
+    return accept
+  }
+
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 50,
     maxSize: 5 * 1024 * 1024, // 5MB
+    accept: Object.fromEntries(acceptFilter()),
     onDrop: (acceptedFiles) => {
       uploadFile(acceptedFiles)
     },
@@ -50,10 +110,23 @@ export function UploadFileDialog({ children, workspaceId, listener }: UploadFile
     onError: () => {
       toast.error('There was a problem uploading the file. Please try again.')
     },
-    onDropRejected: () => {
-      toast.error(
-        'Contact support for help in processing files larger than 5mb, or more than 50 at a time'
+    onDropRejected(fileRejections) {
+      const code = fileRejections[0].errors[0].code
+
+      if (code === 'file-invalid-type') {
+        toast.error(`Invalid file type. Must be on of the following: ${fileTypeFilter}`)
+      } else if (code === 'file-too-large') {
+        toast.error('File is too large. Please upload a file less than 5MB.')
+      } else {
+        toast.error('There was a problem uploading the file. Please try again.')
+      }
+      listener?.onFileError?.(fileRejections[0].file.name)
+    },
+    onDropAccepted: (acceptedFiles) => {
+      toast.success(
+        'Files uploaded successfully. Loading the file into the workspace will take betwen 1-5 minutes'
       )
+      listener?.onFileSuccess?.(acceptedFiles[0].name)
     },
   })
 
@@ -67,10 +140,6 @@ export function UploadFileDialog({ children, workspaceId, listener }: UploadFile
       router.refresh()
       setIsOpen(false)
     })
-
-    toast.success(
-      'Files uploaded successfully. Loading the file into the workspace will take betwen 1-5 minutes'
-    )
   }
 
   async function uploadSingleFile(file: File) {

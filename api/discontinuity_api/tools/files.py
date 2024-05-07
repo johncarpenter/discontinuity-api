@@ -4,6 +4,8 @@ import os
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain.tools import BaseTool, StructuredTool, tool
 from typing import List, Optional, Type
+from langchain_core.documents import Document
+import json
 
 
 from discontinuity_api.utils import s3Client, listFilesInBucket
@@ -35,14 +37,17 @@ class ListWorkspaceFiles(BaseTool):
         self, filter:str, run_manager: Optional[CallbackManagerForToolRun] = None
     ) -> str:
         """Use the tool."""
-        files = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET_NAME'), folder=f"{self.workspaceId}/")
-        return files
+        return self._get_files(filter=filter)
     async def _arun(
         self,
         filter: str, 
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ) -> str:
         """Use the tool asynchronously."""
+        return self._get_files(filter=filter)
+
+    def _get_files(self, filter:str = None):
+        
         logger.debug(f"Running workspace file list tool for workspace {self.workspaceId}")  
         logger.debug(f"Filter: {filter}") 
 
@@ -50,14 +55,35 @@ class ListWorkspaceFiles(BaseTool):
         if(files is None or len(files) == 0):
             return "No files found in workspace"
 
-        # f"{obj['Key']} Updated:{obj['LastModified']} Size: {obj['Size']}"
-        # Filter the files 
-        #if filter is not None:
-        #    files = [file for file in files if filter in file['Key']]
+        if filter is not None:
+            if any(ext in filter for ext in [".","pdf","doc","docx","txt","rtf","html","xml","json","csv","xls","xlsx","ppt","pptx","odt","ods"]):
+                files = self._apply_filter(files, [filter])               
+            elif "image" in filter:
+                files = self._apply_filter(files, ["png","jpg","jpeg","webp","gif","tiff"])
 
-        files = [f"{file['Key']} Updated:{file['LastModified'].strftime('%m/%d/%Y, %H:%M:%S')} Size: {file['Size']}" for file in files]
 
-        return files
+        context = []
+        content = []
+        for file in files:
+            filename = file['Key'].split("/")[-1]
+            context.append( Document(page_content=filename, metadata={"file":filename, "type":filename.split(".")[-1]}))
+            content.append(f"{filename} Updated:{file['LastModified'].strftime('%m/%d/%Y, %H:%M:%S')} Size: {file['Size']}")
+
+        
+        output =  {"context":context , "content":content}
+        
+        return output
+    
+    def _apply_filter(self, files:List[str], filters:List[str]) -> List[str]:
+        filtered_files = []
+        for file in files:
+            if any(filt in file['Key'] for filt in filters):
+                filtered_files.append(file)
+        return filtered_files
+                                    
+
+
+        
         
 
 
