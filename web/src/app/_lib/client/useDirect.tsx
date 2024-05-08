@@ -140,7 +140,6 @@ export const useDirect = (
 
           const data = await response.json()
 
-          console.log(data)
           if (data?.success === false) {
             throw new Error(data.message)
           }

@@ -15,9 +15,10 @@ import ChatInput from '@/components/ChatInput'
 type FlowPanelProps = {
   workspace: workspaces
   flow: flows
+  chatId?: string
 }
 
-export default function FlowPanel({ workspace, flow }: FlowPanelProps) {
+export default function FlowPanel({ workspace, flow, chatId }: FlowPanelProps) {
   const listener: DirectListenerType = {
     onError: (error: Error) => {
       setIsBusy(false)
@@ -40,6 +41,7 @@ export default function FlowPanel({ workspace, flow }: FlowPanelProps) {
     listener,
     {
       threadIdKey: flow.id,
+      threadId: chatId,
     }
   )
 
@@ -113,7 +115,7 @@ export default function FlowPanel({ workspace, flow }: FlowPanelProps) {
           <ChatInput
             shareLink={
               thread
-                ? `https://discontinuity.ai/workspace/${workspace.slug}/flow/${flow.id}`
+                ? `https://discontinuity.ai/workspace/${workspace.slug}/flow/${flow.id}/${thread}`
                 : undefined
             }
             workspaceId={workspace.id}
