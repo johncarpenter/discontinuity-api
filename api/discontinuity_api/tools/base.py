@@ -16,9 +16,21 @@ import pandas as pd
 from langchain.agents.agent_types import AgentType
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
 from langchain.agents.openai_assistant import OpenAIAssistantRunnable
-
+from langchain_community.tools.tavily_search import TavilySearchResults
 
 logger = logging.getLogger(__name__)
+
+async def get_agent_for_chatplus(workspaceId:str, llm:str = None):
+
+    llm = ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4-turbo")
+
+    tools = [TavilySearchResults()]
+
+    agent = create_tool_calling_agent(llm, tools, STANDARD_AGENT_CHAT)
+
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+    
+    return agent_executor
 
 async def get_agent_for_workspace(workspaceId:str, filter:str = None):
 

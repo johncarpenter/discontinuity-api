@@ -35,3 +35,11 @@
 .markdown img{
    @apply mx-auto w-2/3;
 }
+
+.markdown pre{
+    @apply bg-slate-950/60 text-sm p-4 rounded-lg;
+}
+
+.markdown code{
+    @apply text-sm text-white/60 bg-transparent p-1 rounded-lg;
+}

@@ -35,7 +35,7 @@ export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps)
     if (chatId) return chatId
 
     if (typeof window !== 'undefined') {
-      const cachedId = localStorage.getItem(`${workspace.id}-threadId`)
+      const cachedId = localStorage.getItem(`${workspace.id}-data-threadId`)
       return cachedId || undefined
     }
     return undefined
@@ -44,9 +44,11 @@ export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps)
   const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/data`,
     workspace.id,
-    {},
     listener,
-    threadId
+    {
+      threadIdKey: 'data',
+      threadId,
+    }
   )
 
   useEffect(() => {

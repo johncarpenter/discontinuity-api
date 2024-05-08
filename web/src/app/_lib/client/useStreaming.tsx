@@ -31,20 +31,24 @@ export type StreamListenerType = {
   onStopStream?: () => void
   isBusy?: boolean
 }
+export type StreamConfig = {
+  threadId?: string
+  headers?: Record<string, string>
+  threadIdKey?: string
+}
 
 export const useStreaming = (
   url: string,
   workspaceId: string,
-  headers?: Record<string, string>,
   listener?: StreamListenerType,
-  threadId?: string
+  config?: StreamConfig
 ) => {
   const [data, setData] = useState<MessageData[]>([])
   const [controller, setController] = useState<AbortController | null>(null)
 
   const [thread, setThread] = useState<string | undefined>(() => {
     if (typeof window !== 'undefined') {
-      const cachedId = localStorage.getItem(`${workspaceId}-threadId`)
+      const cachedId = localStorage.getItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
       return cachedId || undefined
     }
   })
@@ -56,8 +60,8 @@ export const useStreaming = (
   const resetChat = useCallback(() => {
     setMessages([])
     setThread(undefined)
-    localStorage.removeItem(`${workspaceId}-threadId`)
-  }, [workspaceId])
+    localStorage.removeItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
+  }, [config?.threadIdKey, workspaceId])
 
   useEffect(() => {
     if (messages.length > 0 && thread) {
@@ -76,7 +80,7 @@ export const useStreaming = (
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
-            ...headers,
+            ...(config?.headers || ''),
           },
         }
       )
@@ -84,15 +88,15 @@ export const useStreaming = (
     }
 
     function retrieveThreadId() {
-      const saved = localStorage.getItem(`${workspaceId}-threadId`)
+      const saved = localStorage.getItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
 
       if (saved && saved !== 'undefined') {
-        return JSON.parse(saved)
+        return saved
       }
       return undefined
     }
 
-    const localThreadId = threadId || retrieveThreadId()
+    const localThreadId = config?.threadId || retrieveThreadId()
 
     if (localThreadId) {
       setThread(localThreadId)
@@ -105,7 +109,7 @@ export const useStreaming = (
         retrieveHistory(localThreadId)
       }
     }
-  }, [headers, threadId, workspaceId])
+  }, [config, workspaceId])
 
   const appendMessages = (messageList: Message[]) => {
     setMessages((prevMessages) => [...prevMessages, ...messageList])
@@ -147,7 +151,7 @@ export const useStreaming = (
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
               Accept: 'text/event-stream',
-              ...headers,
+              ...(config?.headers || ''),
             },
             body: JSON.stringify({
               message: message,
@@ -202,7 +206,10 @@ export const useStreaming = (
                 }
                 // 4 is the thread id
                 else if (control === '4') {
-                  localStorage.setItem(`${workspaceId}-threadId`, msg['thread'])
+                  localStorage.setItem(
+                    `${workspaceId}-${config?.threadIdKey || ''}-threadId`,
+                    msg['thread']
+                  )
                   setThread(msg['thread'])
                 }
               } catch (error) {
@@ -247,7 +254,7 @@ export const useStreaming = (
 
       fetchData()
     },
-    [listener, workspaceId, url, headers, thread, controller]
+    [listener, workspaceId, url, config?.headers, config?.threadIdKey, thread, controller]
   )
 
   const stopFetching = useCallback(() => {
@@ -266,5 +273,5 @@ export const useStreaming = (
     }
   }, [controller])
 
-  return { messages, data, addUserMessage, stopFetching, resetChat, loadInitialMessages }
+  return { messages, data, thread, addUserMessage, stopFetching, resetChat, loadInitialMessages }
 }

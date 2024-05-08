@@ -6,18 +6,18 @@ import { Text } from '@/components/Base/text'
 import { useRef, useState, useEffect } from 'react'
 import SourcesPanel from '../SourcesPanel'
 import { DirectListenerType, useDirect } from '@/lib/client/useDirect'
-import { flows } from '@prisma/client'
+import { flows, workspaces } from '@prisma/client'
 import { RenderMarkdown } from '@/lib/client/renderMarkdown'
 import FlowEmptyState from './emptystate'
 import toast from 'react-hot-toast'
 import ChatInput from '@/components/ChatInput'
 
 type FlowPanelProps = {
-  workspaceId: string
+  workspace: workspaces
   flow: flows
 }
 
-export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
+export default function FlowPanel({ workspace, flow }: FlowPanelProps) {
   const listener: DirectListenerType = {
     onError: (error: Error) => {
       setIsBusy(false)
@@ -34,12 +34,13 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
     },
   }
 
-  const { messages, addUserMessage, resetChat, loadInitialMessages } = useDirect(
+  const { messages, thread, addUserMessage, resetChat, loadInitialMessages } = useDirect(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/flow/${flow.id}`,
-    workspaceId,
-    flow.id,
-    {},
-    listener
+    workspace.id,
+    listener,
+    {
+      threadIdKey: flow.id,
+    }
   )
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
                       {message.sources?.length > 0 && (
                         <>
                           <h4 className="text-lg mt-4 dark:prose-dark">Sources</h4>
-                          <SourcesPanel workspaceId={workspaceId} documents={message.sources} />
+                          <SourcesPanel workspaceId={workspace.id} documents={message.sources} />
                         </>
                       )}
                     </div>
@@ -110,8 +111,12 @@ export default function FlowPanel({ workspaceId, flow }: FlowPanelProps) {
         </div>
         <div className="w-full sm:p-6 mx-auto">
           <ChatInput
-            shareLink="https://discontinuity.ai"
-            workspaceId={workspaceId}
+            shareLink={
+              thread
+                ? `https://discontinuity.ai/workspace/${workspace.slug}/flow/${flow.id}`
+                : undefined
+            }
+            workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}
           />

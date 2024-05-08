@@ -18,7 +18,7 @@ const WorkspaceFlowPage = async ({ params }: WorkspaceFlowPageProps) => {
 
   return (
     <div className="">
-      <FlowPanel workspaceId={workspace.id} flow={flow} />
+      <FlowPanel workspace={workspace} flow={flow} />
     </div>
   )
 }

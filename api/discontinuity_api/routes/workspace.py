@@ -9,7 +9,7 @@ import logging
 from discontinuity_api.utils.s3 import listFilesInBucket
 from discontinuity_api.database.api import getFlow
 from discontinuity_api.database.dbmodels import get_db
-from discontinuity_api.tools import get_agent_for_workspace, get_data_agent_for_workspace
+from discontinuity_api.tools import get_agent_for_workspace, get_data_agent_for_workspace, get_agent_for_chatplus
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
 from discontinuity_api.vector import query_index, get_faiss_vector_db, get_redis_history, get_qdrant_vector_db
 from discontinuity_api.utils import JWTBearer
@@ -38,6 +38,7 @@ BASE_API_URL = "https://flow.discontinuity.ai/api/v1/prediction/"
 
 class Message(BaseModel):
     message: str
+    thread: Optional[str] = None
     overrideConfig: Optional[dict] = None
 
 class Doc(BaseModel):
@@ -59,6 +60,53 @@ class ChatMessage(BaseModel):
     message: str
     thread: Optional[str] = None
     filter: Optional[dict] = {}
+
+@router.post("/chat")
+async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
+    logger.info(f"Streaming Chat for {workspace.id}")
+
+    # This is the full agent
+    agent = await get_agent_for_chatplus(workspace.id, filter)
+
+    thread = message.thread or str(uuid.uuid4())
+
+    history = get_redis_history(session_id=thread)
+
+    history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+    
+    async def generator():
+        response = '' 
+        sources = []
+        yield stream_chunk({"thread":thread}, "assistant_message")
+        try:
+            async for chunk in agent.astream({"input":message.message, "chat_history":history.messages}): 
+                # logger.info(f"Chunk: {chunk}")   
+                action = list(chunk.keys())[0]
+                msg = chunk[action]
+                if action == "steps":
+                    for agentstep in msg:
+                        logger.info(f"Tool Log: {agentstep.action.log}")
+                        if(agentstep.observation):
+                            #logger.info(f"Tool Observation: {agentstep.observation}")
+                            if('context' in agentstep.observation):                             
+                                docs = agentstep.observation['context']
+                                sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
+    
+                        # else:# Tool observation
+                        #     yield stream_chunk(agentstep.observation, "text")  
+                elif action == "output":
+                    response += msg
+                    yield stream_chunk(msg, "text")
+                    yield stream_chunk(sources, "data")
+        except Exception as e:
+           logger.error(f"Error in agent stream: {e}")
+           response = "Sorry, I am having trouble processing your request. Please try again later."
+           yield stream_chunk(response, "error")
+            
+        history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
+
+
+    return EventSourceResponse(generator())
 
 
 @router.post("/agent")
@@ -110,21 +158,20 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
                 action = list(chunk.keys())[0]
                 msg = chunk[action]
                 if action == "steps":
-                
                     for agentstep in msg:
                         logger.info(f"Tool Log: {agentstep.action.log}")
-                        
                         if(agentstep.observation):
-                            logger.info(f"Tool Observation: {agentstep.observation}")
+                            #logger.info(f"Tool Observation: {agentstep.observation}")
                             if('context' in agentstep.observation):                             
                                 docs = agentstep.observation['context']
                                 sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
-                                yield stream_chunk(sources, "data")
+    
                         # else:# Tool observation
                         #     yield stream_chunk(agentstep.observation, "text")  
                 elif action == "output":
                     response += msg
                     yield stream_chunk(msg, "text")
+                    yield stream_chunk(sources, "data")
         except Exception as e:
            logger.error(f"Error in agent stream: {e}")
            response = "Sorry, I am having trouble processing your request. Please try again later."
@@ -261,19 +308,33 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     
     logger.info(f"Querying flow {flow.id} with message {message.message}")
     
-
     headers = {}
-    payload = {"question": message.message}
+    
     if flow.apikey is not None and flow.apikey != "":
         headers = {"Authorization": f"Bearer {flow.apikey}"}
 
+    thread = message.thread or str(uuid.uuid4())
+    overrideConfig = message.overrideConfig or {}
+    overrideConfig["sessionId"] = thread
+    payload = {"question": message.message, "overrideConfig": overrideConfig}
+
     ## Reformat the output to be more readable
 
-    ## Store the messages in the history
+    
+
+    history = get_redis_history(session_id=thread)
+
+    history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+   
 
     try:
         response = requests.post(flow.endpoint, json=payload, headers=headers)    
-        return response.json()
+        data = response.json()
+
+        resultText = '``` ' + JSON.stringify(data.json) + '```' if data.json else data.text
+       
+        history.add_ai_message(AIMessage(content=resultText, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
+
     except requests.exceptions.RequestException as e:
         print(e)
         raise HTTPException(status_code=501, detail="Flow API not available")

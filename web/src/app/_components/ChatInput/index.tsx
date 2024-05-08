@@ -13,13 +13,16 @@ import { useFocusFiles } from '@/lib/client/workspaceProvider'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { ShareDialog } from '@/components/Dialogs/sharedialog'
 import { SelectFilesDialog } from '../Dialogs/selectFiles'
+import { Select } from '../Base/select'
+import { Fieldset } from '../Base/fieldset'
 
 type ChatInputProps = {
   workspaceId: string
-  shareLink: string
+  shareLink?: string
   onReset: () => void
   onHandleMessage: (message: string) => void
   fileTypeFilter?: string[]
+  showFiles?: boolean
 }
 
 export default function ChatInput({
@@ -28,6 +31,7 @@ export default function ChatInput({
   onHandleMessage,
   onReset,
   fileTypeFilter,
+  showFiles = true,
 }: ChatInputProps) {
   const [input, setInput] = useState<string>('')
 
@@ -76,32 +80,51 @@ export default function ChatInput({
             </Button>
           </div>
           <div className="grid grid-cols-2 items-center w-full outline-none focus:outline-none">
-            <div className="flex flex-row w-fullrounded-md  text-white/50 ">
-              <UploadFileDialog
-                workspaceId={workspaceId}
-                listener={fileListener}
-                fileTypeFilter={fileTypeFilter}
-              >
-                <div className="flex-1 flex flex-row">
-                  <LuUpload className="w-4 h-4 text-white/50 my-auto mr-2" />
-                  <Text className="text-white/50">Add Files</Text>
-                </div>
-              </UploadFileDialog>
+            <div className="flex flex-row w-full rounded-md  text-white/50 ">
+              {showFiles && (
+                <>
+                  <UploadFileDialog
+                    workspaceId={workspaceId}
+                    listener={fileListener}
+                    fileTypeFilter={fileTypeFilter}
+                  >
+                    <div className="flex-1 flex flex-row">
+                      <LuUpload className="w-4 h-4 text-white/50 my-auto mr-2" />
+                      <Text className="text-white/50">Add Files</Text>
+                    </div>
+                  </UploadFileDialog>
 
-              <SelectFilesDialog workspaceId={workspaceId} fileTypeFilter={fileTypeFilter}>
-                <div className="flex-1 flex flex-row">
-                  <StarIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
-                  <Text className="text-white/50">Focused Files</Text>
-                </div>
-              </SelectFilesDialog>
+                  <SelectFilesDialog workspaceId={workspaceId} fileTypeFilter={fileTypeFilter}>
+                    <div className="flex-1 flex flex-row">
+                      <StarIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
+                      <Text className="text-white/50">Focused Files</Text>
+                    </div>
+                  </SelectFilesDialog>
+                </>
+              )}
+              <div>
+                <Fieldset>
+                  <Select>
+                    <option>OpenAI GPT-4 Turbo</option>
+                    <option>Cohere Command-R</option>
+                    <option>Anthropic Claude</option>
+                    <option>Google Gemini</option>
+                    <option>LLama 3</option>
+                    <option>MistralAI</option>
+                  </Select>
+                </Fieldset>
+              </div>
             </div>
+
             <div className="flex flex-row ml-auto">
-              <ShareDialog shareLink={shareLink}>
-                <div className="flex-1 flex flex-row">
-                  <ShareIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
-                  <Text className="text-white/50">Share</Text>
-                </div>
-              </ShareDialog>
+              {shareLink && (
+                <ShareDialog shareLink={shareLink}>
+                  <div className="flex-1 flex flex-row">
+                    <ShareIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
+                    <Text className="text-white/50">Save Thread</Text>
+                  </div>
+                </ShareDialog>
+              )}
               <Button
                 onClick={() => onHandleMessageInternal()}
                 plain={true}

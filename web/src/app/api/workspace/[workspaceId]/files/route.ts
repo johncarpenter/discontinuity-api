@@ -29,7 +29,9 @@ export async function GET(req: NextRequest, { params }: { params: { workspaceId:
 
   const response = await s3.send(new ListObjectsCommand({ Bucket, Prefix: workspaceId }))
 
-  if (!response?.Contents) throw new Error(`Error accessing secure files`)
+  if (!response?.Contents) {
+    return NextResponse.json([])
+  }
 
   const files = response?.Contents?.filter((file: any) => file.Key !== `${workspaceId}/`).map(
     (file: any) => {

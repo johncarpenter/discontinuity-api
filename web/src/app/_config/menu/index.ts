@@ -6,7 +6,7 @@ import {
   Cog8ToothIcon,
   ChatBubbleBottomCenterIcon,
   CubeTransparentIcon,
-  PuzzlePieceIcon,
+  QueueListIcon,
 } from '@heroicons/react/24/outline'
 
 import { LuLayoutDashboard } from 'react-icons/lu'
@@ -16,12 +16,20 @@ export const workspaceMenu = (currentWorkspace?: string) => [
     name: 'Workspace',
     menuItems: [
       {
-        name: 'Document Search',
+        name: 'Chat+',
         href: `/workspace/${currentWorkspace}/chat`,
-        description: 'Search through your documents',
+        description: 'Main Page',
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: ChatBubbleBottomCenterIcon,
+      },
+      {
+        name: 'Document Search',
+        href: `/workspace/${currentWorkspace}/search`,
+        description: 'Search through your documents',
+        enabled: currentWorkspace !== '',
+        visible: true,
+        Icon: RectangleStackIcon,
       },
       // {
       //   name: 'Data Analysis',
@@ -32,7 +40,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
       //   Icon: ChatBubbleBottomCenterIcon,
       // },
       {
-        name: 'Models',
+        name: 'Workflows',
         href: `/workspace/${currentWorkspace}/flow`,
         description: 'Custom Workflows, Agents and Models',
         enabled: currentWorkspace !== '',
@@ -48,13 +56,21 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         Icon: ServerStackIcon,
       },
       {
-        name: 'Integrations',
-        href: '/integrations',
-        description: 'Integrated Services',
-        enabled: false,
+        name: 'Threads',
+        href: `/workspace/${currentWorkspace}/threads`,
+        description: 'Organize your works',
+        enabled: currentWorkspace !== '',
         visible: true,
-        Icon: PuzzlePieceIcon,
+        Icon: QueueListIcon,
       },
+      // {
+      //   name: 'Integrations',
+      //   href: '/integrations',
+      //   description: 'Integrated Services',
+      //   enabled: false,
+      //   visible: true,
+      //   Icon: PuzzlePieceIcon,
+      // },
       {
         name: 'Settings',
         href: `/workspace/${currentWorkspace}/settings`,

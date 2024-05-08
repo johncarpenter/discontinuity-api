@@ -11,21 +11,23 @@ export type DirectListenerType = {
   onBusy?: (isBusy: boolean) => void
 }
 
+export type DirectConfig = {
+  threadId?: string
+  headers?: Record<string, string>
+  threadIdKey?: string
+}
+
 export const useDirect = (
   url: string,
   workspaceId: string,
-  flowId: string,
-  headers?: Record<string, string>,
-  listener?: DirectListenerType
+  listener?: DirectListenerType,
+  config?: DirectConfig
 ) => {
-  const [data] = useState<string | undefined>(undefined)
-
   const [thread, setThread] = useState<string | undefined>(() => {
     if (typeof window !== 'undefined') {
-      const cachedId = localStorage.getItem(`${flowId}-threadId`)
+      const cachedId = localStorage.getItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
       return cachedId || undefined
     }
-    return undefined
   })
 
   const newMessageRef = useRef<string>('')
@@ -35,7 +37,8 @@ export const useDirect = (
   const resetChat = useCallback(() => {
     setMessages([])
     setThread(undefined)
-  }, [setThread])
+    localStorage.removeItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
+  }, [config?.threadIdKey, workspaceId])
 
   useEffect(() => {
     if (messages.length > 0 && thread) {
@@ -44,7 +47,6 @@ export const useDirect = (
   }, [messages, thread])
 
   const loadInitialMessages = useCallback(() => {
-    // Retrieve initial messages
     async function retrieveHistory(thread: string) {
       const token = await getAccessToken(workspaceId)
 
@@ -55,28 +57,44 @@ export const useDirect = (
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
-            ...headers,
+            ...(config?.headers || ''),
           },
         }
       )
       setMessages(await history.json())
     }
-    if (thread) {
-      const cached = localStorage.getItem(`${thread}-messages`)
 
+    function retrieveThreadId() {
+      const saved = localStorage.getItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
+
+      if (saved && saved !== 'undefined') {
+        return saved
+      }
+      return undefined
+    }
+
+    const localThreadId = config?.threadId || retrieveThreadId()
+
+    if (localThreadId) {
+      setThread(localThreadId)
+      const cached = localStorage.getItem(`${localThreadId}-messages`)
+
+      // This will only pull from localstorage, but we may want to sync it with the server?
       if (cached) {
         setMessages(JSON.parse(cached))
       } else {
-        retrieveHistory(thread)
+        retrieveHistory(localThreadId)
       }
     }
-  }, [thread, workspaceId, headers])
+  }, [config, workspaceId])
+
+  const appendMessages = (messageList: Message[]) => {
+    setMessages((prevMessages) => [...prevMessages, ...messageList])
+  }
 
   const addUserMessage = useCallback(
-    (message: string) => {
-      const appendMessages = (messageList: Message[]) => {
-        setMessages((prevMessages) => [...prevMessages, ...messageList])
-      }
+    (message: string, overrideConfig?: { [key: string]: any }) => {
+      listener?.onBusy?.(true)
 
       appendMessages([
         {
@@ -107,10 +125,11 @@ export const useDirect = (
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
-              ...headers,
+              ...(config?.headers || ''),
             },
             body: JSON.stringify({
               message: message,
+              overrideConfig,
             }),
           })
 
@@ -121,6 +140,7 @@ export const useDirect = (
 
           const data = await response.json()
 
+          console.log(data)
           if (data?.success === false) {
             throw new Error(data.message)
           }
@@ -130,7 +150,7 @@ export const useDirect = (
             : data.text.replace(/\\/g, '')
 
           setThread(data.chatId)
-          localStorage.setItem(`${flowId}-threadId`, data.chatId)
+          localStorage.setItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`, data.chatId)
           setMessages((prevMessages) => {
             const lastMessage = prevMessages.slice(-1)[0]
             lastMessage.content = resultText
@@ -141,28 +161,27 @@ export const useDirect = (
 
           listener?.onMessage?.(data)
         } catch (error: any) {
-          listener?.onBusy?.(false)
           if (error.name === 'AbortError') {
             // Fetch was aborted
             console.log('Fetch aborted')
           } else {
             listener?.onError?.(error)
+            setMessages((prevMessages) => {
+              const lastMessage = prevMessages.slice(-1)[0]
+              lastMessage.content =
+                '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
+              return [...prevMessages.slice(0, -1), lastMessage]
+            })
+            listener?.onBusy?.(false)
           }
-
-          setMessages((prevMessages) => {
-            const lastMessage = prevMessages.slice(-1)[0]
-            lastMessage.content =
-              'There was an error processing the request. Please try again later.'
-
-            return [...prevMessages.slice(0, -1), lastMessage]
-          })
+          listener?.onBusy?.(false)
         }
       }
 
       fetchData()
     },
-    [listener, workspaceId, url, headers, flowId]
+    [listener, workspaceId, url, config?.headers, config?.threadIdKey]
   )
 
-  return { messages, data, addUserMessage, resetChat, loadInitialMessages }
+  return { messages, thread, addUserMessage, resetChat, loadInitialMessages }
 }

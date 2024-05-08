@@ -40,13 +40,36 @@ model workspaces {
   id            String    @id @default(cuid())
   name          String
   slug          String
+  model         ModelTypes  @default(OPENAI)
   createdAt     DateTime? @default(now())
   deletedAt     DateTime?
   updatedAt     DateTime?
   ownerId       String?   @db.VarChar
   apikeys       apikeys[]
   flows         flows[]
+  threads       threads[]
 
+}
+
+
+model threads {
+  id            String    @id @default(cuid())
+  name          String?
+  link          String
+  createdAt     DateTime? @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
+  workspaceId   String
+  workspaces    workspaces @relation(fields: [workspaceId], references: [id])
+}
+
+enum ModelTypes {
+  OPENAI
+  ANTHROPIC
+  COHERE
+  GEMINI
+  MISTRAL
+  LLAMA3
 }
 
 
@@ -62,3 +85,4 @@ enum FlowTypes {
   RAG
   OTHERML
 }
+

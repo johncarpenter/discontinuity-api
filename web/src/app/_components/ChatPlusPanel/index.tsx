@@ -13,12 +13,12 @@ import ChatInput from '@/components/ChatInput'
 import { useFocusFiles } from '@/lib/client/workspaceProvider'
 import { workspaces } from '@prisma/client'
 
-type ChatPanelProps = {
+type ChatPlusPanelProps = {
   workspace: workspaces
   chatId?: string
 }
 
-export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
+export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps) {
   const listener: StreamListenerType = {
     onError: () => {
       setIsBusy(false)
@@ -31,11 +31,22 @@ export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
     },
   }
 
+  // const [threadId] = useState<string | undefined>(() => {
+  //   if (chatId) return chatId
+
+  //   if (typeof window !== 'undefined') {
+  //     const cachedId = localStorage.getItem(`${workspace.id}-chatplus-threadId`)
+  //     return cachedId || undefined
+  //   }
+  //   return undefined
+  // })
+
   const { messages, thread, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
-    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
+    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/chat`,
     workspace.id,
     listener,
     {
+      threadIdKey: 'chatplus',
       threadId: chatId,
     }
   )
@@ -95,7 +106,6 @@ export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
                       )}
                       <RenderMarkdown content={message.content} />
                       {index == messages.length - 1 && <div ref={messagesEndRef} />}
-
                       {message.sources?.length > 0 && (
                         <>
                           <h4 className="text-lg mt-4 dark:prose-dark">Sources</h4>
@@ -113,12 +123,13 @@ export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
           <ChatInput
             shareLink={
               thread
-                ? `https://discontinuity.ai/workspace/${workspace.slug}/search/${thread}`
+                ? `https://discontinuity.ai/workspace/${workspace.slug}/chat/${thread}`
                 : undefined
             }
             workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}
+            showFiles={true}
           />
         </div>
       </div>
