@@ -330,13 +330,16 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     try:
         response = requests.post(flow.endpoint, json=payload, headers=headers)    
         data = response.json()
+        if "json" in data:
+            history.add_ai_message(AIMessage(content=data["json"], created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+        else:
+            history.add_ai_message(AIMessage(content=data["text"], created=datetime.now().isoformat(), id=str(uuid.uuid4())))
 
-        resultText = '``` ' + JSON.stringify(data.json) + '```' if data.json else data.text
-       
-        history.add_ai_message(AIMessage(content=resultText, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
+
+        return data
 
     except requests.exceptions.RequestException as e:
-        print(e)
+        logger.error(f"Error in flow request: {e}")
         raise HTTPException(status_code=501, detail="Flow API not available")
     
 

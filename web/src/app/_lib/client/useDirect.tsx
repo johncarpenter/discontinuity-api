@@ -168,8 +168,7 @@ export const useDirect = (
             listener?.onError?.(error)
             setMessages((prevMessages) => {
               const lastMessage = prevMessages.slice(-1)[0]
-              lastMessage.content =
-                '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
+              lastMessage.content = 'There was an error processing your request. Please try again'
               return [...prevMessages.slice(0, -1), lastMessage]
             })
             listener?.onBusy?.(false)
