@@ -10,8 +10,8 @@ type WorkspaceSettingsPageProps = {
 }
 
 const WorkspaceChatPage = async ({ params }: WorkspaceSettingsPageProps) => {
-  const organizationId = await useCurrentOrganization()
-  const workspace = await getWorkspace(organizationId, params.workspaceId)
+  const { orgId } = await useCurrentOrganization()
+  const workspace = await getWorkspace(orgId, params.workspaceId)
   return <ChatPlusPanel workspace={workspace} />
 }
 

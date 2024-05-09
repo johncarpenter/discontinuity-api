@@ -85,7 +85,6 @@ export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps)
               </div>
             )}
             {messages?.map((message, index) => {
-              console.log(message)
               return (
                 <div key={index} className="flex p-4 items-start">
                   <div className="flex items-center p-2">
@@ -129,7 +128,7 @@ export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps)
             workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}
-            showFiles={true}
+            showFiles={false}
           />
         </div>
       </div>

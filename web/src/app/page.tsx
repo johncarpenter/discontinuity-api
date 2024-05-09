@@ -21,10 +21,11 @@ export default function Home() {
       <MarketingLayout>
         <div id="top" />
         <MarketingHero />
-        <SupportedModels />
+
         <div id="benefits" />
         <Benefits />
         <Features />
+        <SupportedModels />
 
         <div id="beta" />
         <ContactFormBeta />

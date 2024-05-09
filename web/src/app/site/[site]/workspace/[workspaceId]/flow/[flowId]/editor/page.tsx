@@ -1,10 +1,9 @@
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 
-import Container from '@/components/Container'
-import PageHeader from '@/components/PageHeader'
 import { getWorkspace } from '@/prisma/services/workspace'
-import Iframe from 'react-iframe'
 import { getFlowLink } from '@/prisma/services/flow'
+import jwt from 'jsonwebtoken'
+import SecureIFrame from '@/components/SecureIframe'
 
 type WorkspaceFlowPageProps = {
   params: {
@@ -15,34 +14,24 @@ type WorkspaceFlowPageProps = {
 }
 
 const WorkflowNoCode = async ({ params }: WorkspaceFlowPageProps) => {
-  const organizationId = await useCurrentOrganization()
-  const workspace = await getWorkspace(organizationId, params.workspaceId)
+  const { orgId, organization } = await useCurrentOrganization()
+  const workspace = await getWorkspace(organization.id, params.workspaceId)
   const flow = await getFlowLink(params.flowId, workspace.id)
 
-  let flowlink = 'https://flow.discontinuity.ai/'
+  let flowlink = organization.flow_endpoint
 
-  if (flow.endpoint.indexOf('flow.discontinuity.ai') !== -1) {
+  if (flow.endpoint.indexOf(flowlink) !== -1) {
     const flowiseId = flow.endpoint.split('/').pop()
     flowlink += `canvas/${flowiseId}`
   }
 
+  const token = jwt.sign({ orgId }, process.env.JWT_SECRET ?? '', {
+    expiresIn: '1h',
+  })
+
   return (
     <div className="">
-      <Container>
-        <PageHeader
-          title="Workflow Editor"
-          breadcrumbs={[{ href: `/workspace/${workspace.slug}/flow`, name: 'Models' }]}
-        />
-        <div className="flex min-h-screen">
-          <Iframe
-            url={flowlink}
-            id=""
-            className="w-full h-full flex-1 min-h-[85vh] border-none"
-            display="block"
-            position="relative"
-          />
-        </div>
-      </Container>
+      <SecureIFrame token={token} url={flowlink} />
     </div>
   )
 }

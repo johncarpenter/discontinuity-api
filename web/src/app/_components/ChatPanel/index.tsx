@@ -74,7 +74,6 @@ export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
               </div>
             )}
             {messages?.map((message, index) => {
-              console.log(message)
               return (
                 <div key={index} className="flex p-4 items-start">
                   <div className="flex items-center p-2">

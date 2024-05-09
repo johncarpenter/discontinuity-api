@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export default async function LicenseCard() {
-  const organizationId = await useCurrentOrganization()
+  const { organization } = await useCurrentOrganization()
 
   return (
     <div className="overflow-hidden card-normal">
@@ -20,7 +20,7 @@ export default async function LicenseCard() {
         <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
           <div className="sm:col-span-1">
             <dt className="text-sm font-medium text-lighter">Licensee</dt>
-            <dd className="mt-1 text-sm text-normal">{organizationId}</dd>
+            <dd className="mt-1 text-sm text-normal">{organization.name}</dd>
           </div>
           <div className="sm:col-span-1">
             <dt className="text-sm font-medium text-lighter">Support</dt>

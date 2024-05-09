@@ -10,7 +10,6 @@ const api = async (url: string, options: any) => {
     },
     ...opts,
   })
-  console.log(response)
   const result = await response.json()
   return { status: response.status, ...result, url }
 }

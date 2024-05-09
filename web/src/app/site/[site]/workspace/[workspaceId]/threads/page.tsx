@@ -12,8 +12,8 @@ type WorkspaceThreadsPageProps = {
 }
 
 const WorkspaceThreadsPage = async ({ params }: WorkspaceThreadsPageProps) => {
-  const organizationId = await useCurrentOrganization()
-  const workspace = await getWorkspace(organizationId, params.workspaceId)
+  const { orgId } = await useCurrentOrganization()
+  const workspace = await getWorkspace(orgId, params.workspaceId)
 
   return (
     <Container>

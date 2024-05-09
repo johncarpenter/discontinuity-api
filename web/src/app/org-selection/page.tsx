@@ -19,7 +19,7 @@ export default function Switcher() {
     if (setActive) {
       setActive({ organization: orgId })
     }
-    push('/home')
+    push('/')
   }
 
   const EmptyOrganizations = () => (

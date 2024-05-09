@@ -2,23 +2,44 @@ import { ArrowPathIcon, CloudArrowUpIcon, LockClosedIcon } from '@heroicons/reac
 
 const features = [
   {
-    name: 'Implement AI Without Disruption',
+    name: 'Skip the Vendor Lock-In',
     description:
-      'Our platform ensures that your transition to AI doesn’t disturb your current processes, allowing for a smooth adoption and immediate productivity gains.',
+      'Our platform works with OpenAI, Anthropic, Google, and other leading AI models, so you can choose the best model for your needs',
     href: '#',
     icon: LockClosedIcon,
   },
   {
-    name: 'Built for All Skill Levels',
+    name: 'Multiple Models - One Price',
     description:
-      'Bridge makes advanced AI technologies approachable and easy to use, even if you’re not a tech expert',
+      'Skip the license fees for multiple models. With Bridge, you can access multiple models for one low price.',
     href: '#',
     icon: ArrowPathIcon,
   },
   {
-    name: 'Reduce Costs, Not Quality',
+    name: 'Graphical Workflow Designer',
     description:
-      'With Bridge, you can leverage the power of AI without the need for expensive infrastructure or specialized personnel. Save on costs while advancing your capabilities.',
+      'Build complex flows with our easy-to-use graphical workflow designer. No coding required.',
+    href: '#',
+    icon: CloudArrowUpIcon,
+  },
+  {
+    name: 'Native RAG Integration',
+    description:
+      'Bring your own files and data with our native RAG integration. No custom work required.',
+    href: '#',
+    icon: CloudArrowUpIcon,
+  },
+  {
+    name: 'Team Collaboration',
+    description:
+      'All models, data, and workflows are shared with your team. Teams can create, edit, and share models and workflows.',
+    href: '#',
+    icon: CloudArrowUpIcon,
+  },
+  {
+    name: 'Improved Chat Functionality',
+    description:
+      'Improved chat functionality that lets you choose the foundation model that fits your needs.',
     href: '#',
     icon: CloudArrowUpIcon,
   },
@@ -32,11 +53,12 @@ export default function Benefits() {
           <span className=" text-secondary-600 uppercase">Implement AI Anywhere</span>
 
           <p className="text-3xl font-bold tracking-tight text-white sm:text-4xl pt-4">
-            Get AI to work for you, not the other way around
+            All Your AI Tools in One Place
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-300">
-            Combine your domain knowledge with the best AI models to solve critical problems faster,
-            cheaper and more effectively than ever before.
+            Bridge is a platform that makes AI accessible to everyone, regardless of skill level.
+            With Bridge, you can leverage the power of AI without the need for expensive
+            infrastructure or specialized personnel.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">

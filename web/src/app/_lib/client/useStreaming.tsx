@@ -185,8 +185,6 @@ export const useStreaming = (
                   setMessages((prevMessages) => {
                     const lastMessage = prevMessages.slice(-1)[0]
                     lastMessage.sources = msg
-                    console.log('Sources:', lastMessage.sources)
-                    console.log('Data:', msg)
 
                     return [...prevMessages.slice(0, -1), lastMessage]
                   })

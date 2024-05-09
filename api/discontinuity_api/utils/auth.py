@@ -34,7 +34,7 @@ class JWTBearer(HTTPBearer):
             apikeyId = decodeJWT(credentials.credentials)["id"]
 
             session = next(get_db())
-            workspace: workspace = get_workspace(session=session, api_key_id=apikeyId)
+            workspace = get_workspace(session=session, api_key_id=apikeyId)
             return workspace
 
         else:

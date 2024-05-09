@@ -11,8 +11,8 @@ type WorkspaceDataSinglePageProps = {
 }
 
 const WorkspaceDataSinglePage = async ({ params }: WorkspaceDataSinglePageProps) => {
-  const organizationId = await useCurrentOrganization()
-  const workspace = await getWorkspace(organizationId, params.workspaceId)
+  const { orgId } = await useCurrentOrganization()
+  const workspace = await getWorkspace(orgId, params.workspaceId)
   return <DataChatPanel workspace={workspace} chatId={params.chatId} />
 }
 

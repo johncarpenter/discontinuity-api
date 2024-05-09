@@ -7,9 +7,9 @@ import { Badge } from '@/components/Base/badge'
 // Wait for the playlists
 
 export default async function WorkspacesTable() {
-  const organizationId: string = await useCurrentOrganization()
+  const { orgId } = await useCurrentOrganization()
 
-  const workspaces = await getWorkspaces(organizationId)
+  const workspaces = await getWorkspaces(orgId)
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

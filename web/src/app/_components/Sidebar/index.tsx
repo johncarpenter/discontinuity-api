@@ -64,7 +64,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
               ))}
             </Select>
           ) : (
-            <Button href="/workspaces">Add Workspace</Button>
+            <Button href="/workspaces">Manages Workspaces</Button>
           )}
         </Field>
       </div>
@@ -177,8 +177,8 @@ export default function Sidebar({ workspaces }: SidebarProps) {
         </Transition.Root>
 
         {/* Static sidebar for desktop */}
+
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 bg-gradient-to-br from-primary-800 to-primary-700  dark:from-black dark:to-black">
             <div className="flex h-16 shrink-0 items-center">
               <span className="sr-only">discontinuity.ai</span>
@@ -274,7 +274,7 @@ const MenuItem = ({
   setSidebarOpen,
 }: MenuItemProps) => {
   return (
-    (visible && (
+    (visible && enabled && (
       <Link
         onClick={() => setSidebarOpen?.(false)}
         href={enabled ? href : {}}
@@ -286,6 +286,12 @@ const MenuItem = ({
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
         {name}
       </Link>
+    )) ||
+    (visible && !enabled && (
+      <span className="text-gray-400/60 group flex gap-x-3 p-2 text-sm font-semibold leading-6">
+        <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+        {name}
+      </span>
     )) ||
     null
   )

@@ -7,6 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model users {
+  id         String       @id @default(cuid())
+  clerk_id   String
+  fullName   String
+  imageUrl   String?
+  createdAt  DateTime?    @default(now())
+  deletedAt  DateTime?
+  updatedAt  DateTime?
+  apikeys    apikeys[]
+  flows      flows[]
+  workspaces workspaces[]
+  threads    threads[]
+}
+
+model organizations {
+  id            String      @id @default(cuid())
+  clerk_id      String
+  name          String
+  license       LicenseType
+  flow_endpoint String?
+  createdAt     DateTime?   @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime?
+}
+
 model apikeys {
   id            String     @id @default(cuid())
   client_id     String
@@ -14,53 +39,66 @@ model apikeys {
   permissions   String
   workspaceId   String
   name          String?
-  createdAt     DateTime? @default(now())
+  createdAt     DateTime?  @default(now())
   deletedAt     DateTime?
   updatedAt     DateTime?
   workspaces    workspaces @relation(fields: [workspaceId], references: [id])
+  creator       users?      @relation(fields: [creatorId], references: [id])
+  creatorId     String?
 }
 
 model flows {
-  id            String     @id @default(cuid())
-  description   String?
-  endpoint      String
-  apikey        String
-  tags          String?
-  type          FlowTypes   @default(TEXTGEN)
-  workspaceId   String
-  name          String
-  createdAt     DateTime? @default(now())
-  deletedAt     DateTime?
-  updatedAt     DateTime?
-  workspaces    workspaces @relation(fields: [workspaceId], references: [id])
+  id          String     @id @default(cuid())
+  description String?
+  endpoint    String
+  apikey      String
+  tags        String?
+  type        FlowTypes  @default(TEXTGEN)
+  workspaceId String
+  name        String
+  createdAt   DateTime?  @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime?
+  workspaces  workspaces @relation(fields: [workspaceId], references: [id])
+  creator     users?      @relation(fields: [creatorId], references: [id])
+  creatorId   String?
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model workspaces {
-  id            String    @id @default(cuid())
-  name          String
-  slug          String
-  model         ModelTypes  @default(OPENAI)
-  createdAt     DateTime? @default(now())
-  deletedAt     DateTime?
-  updatedAt     DateTime?
-  ownerId       String?   @db.VarChar
-  apikeys       apikeys[]
-  flows         flows[]
-  threads       threads[]
-
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  slug        String
+  model       ModelTypes @default(OPENAI)
+  createdAt   DateTime?  @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime?
+  ownerId     String?    @db.VarChar
+  apikeys     apikeys[]
+  flows       flows[]
+  threads     threads[]
+  creator     users?     @relation(fields: [creatorId], references: [id])
+  creatorId   String?
 }
 
-
 model threads {
-  id            String    @id @default(cuid())
-  name          String?
-  link          String
-  createdAt     DateTime? @default(now())
-  deletedAt     DateTime?
-  updatedAt     DateTime?
-  workspaceId   String
-  workspaces    workspaces @relation(fields: [workspaceId], references: [id])
+  id          String     @id @default(cuid())
+  name        String?
+  link        String
+  createdAt   DateTime?  @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime?
+  workspaceId String
+  workspaces  workspaces @relation(fields: [workspaceId], references: [id])
+  creator     users?     @relation(fields: [creatorId], references: [id])
+  creatorId   String?
+}
+
+enum LicenseType {
+  TRIAL
+  LIMITED
+  OPEN
 }
 
 enum ModelTypes {
@@ -71,7 +109,6 @@ enum ModelTypes {
   MISTRAL
   LLAMA3
 }
-
 
 enum FlowTypes {
   OPENAI
@@ -85,4 +122,3 @@ enum FlowTypes {
   RAG
   OTHERML
 }
-

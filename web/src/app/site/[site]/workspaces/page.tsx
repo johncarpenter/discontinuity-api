@@ -3,7 +3,7 @@ import WorkspacesTable from '@/components/WorkspacesTable'
 
 import Container from '@/components/Container'
 import PageHeader from '@/components/PageHeader'
-import { AddWorkspaceDialog } from './addworkspacedialog'
+import { AddWorkspaceDialog } from '@/components/Dialogs/addworkspacedialog'
 
 const WorkspacesPage = async () => {
   return (

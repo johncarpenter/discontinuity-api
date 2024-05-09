@@ -9,28 +9,31 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/Base/dialog'
-import { Field, Fieldset, Label, Legend } from '@/components/Base/fieldset'
+import { Field, Fieldset, Legend } from '@/components/Base/fieldset'
 import { Input } from '@/components/Base/input'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Radio, RadioField, RadioGroup } from '@/app/_components/Base/radio'
 import { Text } from '@/components/Base/text'
-import Image from 'next/image'
+import { Textarea } from '@/components/Base/textarea'
 
 export function AddWorkspaceDialog() {
   const [isOpen, setIsOpen] = useState(false)
 
   const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [isBusy, setIsBusy] = useState(false)
 
   const router = useRouter()
 
   // Add workspace via API
   function addWorkspace() {
+    setIsBusy(true)
     api('/api/workspaces', {
-      body: { name },
+      body: { name, description },
       method: 'POST',
     }).then(() => {
       setIsOpen(false)
+      setIsBusy(false)
       router.refresh()
     })
   }
@@ -50,7 +53,7 @@ export function AddWorkspaceDialog() {
               <Text>Short memorable name for this workspace</Text>
               <Input
                 name="name"
-                placeholder="Short Workspace Name"
+                placeholder="Human Resources"
                 required
                 value={name}
                 onChange={(event) => setName(event.target.value)}
@@ -58,53 +61,26 @@ export function AddWorkspaceDialog() {
             </Field>
           </Fieldset>
           <Fieldset>
-            <Legend>Foundational Model</Legend>
-            <Text>This is the base foundational model for all embeddings. Cannot be changed</Text>
-            <RadioGroup name="foundation" defaultValue="openai">
-              <RadioField>
-                <Radio value="openai" />
-                <Label>
-                  <Image
-                    width={120}
-                    height={60}
-                    src="/images/logos/openai.webp"
-                    className="m-4"
-                    alt="OpenAI logo"
-                  />
-                </Label>
-              </RadioField>
-              <RadioField>
-                <Radio value="cohere" />
-                <Label>
-                  <Image
-                    width={120}
-                    height={60}
-                    src="/images/logos/cohere.webp"
-                    className="m-4"
-                    alt="Cohere logo"
-                  />
-                </Label>
-              </RadioField>
-              <RadioField>
-                <Radio value="anthropic" />
-                <Label>
-                  <Image
-                    width={120}
-                    height={60}
-                    src="/images/logos/anthropic.webp"
-                    className="m-4"
-                    alt="Anthropic logo"
-                  />
-                </Label>
-              </RadioField>
-            </RadioGroup>
+            <Field>
+              <Legend>Description</Legend>
+              <Text>What is this workspace for</Text>
+              <Textarea
+                rows={3}
+                name="description"
+                placeholder="Sift through the hiring resumes for the HR team."
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+              />
+            </Field>
           </Fieldset>
         </DialogBody>
         <DialogActions>
           <Button plain onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={() => addWorkspace()}>Add</Button>
+          <Button disabled={isBusy} onClick={() => addWorkspace()}>
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
     </>

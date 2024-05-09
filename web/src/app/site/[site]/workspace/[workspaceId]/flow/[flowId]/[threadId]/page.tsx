@@ -3,24 +3,25 @@ import { getWorkspace } from '@/prisma/services/workspace'
 import FlowPanel from '@/app/_components/FlowPanel'
 import { getFlowLink } from '@/prisma/services/flow'
 
-type WorkspaceFlowPageProps = {
+type WorkspaceFlowThreadPageProps = {
   params: {
     siteId: string
     workspaceId: string
     flowId: string
+    threadId: string
   }
 }
 
-const WorkspaceFlowPage = async ({ params }: WorkspaceFlowPageProps) => {
-  const organizationId = await useCurrentOrganization()
-  const workspace = await getWorkspace(organizationId, params.workspaceId)
+const WorkspaceFlowThreadPage = async ({ params }: WorkspaceFlowThreadPageProps) => {
+  const { orgId } = await useCurrentOrganization()
+  const workspace = await getWorkspace(orgId, params.workspaceId)
   const flow = await getFlowLink(params.flowId, workspace.id)
 
   return (
     <div className="">
-      <FlowPanel workspace={workspace} flow={flow} />
+      <FlowPanel workspace={workspace} flow={flow} chatId={params.threadId} />
     </div>
   )
 }
 
-export default WorkspaceFlowPage
+export default WorkspaceFlowThreadPage

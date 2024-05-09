@@ -37,9 +37,7 @@ async function query(data: FlowiseType, chatflowId: string) {
       'Content-Type': 'application/json',
     },
   })
-  console.log('status', response.status, 'url', url, 'data', data)
 
   const result = await response.json()
-  console.log('result', result, 'data', data)
   return result
 }

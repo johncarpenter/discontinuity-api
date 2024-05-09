@@ -29,5 +29,4 @@ export const sendMail = async ({ from, html, subject, text, to }: MailData) => {
 
   //process.env.NODE_ENV === 'production'
   await mg.messages.create(emailConfig.domain, data)
-  //: console.log(data);
 }
