@@ -28,8 +28,8 @@ export default async function SiteHome() {
           {workspaces.map((workspace: workspaces) => (
             <SimpleCard
               key={workspace.id}
-              title={workspace.name}
-              subtitle={'Workspace Description'}
+              title={workspace.name + (workspace.isPrivate ? ' (Private)' : '')}
+              subtitle={workspace.description ?? ''}
               cta={'Go to Discover'}
               href={`/workspace/${workspace.slug}/chat`}
               src={'/images/course_1.png'}

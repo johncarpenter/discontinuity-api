@@ -7,7 +7,7 @@ export const countWorkspaces = async (slug) =>
     where: { slug: { startsWith: slug } },
   })
 
-export const createWorkspace = async (ownerId, name, description, creatorId) => {
+export const createWorkspace = async (ownerId, name, description, creatorId, isPrivate) => {
   let slug = slugify(name, { lower: true })
 
   const count = await countWorkspaces(slug)
@@ -23,6 +23,7 @@ export const createWorkspace = async (ownerId, name, description, creatorId) => 
       description,
       slug,
       creatorId,
+      isPrivate,
     },
   })
 
@@ -37,6 +38,7 @@ export const getWorkspace = async (ownerId, slug) =>
       slug: true,
       id: true,
       description: true,
+      isPrivate: true,
       creator: {
         select: {
           fullName: true,
@@ -72,6 +74,7 @@ export const getWorkspaceById = async (ownerId, id) =>
       createdAt: true,
       deletedAt: true,
       description: true,
+      isPrivate: true,
       creator: {
         select: {
           fullName: true,
@@ -106,6 +109,7 @@ export const getWorkspaces = async (id) =>
       slug: true,
       id: true,
       description: true,
+      isPrivate: true,
       creator: {
         select: {
           fullName: true,

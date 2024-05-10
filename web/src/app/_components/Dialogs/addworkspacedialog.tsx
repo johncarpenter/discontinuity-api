@@ -9,12 +9,14 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/Base/dialog'
-import { Field, Fieldset, Legend } from '@/components/Base/fieldset'
+import { Description, Field, Fieldset, Label, Legend } from '@/components/Base/fieldset'
 import { Input } from '@/components/Base/input'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Text } from '@/components/Base/text'
 import { Textarea } from '@/components/Base/textarea'
+import toast from 'react-hot-toast'
+import { Checkbox, CheckboxField, CheckboxGroup } from '../Base/checkbox'
 
 export function AddWorkspaceDialog() {
   const [isOpen, setIsOpen] = useState(false)
@@ -22,20 +24,27 @@ export function AddWorkspaceDialog() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [isBusy, setIsBusy] = useState(false)
+  const [isPrivate, setIsPrivate] = useState(false)
 
   const router = useRouter()
 
   // Add workspace via API
   function addWorkspace() {
     setIsBusy(true)
-    api('/api/workspaces', {
-      body: { name, description },
-      method: 'POST',
-    }).then(() => {
+    try {
+      api('/api/workspaces', {
+        body: { name, description, isPrivate },
+        method: 'POST',
+      }).then(() => {
+        setIsOpen(false)
+        setIsBusy(false)
+        router.refresh()
+      })
+    } catch (e) {
       setIsOpen(false)
       setIsBusy(false)
-      router.refresh()
-    })
+      toast.error('Sorry, there wan an error adding workspace')
+    }
   }
 
   return (
@@ -71,6 +80,22 @@ export function AddWorkspaceDialog() {
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
               />
+            </Field>
+          </Fieldset>
+          <Fieldset>
+            <Field>
+              <Legend>Private</Legend>
+              <CheckboxGroup>
+                <CheckboxField>
+                  <Checkbox
+                    name="discoverability"
+                    checked={isPrivate}
+                    onChange={(event) => setIsPrivate(event)}
+                  />
+                  <Label>Make this Workspace Private</Label>
+                  <Description>The Workspace won't be visible to other team members</Description>
+                </CheckboxField>
+              </CheckboxGroup>
             </Field>
           </Fieldset>
         </DialogBody>

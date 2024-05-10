@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
   const data = await req.json()
 
-  const { name, description } = data
+  const { name, description, isPrivate } = data
 
   if (!name) {
     return NextResponse.json({ error: 'Name is required' }, { status: 400 })
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserById(userId)
 
-  const workspace = await createWorkspace(orgId, name, description, user.id)
+  const workspace = await createWorkspace(orgId, name, description, user.id, isPrivate)
 
   return NextResponse.json({ workspace })
 }

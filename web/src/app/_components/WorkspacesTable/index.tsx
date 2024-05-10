@@ -3,6 +3,7 @@ import { getWorkspaces } from '@/prisma/services/workspace'
 import moment from 'moment'
 import WorkspaceItemMenu from './itemtable'
 import { Text } from '@/components/Base/text'
+import { Badge } from '../Base/badge'
 
 export default async function WorkspacesTable() {
   const { orgId } = await useCurrentOrganization()
@@ -23,6 +24,7 @@ export default async function WorkspacesTable() {
               <div className="flex flex-col">
                 <div className="flex items-center gap-x-6">
                   <p className="text-base text-normal">{workspace.name}</p>
+                  {workspace.isPrivate && <Badge color="secondary">Private</Badge>}
                 </div>
                 <div className="flex items-center gap-x-6">
                   <Text>{workspace.description}</Text>
