@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 import { Field, Fieldset, Label } from '@/components/Base/fieldset'
 import { Input } from '@/components/Base/input'
-import { organizations, LicenseType } from '@prisma/client'
+import { LicenseType } from '@prisma/client'
 
 import api from '@/lib/client/api'
 import toast from 'react-hot-toast'

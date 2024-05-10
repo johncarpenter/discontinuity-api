@@ -1,4 +1,5 @@
 import { createFlowLink, updateApiKey, updateFlowLink } from '@/prisma/services/flow'
+import { getUserById } from '@/prisma/services/user'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -11,7 +12,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(req: NextRequest, { params }: { params: { workspaceId: string } }) {
   const { workspaceId } = params
 
-  const { sessionId, orgId } = auth()
+  const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
@@ -28,7 +29,18 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
     return NextResponse.json({ error: 'Missing Parameters' }, { status: 400 })
   }
 
-  const key = await createFlowLink(workspaceId, name, endpoint, apikey, description, tags, type)
+  const user = await getUserById(userId)
+
+  const key = await createFlowLink(
+    workspaceId,
+    name,
+    endpoint,
+    apikey,
+    description,
+    tags,
+    type,
+    user.id
+  )
 
   return NextResponse.json({ key })
 }

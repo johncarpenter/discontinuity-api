@@ -1,6 +1,6 @@
 import prisma from '@/prisma/index'
 
-export const upsertThread = async (workspaceId, name, link) => {
+export const upsertThread = async (workspaceId, name, link, creatorId) => {
   const thread = await getThreadByLink(link, workspaceId)
 
   if (thread) {
@@ -14,6 +14,7 @@ export const upsertThread = async (workspaceId, name, link) => {
         workspaceId,
         name,
         link,
+        creatorId,
       },
     })
   }

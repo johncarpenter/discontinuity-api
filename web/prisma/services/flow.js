@@ -8,7 +8,8 @@ export const createFlowLink = async (
   apikey,
   description,
   tags,
-  type
+  type,
+  creatorId
 ) => {
   return await prisma.flows.create({
     data: {
@@ -19,6 +20,7 @@ export const createFlowLink = async (
       name,
       tags,
       type,
+      creatorId,
     },
   })
 }

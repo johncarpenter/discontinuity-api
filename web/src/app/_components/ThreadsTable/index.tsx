@@ -5,9 +5,9 @@ import { threads, workspaces } from '@prisma/client'
 import { getThreads } from '@/prisma/services/threads'
 
 export default async function ThreadsTable({ workspace }: { workspace: workspaces }) {
-  const organizationId: string = await useCurrentOrganization()
+  const { orgId } = await useCurrentOrganization()
 
-  const threadList = await getThreads(workspace.id, organizationId)
+  const threadList = await getThreads(workspace.id, orgId)
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

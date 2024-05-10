@@ -7,9 +7,9 @@ import { ClipboardIcon } from '@heroicons/react/24/outline'
 // Wait for the playlists
 
 export default async function ApiKeysTable({ workspaceId }: { workspaceId: string }) {
-  const organizationId: string = await useCurrentOrganization()
+  const { orgId } = await useCurrentOrganization()
 
-  const apiKeys = await getApiKeys(workspaceId, organizationId)
+  const apiKeys = await getApiKeys(workspaceId, orgId)
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Text } from '@/components/Base/text'
 
 export function AvatarImage() {
   const { user } = useUser()
@@ -51,9 +52,9 @@ export default function Avatar() {
   ]
 
   return (
-    <Menu as="div" className="relative inline-block w-full p-2 text-left">
+    <Menu as="div" className="relative inline-block w-full p-2 text-left dark">
       <div>
-        <Menu.Button className="justify-left inline-flex w-full gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-200 shadow-sm  hover:bg-gray-500">
+        <Menu.Button className="justify-left inline-flex w-full gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold shadow-sm hover:bg-gray-500">
           <AvatarImage />
         </Menu.Button>
       </div>
@@ -67,16 +68,16 @@ export default function Avatar() {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute bottom-full right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-500 rounded-md bg-gray-200 shadow-lg ring-1 ring-gray-200 ring-opacity-5 focus:outline-none">
-          <div className="py-1">
+        <Menu.Items className="absolute bottom-full right-0 z-10 mt-2 w-56 origin-top-right rounded-md divide-y divide-gray-200 dark:divide-gray-600/60 border bg-white dark:bg-black dark:border-gray-500 shadow sm:rounded-lg p-2 ">
+          <div className="py-1 space-y-2">
             {menuItems.map((item, index) => (
               <Menu.Item key={index}>
                 <Link
                   href={item.href}
-                  className="text-gray-600 hover:bg-gray-400 hover:text-white group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                  className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
-                  <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                  {item.name}
+                  <item.icon className="h-6 w-6 mr-2 text-gray-400" aria-hidden="true" />
+                  <Text>{item.name}</Text>
                 </Link>
               </Menu.Item>
             ))}
@@ -84,30 +85,30 @@ export default function Avatar() {
             <Menu.Item key={98}>
               <Link
                 href={`/organization`}
-                className="text-gray-600 hover:bg-gray-400 hover:text-white group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
               >
-                <ArchiveBoxIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                Organization
+                <ArchiveBoxIcon className="h-6 w-6 mr-2 text-gray-400" aria-hidden="true" />
+                <Text>Organization</Text>
               </Link>
             </Menu.Item>
             {user && user?.organizationMemberships?.length > 1 && (
-              <Menu.Item key={98}>
+              <Menu.Item key={99}>
                 <Link
                   href={'/org-selection'}
-                  className="text-gray-600 hover:bg-gray-400 hover:text-white group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                  className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
-                  <ArrowRightCircleIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                  Switch Organization
+                  <ArrowRightCircleIcon className="h-6 w-6 mr-2 text-gray-400" aria-hidden="true" />
+                  <Text>Switch Organization</Text>
                 </Link>
               </Menu.Item>
             )}
-            <Menu.Item key={99}>
+            <Menu.Item key={100}>
               <Menu.Button
                 onClick={() => signOut(() => router.push('/'))}
-                className="text-gray-600 hover:bg-gray-400 hover:text-white group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 w-full"
+                className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600 w-full"
               >
-                <XCircleIcon className="h-6 w-6 shrink-0" aria-hidden="true" />
-                Log Out
+                <XCircleIcon className="h-6 w-6 mr-2 text-gray-400" aria-hidden="true" />
+                <Text> Log Out</Text>
               </Menu.Button>
             </Menu.Item>
           </div>

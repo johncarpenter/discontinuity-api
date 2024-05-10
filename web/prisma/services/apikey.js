@@ -1,7 +1,7 @@
 import prisma from '@/prisma/index'
 import crypto from 'crypto'
 
-export const createApiKey = async (workspaceId, permissions, name) => {
+export const createApiKey = async (workspaceId, permissions, name, creatorId) => {
   return await prisma.apikeys.create({
     data: {
       workspaceId,
@@ -9,6 +9,7 @@ export const createApiKey = async (workspaceId, permissions, name) => {
       client_secret: crypto.randomUUID(),
       name,
       permissions,
+      creatorId,
     },
   })
 }

@@ -1,3 +1,4 @@
+import { getUserById } from '@/prisma/services/user'
 import { createWorkspace } from '@/prisma/services/workspace'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
@@ -9,7 +10,7 @@ import { NextRequest, NextResponse } from 'next/server'
  * @returns
  */
 export async function POST(req: NextRequest) {
-  const { sessionId, orgId } = auth()
+  const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
@@ -20,13 +21,15 @@ export async function POST(req: NextRequest) {
 
   const data = await req.json()
 
-  const { name } = data
+  const { name, description } = data
 
   if (!name) {
     return NextResponse.json({ error: 'Name is required' }, { status: 400 })
   }
 
-  const workspace = await createWorkspace(orgId, name)
+  const user = await getUserById(userId)
+
+  const workspace = await createWorkspace(orgId, name, description, user.id)
 
   return NextResponse.json({ workspace })
 }

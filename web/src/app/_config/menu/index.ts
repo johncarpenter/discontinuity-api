@@ -104,7 +104,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
       },
 
       {
-        name: 'Reports',
+        name: 'Reports (coming soon)',
         href: '/reports',
         description: 'Analysis and Reporting',
         enabled: false,
@@ -112,7 +112,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         Icon: FolderIcon,
       },
       {
-        name: 'Analytics',
+        name: 'Analytics (coming soon)',
         href: '/analytics',
         description: 'Dashboards',
         enabled: false,

@@ -71,6 +71,7 @@ model workspaces {
   description String?
   slug        String
   model       ModelTypes @default(OPENAI)
+  isPrivate   Boolean   @default(false)
   createdAt   DateTime?  @default(now())
   deletedAt   DateTime?
   updatedAt   DateTime?

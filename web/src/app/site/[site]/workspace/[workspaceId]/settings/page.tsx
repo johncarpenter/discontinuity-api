@@ -31,7 +31,8 @@ const WorkspaceSettingsPage = async ({ params }: WorkspaceSettingsPageProps) => 
         <Card.Title title={'Workspace Settings'} />
         <div className="flex flex-row p-6">
           <div className="flex-1">
-            <Text className="text-gray-800">Workspace Name</Text>
+            <Text className="text-normal">{workspace.name}</Text>
+            <Text className="text-ligher">{workspace.description}</Text>
           </div>
           <div className="flex-shrink flex">
             <Text className="text-gray-500">{workspace.id}</Text>
