@@ -1,7 +1,6 @@
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspaces } from '@/prisma/services/workspace'
 import moment from 'moment'
-import { workspaces } from '@prisma/client'
 import WorkspaceItemMenu from './itemtable'
 import { Text } from '@/components/Base/text'
 
@@ -13,7 +12,7 @@ export default async function WorkspacesTable() {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <ul className="divide-y divide-gray-600/80">
-        {workspaces.map((workspace: workspaces) => (
+        {workspaces.map((workspace: any) => (
           <li key={workspace.id} className="flex items-center gap-x-6 py-5">
             <div className="flex flex-1 items-start gap-x-3">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500 bg-gradient-to-br from-primary-600 to-primary-400 ">
