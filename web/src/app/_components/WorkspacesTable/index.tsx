@@ -3,7 +3,6 @@ import { getWorkspaces } from '@/prisma/services/workspace'
 import moment from 'moment'
 import { workspaces } from '@prisma/client'
 import WorkspaceItemMenu from './itemtable'
-import { Badge } from '@/components/Base/badge'
 import { Text } from '@/components/Base/text'
 
 export default async function WorkspacesTable() {
