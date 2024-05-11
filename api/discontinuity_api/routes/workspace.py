@@ -6,6 +6,7 @@ from fastapi import HTTPException, Depends, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 import logging
+from discontinuity_api.utils.models import get_model_by_id
 from discontinuity_api.utils.s3 import listFilesInBucket
 from discontinuity_api.database.api import getFlow
 from discontinuity_api.database.dbmodels import get_db
@@ -60,20 +61,25 @@ class ChatMessage(BaseModel):
     message: str
     thread: Optional[str] = None
     filter: Optional[dict] = {}
+    model: Optional[str] = "openai"
+    prompt: Optional[str] = "chat"
 
 @router.post("/chat")
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     logger.info(f"Streaming Chat for {workspace.id}")
 
+
+    llmmodel = get_model_by_id(message.model)
+
     # This is the full agent
-    agent = await get_agent_for_chatplus(workspace.id, filter)
+    agent = await get_agent_for_chatplus(workspaceId=workspace.id, llm=llmmodel)
 
     thread = message.thread or str(uuid.uuid4())
 
     history = get_redis_history(session_id=thread)
 
-    history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
-    
+   
+
     async def generator():
         response = '' 
         sources = []
@@ -103,6 +109,8 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
            response = "Sorry, I am having trouble processing your request. Please try again later."
            yield stream_chunk(response, "error")
             
+        history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+  
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 
 

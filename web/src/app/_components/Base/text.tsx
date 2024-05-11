@@ -1,6 +1,16 @@
 import { clsx } from 'clsx'
 import { Link } from './link'
 
+export function AlertText({ className, ...props }: React.ComponentPropsWithoutRef<'p'>) {
+  return (
+    <p
+      {...props}
+      data-slot="text"
+      className={clsx(className, 'text-base/6 text-secondary-500 sm:text-sm/6 ')}
+    />
+  )
+}
+
 export function Text({ className, ...props }: React.ComponentPropsWithoutRef<'p'>) {
   return (
     <p

@@ -31,7 +31,7 @@ export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
     },
   }
 
-  const { messages, thread, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
+  const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/agent`,
     workspace.id,
     listener,
@@ -110,11 +110,6 @@ export default function ChatPanel({ workspace, chatId }: ChatPanelProps) {
         </div>
         <div className="w-full sm:p-6 mx-auto">
           <ChatInput
-            shareLink={
-              thread
-                ? `https://discontinuity.ai/workspace/${workspace.slug}/search/${thread}`
-                : undefined
-            }
             workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}

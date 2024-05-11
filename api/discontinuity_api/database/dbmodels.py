@@ -31,6 +31,7 @@ class WorkspaceDb(Base):
     id = Column(String, primary_key=True)
     name = Column(String)
     slug = Column(String)
+    ownerId = Column(String)
     createdAt = Column(DateTime, default=datetime.now(timezone.utc))
     deletedAt = Column(DateTime)
     updatedAt = Column(DateTime)
@@ -50,7 +51,7 @@ class ApiKeyDb(Base):
     createdAt = Column(DateTime, default=datetime.now(timezone.utc))
     deletedAt = Column(DateTime)
     updatedAt = Column(DateTime)
-    workspaceId = Column(Integer, ForeignKey("workspaces.id"))
+    workspaceId = Column(String, ForeignKey("workspaces.id"))
 
     workspace = relationship("WorkspaceDb")
 
@@ -69,6 +70,18 @@ class FlowDb(Base):
     createdAt = Column(DateTime, default=datetime.now(timezone.utc))
     deletedAt = Column(DateTime)
     updatedAt = Column(DateTime)
-    workspaceId = Column(Integer, ForeignKey("workspaces.id"))
+    workspaceId = Column(String, ForeignKey("workspaces.id"))
 
     workspace = relationship("WorkspaceDb")
+
+
+class LLMModelDb(Base):
+    __tablename__ = "llmmodels"
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    apikey = Column(String)
+    source = Column(String)
+    createdAt = Column(DateTime, default=datetime.now(timezone.utc))
+    deletedAt = Column(DateTime)
+    updatedAt = Column(DateTime)
+    organizationId = Column(String)

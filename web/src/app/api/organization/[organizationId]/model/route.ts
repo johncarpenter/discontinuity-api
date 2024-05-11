@@ -1,17 +1,12 @@
-import { upsertThread } from '@/prisma/services/threads'
+import { addLLMModelToOrganization } from '@/prisma/services/organization'
 import { getUserById } from '@/prisma/services/user'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 
-/**
- * Creates a new thread in the workspace
+/** Add a model to the organization
  *
- * @param req
- * @returns
  */
-export async function POST(req: NextRequest, { params }: { params: { workspaceId: string } }) {
-  const { workspaceId } = params
-
+export async function POST(req: NextRequest, { params }: { params: { organizationId: string } }) {
   const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
@@ -23,15 +18,20 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
 
   const data = await req.json()
 
-  const { name, shareLink, model, prompt } = data
+  const { name, source, apikey } = data
 
-  if (!shareLink) {
+  if (!name || !source || !apikey) {
     return NextResponse.json({ error: 'Missing Parameters' }, { status: 400 })
   }
 
   const user = await getUserById(userId)
 
-  const key = await upsertThread(workspaceId, name, shareLink, user.id, model, prompt)
+  const key = await addLLMModelToOrganization(params.organizationId, {
+    name,
+    source,
+    apikey,
+    creatorId: user.id,
+  })
 
   return NextResponse.json({ key })
 }

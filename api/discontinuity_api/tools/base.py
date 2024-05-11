@@ -17,12 +17,16 @@ from langchain.agents.agent_types import AgentType
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
 from langchain.agents.openai_assistant import OpenAIAssistantRunnable
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.language_models.chat_models import BaseChatModel
 
 logger = logging.getLogger(__name__)
 
-async def get_agent_for_chatplus(workspaceId:str, llm:str = None):
-
-    llm = ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4-turbo")
+async def get_agent_for_chatplus(workspaceId:str, llm:BaseChatModel  ):
+   
+    if llm is None:
+        logger.warn("No LLM model provided, using default OpenAI model")
+        llm = ChatOpenAI(streaming=True,temperature=0, model="gpt-4")
 
     tools = [TavilySearchResults()]
 

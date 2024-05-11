@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import getAccessToken from './getAccessToken'
+import { useChat } from './chatProvider'
 
 export type Message = {
   content: string
@@ -43,12 +44,15 @@ export const useStreaming = (
   listener?: StreamListenerType,
   config?: StreamConfig
 ) => {
+  const [thread, setThread] = useChat()
+
   const [data, setData] = useState<MessageData[]>([])
   const [controller, setController] = useState<AbortController | null>(null)
 
-  const [thread, setThread] = useState<string | undefined>(() => {
+  const [threadId, setThreadId] = useState<string | undefined>(() => {
     if (typeof window !== 'undefined') {
       const cachedId = localStorage.getItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
+      if (cachedId) setThread({ ...thread, threadId: cachedId })
       return cachedId || undefined
     }
   })
@@ -59,15 +63,16 @@ export const useStreaming = (
 
   const resetChat = useCallback(() => {
     setMessages([])
-    setThread(undefined)
+    setThreadId(undefined)
+    setThread({ ...thread, threadId: undefined })
     localStorage.removeItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
-  }, [config?.threadIdKey, workspaceId])
+  }, [config?.threadIdKey, setThread, thread, workspaceId])
 
   useEffect(() => {
-    if (messages.length > 0 && thread) {
-      localStorage.setItem(`${thread}-messages`, JSON.stringify(messages))
+    if (messages.length > 0 && threadId) {
+      localStorage.setItem(`${threadId}-messages`, JSON.stringify(messages))
     }
-  }, [messages, thread])
+  }, [messages, threadId])
 
   const loadInitialMessages = useCallback(() => {
     async function retrieveHistory(thread: string) {
@@ -99,7 +104,8 @@ export const useStreaming = (
     const localThreadId = config?.threadId || retrieveThreadId()
 
     if (localThreadId) {
-      setThread(localThreadId)
+      setThreadId(localThreadId)
+      setThread({ ...thread, threadId: localThreadId })
       const cached = localStorage.getItem(`${localThreadId}-messages`)
 
       // This will only pull from localstorage, but we may want to sync it with the server?
@@ -109,7 +115,7 @@ export const useStreaming = (
         retrieveHistory(localThreadId)
       }
     }
-  }, [config, workspaceId])
+  }, [config?.headers, config?.threadId, config?.threadIdKey, setThread, thread, workspaceId])
 
   const appendMessages = (messageList: Message[]) => {
     setMessages((prevMessages) => [...prevMessages, ...messageList])
@@ -156,7 +162,9 @@ export const useStreaming = (
             body: JSON.stringify({
               message: message,
               filter: filter || {},
-              thread: thread,
+              thread: threadId,
+              model: thread.modelId,
+              prompt: thread.promptId,
             }),
             signal,
             onmessage(ev) {
@@ -198,7 +206,7 @@ export const useStreaming = (
                   setMessages((prevMessages) => {
                     const lastMessage = prevMessages.slice(-1)[0]
                     lastMessage.content =
-                      '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
+                      'There was an error processing your request. Please try again.'
                     return [...prevMessages.slice(0, -1), lastMessage]
                   })
                 }
@@ -208,7 +216,8 @@ export const useStreaming = (
                     `${workspaceId}-${config?.threadIdKey || ''}-threadId`,
                     msg['thread']
                   )
-                  setThread(msg['thread'])
+                  setThreadId(msg['thread'])
+                  setThread({ ...thread, threadId: msg['thread'] })
                 }
               } catch (error) {
                 console.error('Error parsing message:', error)
@@ -222,7 +231,7 @@ export const useStreaming = (
               setMessages((prevMessages) => {
                 const lastMessage = prevMessages.slice(-1)[0]
                 lastMessage.content =
-                  '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
+                  'There was an error processing your request. Please try again.'
                 return [...prevMessages.slice(0, -1), lastMessage]
               })
             },
@@ -238,8 +247,7 @@ export const useStreaming = (
             listener?.onError?.(error)
             setMessages((prevMessages) => {
               const lastMessage = prevMessages.slice(-1)[0]
-              lastMessage.content =
-                '<span class="text-sm text-secondary-600">There was an error processing your request. Please try again.</span>'
+              lastMessage.content = 'There was an error processing your request. Please try again.'
               return [...prevMessages.slice(0, -1), lastMessage]
             })
             if (controller) {
@@ -252,7 +260,17 @@ export const useStreaming = (
 
       fetchData()
     },
-    [listener, workspaceId, url, config?.headers, config?.threadIdKey, thread, controller]
+    [
+      listener,
+      workspaceId,
+      url,
+      config?.headers,
+      config?.threadIdKey,
+      threadId,
+      controller,
+      setThread,
+      thread,
+    ]
   )
 
   const stopFetching = useCallback(() => {
@@ -271,5 +289,5 @@ export const useStreaming = (
     }
   }, [controller])
 
-  return { messages, data, thread, addUserMessage, stopFetching, resetChat, loadInitialMessages }
+  return { messages, data, threadId, addUserMessage, stopFetching, resetChat, loadInitialMessages }
 }

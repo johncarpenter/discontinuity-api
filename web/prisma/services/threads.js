@@ -1,11 +1,11 @@
 import prisma from '@/prisma/index'
 
-export const upsertThread = async (workspaceId, name, link, creatorId) => {
+export const upsertThread = async (workspaceId, name, link, creatorId, llmmodelId, promptId) => {
   const thread = await getThreadByLink(link, workspaceId)
 
   if (thread) {
     return await prisma.threads.update({
-      data: { name, link },
+      data: { name, link, llmmodelId, updatedAt: new Date() },
       where: { id: thread.id },
     })
   } else {
@@ -15,6 +15,7 @@ export const upsertThread = async (workspaceId, name, link, creatorId) => {
         name,
         link,
         creatorId,
+        llmmodelId,
       },
     })
   }
@@ -42,6 +43,18 @@ export const getThreadByLink = async (link, workspaceId) => {
       link: true,
       createdAt: true,
       updatedAt: true,
+      llmmodel: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      prompt: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
     where: {
       link,
@@ -62,6 +75,18 @@ export const getThread = async (id, workspaceId) => {
       link: true,
       createdAt: true,
       updatedAt: true,
+      llmmodel: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      prompt: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
     where: {
       id,

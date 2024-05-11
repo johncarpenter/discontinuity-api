@@ -17,34 +17,45 @@ import { ClipboardIcon } from '@heroicons/react/24/outline'
 import { useWorkspace } from '@/lib/client/workspaceProvider'
 import api from '@/lib/client/api'
 import toast from 'react-hot-toast'
+import { useChat } from '@/lib/client/chatProvider'
 
 type ShareDialogProps = {
   children: React.ReactNode
   shareLink: string
 }
 
-export function ShareDialog({ children, shareLink }: ShareDialogProps) {
+export function ShareDialog({ children }: ShareDialogProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isBusy, setIsBusy] = useState(false)
+
+  const [thread] = useChat()
 
   const [workspace] = useWorkspace()
 
   const [name, setName] = useState('')
 
+  const shareLink = `${thread.link}${thread.threadId}`
+
   function addThread() {
     setIsBusy(true)
-    api(`/api/workspace/${workspace?.id}/thread`, {
-      method: 'POST',
-      body: { name, shareLink },
-    }).then((response) => {
-      if (response.status === 200) {
-        toast.success('Thread saved')
-      } else {
-        toast.error('Failed to add thread')
-      }
-      setIsBusy(false)
+    try {
+      api(`/api/workspace/${workspace?.id}/thread`, {
+        method: 'POST',
+        body: { name, shareLink, model: thread.modelId, prompt: thread.promptId },
+      }).then((response) => {
+        if (response.status === 200) {
+          toast.success('Thread saved')
+        } else {
+          toast.error('Failed to add thread')
+        }
+        setIsBusy(false)
+        setIsOpen(false)
+      })
+    } catch (e) {
       setIsOpen(false)
-    })
+      setIsBusy(false)
+      toast.error('Sorry, there wan an error saving your thread')
+    }
   }
 
   return (

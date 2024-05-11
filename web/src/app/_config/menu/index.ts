@@ -74,7 +74,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         Icon: ServerStackIcon,
       },
       {
-        name: 'Settings',
+        name: 'Workspace Settings',
         href: `/workspace/${currentWorkspace}/settings`,
         description: 'Status and Monitoring',
         enabled: currentWorkspace !== undefined,
@@ -120,9 +120,9 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         Icon: ChartPieIcon,
       },
       {
-        name: 'Support',
-        href: `/support`,
-        description: 'Status and Monitoring',
+        name: 'Organization Settings',
+        href: `/settings`,
+        description: 'Settings for your organization',
         enabled: true,
         visible: true,
         Icon: ServerStackIcon,

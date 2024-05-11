@@ -31,17 +31,7 @@ export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps)
     },
   }
 
-  // const [threadId] = useState<string | undefined>(() => {
-  //   if (chatId) return chatId
-
-  //   if (typeof window !== 'undefined') {
-  //     const cachedId = localStorage.getItem(`${workspace.id}-chatplus-threadId`)
-  //     return cachedId || undefined
-  //   }
-  //   return undefined
-  // })
-
-  const { messages, thread, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
+  const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/chat`,
     workspace.id,
     listener,
@@ -75,15 +65,16 @@ export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps)
   return (
     <>
       <div className="flex flex-col  h-full w-full lg:min-h-screen min-h-[85vh]">
-        <div className="px-4 overflow-auto mb-16 flex-1 h-full">
+        <div className="overflow-auto mb-8 flex-1 h-full">
           <div className="flex flex-col justify-end">
             {!isBusy && messages?.length == 0 && (
-              <div className="flex h-[75vh]">
+              <div className="flex h-[70vh]">
                 <div className="p-4 m-auto">
                   <ChatEmptyState />
                 </div>
               </div>
             )}
+
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
@@ -120,11 +111,6 @@ export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps)
         </div>
         <div className="w-full sm:p-6 mx-auto">
           <ChatInput
-            shareLink={
-              thread
-                ? `https://discontinuity.ai/workspace/${workspace.slug}/chat/${thread}`
-                : undefined
-            }
             workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}

@@ -13,8 +13,7 @@ import { useFocusFiles } from '@/lib/client/workspaceProvider'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { ShareDialog } from '@/components/Dialogs/sharedialog'
 import { SelectFilesDialog } from '../Dialogs/selectFiles'
-import { Select } from '../Base/select'
-import { Fieldset } from '../Base/fieldset'
+import { useChat } from '@/lib/client/chatProvider'
 
 type ChatInputProps = {
   workspaceId: string
@@ -27,7 +26,6 @@ type ChatInputProps = {
 
 export default function ChatInput({
   workspaceId,
-  shareLink,
   onHandleMessage,
   onReset,
   fileTypeFilter,
@@ -36,6 +34,8 @@ export default function ChatInput({
   const [input, setInput] = useState<string>('')
 
   const [focusFiles, setFocusFiles] = useFocusFiles()
+
+  const [thread] = useChat()
 
   const onHandleMessageInternal = () => {
     setInput('')
@@ -102,23 +102,10 @@ export default function ChatInput({
                   </SelectFilesDialog>
                 </>
               )}
-              <div>
-                <Fieldset>
-                  <Select>
-                    <option>OpenAI GPT-4 Turbo</option>
-                    <option>Cohere Command-R</option>
-                    <option>Anthropic Claude</option>
-                    <option>Google Gemini</option>
-                    <option>LLama 3</option>
-                    <option>MistralAI</option>
-                  </Select>
-                </Fieldset>
-              </div>
             </div>
-
             <div className="flex flex-row ml-auto">
-              {shareLink && (
-                <ShareDialog shareLink={shareLink}>
+              {thread.threadId && (
+                <ShareDialog shareLink={thread.link}>
                   <div className="flex-1 flex flex-row">
                     <ShareIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
                     <Text className="text-white/50">Save Thread</Text>

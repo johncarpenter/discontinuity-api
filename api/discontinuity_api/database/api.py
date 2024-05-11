@@ -1,4 +1,5 @@
-from .dbmodels import ApiKeyDb, FlowDb, WorkspaceDb
+from discontinuity_api.models.llmmodel import LLMModel
+from .dbmodels import ApiKeyDb, FlowDb, WorkspaceDb, LLMModelDb
 from discontinuity_api.models import ApiKey, Workspace, Flow
 from sqlalchemy.orm import Session
 
@@ -67,4 +68,21 @@ def getFlow(session: Session, flow_id: int) -> Workspace:
         description=flow.description,
         apikey=flow.apikey,
         endpoint=flow.endpoint,
+    )
+
+def getLLMModel(session: Session, model_id: int)-> LLMModel:
+    model = (
+        session.query(LLMModelDb)
+        .filter(LLMModelDb.id == model_id)
+        .first()
+    )
+
+    if model is None:
+        return None
+    
+    return LLMModel(
+        id=model.id,
+        name=model.name,
+        apikey=model.apikey,
+        source=model.source,
     )

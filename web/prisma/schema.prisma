@@ -19,6 +19,8 @@ model users {
   flows      flows[]
   workspaces workspaces[]
   threads    threads[]
+  llmmodels  llmmodels[]
+  prompts    prompts[]
 }
 
 model organizations {
@@ -30,6 +32,8 @@ model organizations {
   createdAt     DateTime?   @default(now())
   deletedAt     DateTime?
   updatedAt     DateTime?
+  llmmodels     llmmodels[]
+  prompts       prompts[]
 }
 
 model apikeys {
@@ -43,7 +47,7 @@ model apikeys {
   deletedAt     DateTime?
   updatedAt     DateTime?
   workspaces    workspaces @relation(fields: [workspaceId], references: [id])
-  creator       users?      @relation(fields: [creatorId], references: [id])
+  creator       users?     @relation(fields: [creatorId], references: [id])
   creatorId     String?
 }
 
@@ -60,27 +64,27 @@ model flows {
   deletedAt   DateTime?
   updatedAt   DateTime?
   workspaces  workspaces @relation(fields: [workspaceId], references: [id])
-  creator     users?      @relation(fields: [creatorId], references: [id])
+  creator     users?     @relation(fields: [creatorId], references: [id])
   creatorId   String?
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model workspaces {
-  id          String     @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   description String?
   slug        String
-  model       ModelTypes @default(OPENAI)
-  isPrivate   Boolean   @default(false)
-  createdAt   DateTime?  @default(now())
-  deletedAt   DateTime?
-  updatedAt   DateTime?
-  ownerId     String?    @db.VarChar
-  apikeys     apikeys[]
-  flows       flows[]
-  threads     threads[]
-  creator     users?     @relation(fields: [creatorId], references: [id])
-  creatorId   String?
+
+  isPrivate Boolean   @default(false)
+  createdAt DateTime? @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime?
+  ownerId   String?   @db.VarChar
+  apikeys   apikeys[]
+  flows     flows[]
+  threads   threads[]
+  creator   users?    @relation(fields: [creatorId], references: [id])
+  creatorId String?
 }
 
 model threads {
@@ -92,8 +96,43 @@ model threads {
   updatedAt   DateTime?
   workspaceId String
   workspaces  workspaces @relation(fields: [workspaceId], references: [id])
-  creator     users?     @relation(fields: [creatorId], references: [id])
+  llmmodel    llmmodels? @relation(fields: [llmmodelId], references: [id])
+  llmmodelId  String?
+  promptId    String?
+  prompt      prompts?   @relation(fields: [promptId], references: [id])
   creatorId   String?
+  creator     users?     @relation(fields: [creatorId], references: [id])
+}
+
+model llmmodels {
+  id             String        @id @default(cuid())
+  name           String?
+  source          ModelTypes    @default(OPENAI)
+  replicate_url  String?
+  apikey         String?
+  createdAt      DateTime?     @default(now())
+  deletedAt      DateTime?
+  updatedAt      DateTime?
+  organizationId String
+  organization   organizations @relation(fields: [organizationId], references: [id])
+  creator        users?        @relation(fields: [creatorId], references: [id])
+  creatorId      String?
+  threads        threads[]
+}
+
+model prompts {
+  id             String        @id @default(cuid())
+  name           String?
+  prompt         Json
+  createdAt      DateTime?     @default(now())
+  deletedAt      DateTime?
+  updatedAt      DateTime?
+  isPrivate      Boolean       @default(false)
+  organizationId String
+  organization   organizations @relation(fields: [organizationId], references: [id])
+  creator        users?        @relation(fields: [creatorId], references: [id])
+  creatorId      String?
+  threads        threads[]
 }
 
 enum LicenseType {
@@ -109,6 +148,7 @@ enum ModelTypes {
   GEMINI
   MISTRAL
   LLAMA3
+  CUSTOM
 }
 
 enum FlowTypes {
