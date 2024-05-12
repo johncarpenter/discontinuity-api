@@ -1,5 +1,6 @@
+from discontinuity_api.models.prompt import Prompt
 from discontinuity_api.models.llmmodel import LLMModel
-from .dbmodels import ApiKeyDb, FlowDb, WorkspaceDb, LLMModelDb
+from .dbmodels import ApiKeyDb, FlowDb, PromptDb, WorkspaceDb, LLMModelDb
 from discontinuity_api.models import ApiKey, Workspace, Flow
 from sqlalchemy.orm import Session
 
@@ -85,4 +86,20 @@ def getLLMModel(session: Session, model_id: int)-> LLMModel:
         name=model.name,
         apikey=model.apikey,
         source=model.source,
+    )
+
+def getPrompt(session: Session, prompt_id: int)-> Prompt:
+    prompt = (
+        session.query(PromptDb)
+        .filter(PromptDb.id == prompt_id)
+        .first()
+    )
+
+    if prompt is None:
+        return None
+    
+    return Prompt(
+        id=prompt.id,
+        name=prompt.name,
+        prompt=prompt.prompt
     )

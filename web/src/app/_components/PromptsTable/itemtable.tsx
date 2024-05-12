@@ -2,24 +2,38 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 // eslint-disable-next-line jsx-a11y/click-events-have-key-events
 'use client'
-import { CodeBracketIcon, EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Fragment, useState } from 'react'
 import { Text } from '@/components/Base/text'
-import { DeleteWorkspaceDialog } from '../Dialogs/deleteworkspacedialog'
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
-import Link from 'next/link'
+import { DeletePromptDialog } from '../Dialogs/deletepromptdialog'
+import { EditPromptDialog } from '../Dialogs/editpromptdialog'
+import { prompts } from '@prisma/client'
 
-type WorkspaceItemMenuProps = {
-  workspaceId: string
-  slug: string
+type PromptItemMenuProps = {
+  organizationId: string
+  prompt: prompts
 }
 
-export default function WorkspaceItemMenu({ workspaceId, slug }: WorkspaceItemMenuProps) {
+export default function PromptItemMenu({ organizationId, prompt }: PromptItemMenuProps) {
   const [open, setOpen] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
 
   return (
     <div>
-      <DeleteWorkspaceDialog workspaceId={workspaceId} open={open} onClose={() => setOpen(false)} />
+      <DeletePromptDialog
+        organizationId={organizationId}
+        promptId={prompt.id}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+      <EditPromptDialog
+        organizationId={organizationId}
+        prompt={prompt}
+        open={openEdit}
+        onClose={() => setOpenEdit(false)}
+      />
+
       <Menu as="div" className="relative flex-none ">
         <MenuButton className="-m-2.5 block p-2.5 text-gray-300 hover:text-gray-900">
           <span className="sr-only">Open options</span>
@@ -37,22 +51,21 @@ export default function WorkspaceItemMenu({ workspaceId, slug }: WorkspaceItemMe
           <MenuItems className="absolute z-100 right-0 mt-3 w-56 origin-top-right rounded-md card-normal p-2 z-50">
             <div className="py-2">
               <MenuItem>
-                <Link
+                <span
                   className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
-                  href={`/workspace/${slug}/settings`}
+                  onClick={() => setOpenEdit(true)}
                 >
-                  <CodeBracketIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                  <Text>Settings</Text>
-                </Link>
+                  <PencilIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                  <Text>Edit Prompt</Text>
+                </span>
               </MenuItem>
-
               <MenuItem>
                 <span
                   className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
                   onClick={() => setOpen(true)}
                 >
                   <TrashIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
-                  <Text>Delete Workflow</Text>
+                  <Text>Delete Prompt</Text>
                 </span>
               </MenuItem>
             </div>

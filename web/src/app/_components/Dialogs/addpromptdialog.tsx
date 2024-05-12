@@ -9,32 +9,32 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/Base/dialog'
-import { Field, Fieldset, Label, Legend } from '@/components/Base/fieldset'
+import { Description, Field, Fieldset, Label, Legend } from '@/components/Base/fieldset'
 import { Input } from '@/components/Base/input'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AlertText, Text } from '@/components/Base/text'
 import toast from 'react-hot-toast'
-import { ModelTypes } from '@prisma/client'
-import { Select } from '../Base/select'
+import { Textarea } from '../Base/textarea'
+import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/Base/checkbox'
 
-export function AddModelDialog({ organizationId }: { organizationId: string }) {
+export function AddPromptDialog({ organizationId }: { organizationId: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isBusy, setIsBusy] = useState(false)
 
   const [name, setName] = useState('')
-  const [source, setSource] = useState<ModelTypes>(ModelTypes.OPENAI)
-  const [apikey, setApiKey] = useState('')
+  const [prompt, setPrompt] = useState('')
+  const [isPrivate, setIsPrivate] = useState(false)
 
   const router = useRouter()
 
   // Add workspace via API
-  function addWorkspace() {
+  function addPrompt() {
     if (handleValidation()) {
-      setIsBusy(true)
       try {
-        api(`/api/organization/${organizationId}/model`, {
-          body: { name, source, apikey },
+        setIsBusy(true)
+        api(`/api/organization/${organizationId}/prompt`, {
+          body: { name, prompt, isPrivate },
           method: 'POST',
         })
           .then(() => {
@@ -45,12 +45,12 @@ export function AddModelDialog({ organizationId }: { organizationId: string }) {
           .catch(() => {
             setIsOpen(false)
             setIsBusy(false)
-            toast.error('Sorry, there was an error adding that model')
+            toast.error('Sorry, there was an error adding that prompt')
           })
       } catch (e) {
         setIsOpen(false)
         setIsBusy(false)
-        toast.error('Sorry, there wan an error adding that model')
+        toast.error('Sorry, there wan an error adding that prompt')
       }
     }
   }
@@ -63,8 +63,8 @@ export function AddModelDialog({ organizationId }: { organizationId: string }) {
       pass = false
     }
 
-    if (!apikey) {
-      setErrors({ apikey: 'API Key is required' })
+    if (!prompt || prompt === '') {
+      setErrors({ prompt: 'Prompt is required' })
       pass = false
     }
 
@@ -78,19 +78,21 @@ export function AddModelDialog({ organizationId }: { organizationId: string }) {
   return (
     <>
       <Button color="dark" type="button" onClick={() => setIsOpen(true)}>
-        Add Model
+        Add Prompt
       </Button>
       <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>
-        <DialogTitle>Add a LLM Foundation Model</DialogTitle>
-        <DialogDescription>This will make the model visible organization wide</DialogDescription>
+        <DialogTitle>Add a Custom Prompt</DialogTitle>
+        <DialogDescription>
+          Custom prompts are the first and best way to improve your results
+        </DialogDescription>
         <DialogBody className="space-y-8">
           <Fieldset>
             <Field>
-              <Legend>Model Name</Legend>
+              <Legend>Prompt Name</Legend>
               <Text>Short memorable name for this model</Text>
               <Input
                 name="name"
-                placeholder="OpenAI Prod"
+                placeholder="Resume Reviewer"
                 required
                 value={name}
                 onChange={(event) => setName(event.target.value)}
@@ -102,36 +104,34 @@ export function AddModelDialog({ organizationId }: { organizationId: string }) {
           </Fieldset>
           <Fieldset>
             <Field>
-              <Label>Model Type</Label>
-              <Select
-                name="source"
-                value={source}
-                onChange={(event) =>
-                  setSource(ModelTypes[event.target.value as keyof typeof ModelTypes])
-                }
-              >
-                {Object.keys(ModelTypes).map((key, index) => (
-                  <option key={index} value={key} className="capitalize">
-                    {key.toLowerCase()}
-                  </option>
-                ))}
-              </Select>
+              <Label>Prompt</Label>
+              <Textarea
+                rows={5}
+                name="prompt"
+                placeholder="You are a hiring manager at a company and you need to review a resume. Write a response to the candidate."
+                required
+                value={prompt}
+                onChange={(event) => setPrompt(event.target.value)}
+              />
+              {errors['prompt'] && (
+                <AlertText className="text-secondary-400">Prompt is required</AlertText>
+              )}
             </Field>
           </Fieldset>
           <Fieldset>
             <Field>
-              <Legend>API Key</Legend>
-              <Text>Contact support if you need help locating your key</Text>
-              <Input
-                name="apikey"
-                placeholder="sk-"
-                required
-                value={apikey}
-                onChange={(event) => setApiKey(event.target.value)}
-              />
-              {errors['apikey'] && (
-                <AlertText className="text-secondary-400">API Key is required</AlertText>
-              )}
+              <Legend>Private</Legend>
+              <CheckboxGroup>
+                <CheckboxField>
+                  <Checkbox
+                    name="discoverability"
+                    checked={isPrivate}
+                    onChange={(event) => setIsPrivate(event)}
+                  />
+                  <Label>Make this Prompt Private</Label>
+                  <Description>The Prompt won't be visible to other team members.</Description>
+                </CheckboxField>
+              </CheckboxGroup>
             </Field>
           </Fieldset>
         </DialogBody>
@@ -139,7 +139,7 @@ export function AddModelDialog({ organizationId }: { organizationId: string }) {
           <Button plain onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button disabled={isBusy} onClick={() => addWorkspace()}>
+          <Button disabled={isBusy} onClick={() => addPrompt()}>
             Add
           </Button>
         </DialogActions>

@@ -6,6 +6,8 @@ import { BugAntIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline
 import ModelsTable from '@/app/_components/ModelsTable'
 import { AddModelDialog } from '@/app/_components/Dialogs/addmodeldialog'
 import useCurrentOrganization from '@/app/_lib/client/useCurrentOrganization'
+import PromptsTable from '@/app/_components/PromptsTable'
+import { AddPromptDialog } from '@/app/_components/Dialogs/addpromptdialog'
 
 export default async function SupportPage() {
   const { organization } = await useCurrentOrganization()
@@ -31,10 +33,10 @@ export default async function SupportPage() {
           subtitle={'Prompts are specific instructions for the model to follow.'}
         >
           <Card.Action>
-            <AddModelDialog organizationId={organization.id} />
+            <AddPromptDialog organizationId={organization.id} />
           </Card.Action>
         </Card.Title>
-        <ModelsTable />
+        <PromptsTable />
       </Card>
       <Card>
         <Card.Title title="Contact Support" subtitle="Get help with your account" />

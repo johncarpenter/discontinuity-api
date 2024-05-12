@@ -28,15 +28,19 @@ export const DeleteWorkspaceDialog = ({
   function deleteWorkspace(workspaceId: string) {
     api(`/api/workspace/${workspaceId}`, {
       method: 'DELETE',
-    }).then((response) => {
-      if (response.status === 200) {
-        toast.success('Workspace deleted')
-      } else {
-        toast.error('Failed to delete workspace')
-      }
-      onClose()
-      router.refresh()
     })
+      .then((response) => {
+        if (response.status === 200) {
+          toast.success('Workspace deleted')
+        } else {
+          toast.error('Failed to delete workspace')
+        }
+        onClose()
+        router.refresh()
+      })
+      .catch(() => {
+        toast.error('Sorry, there was an error deleting that workspace')
+      })
   }
 
   return (

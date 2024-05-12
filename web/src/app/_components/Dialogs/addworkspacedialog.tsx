@@ -16,7 +16,7 @@ import { useRouter } from 'next/navigation'
 import { Text } from '@/components/Base/text'
 import { Textarea } from '@/components/Base/textarea'
 import toast from 'react-hot-toast'
-import { Checkbox, CheckboxField, CheckboxGroup } from '../Base/checkbox'
+import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/Base/checkbox'
 
 export function AddWorkspaceDialog() {
   const [isOpen, setIsOpen] = useState(false)
@@ -35,11 +35,17 @@ export function AddWorkspaceDialog() {
       api('/api/workspaces', {
         body: { name, description, isPrivate },
         method: 'POST',
-      }).then(() => {
-        setIsOpen(false)
-        setIsBusy(false)
-        router.refresh()
       })
+        .then(() => {
+          setIsOpen(false)
+          setIsBusy(false)
+          router.refresh()
+        })
+        .catch(() => {
+          setIsOpen(false)
+          setIsBusy(false)
+          toast.error('Sorry, there was an error adding that workspace')
+        })
     } catch (e) {
       setIsOpen(false)
       setIsBusy(false)
@@ -49,7 +55,7 @@ export function AddWorkspaceDialog() {
 
   return (
     <>
-      <Button color="secondary" type="button" onClick={() => setIsOpen(true)}>
+      <Button color="dark" type="button" onClick={() => setIsOpen(true)}>
         Add Workspace
       </Button>
       <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>

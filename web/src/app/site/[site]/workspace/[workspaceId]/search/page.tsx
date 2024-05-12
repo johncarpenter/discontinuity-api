@@ -2,8 +2,8 @@ import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspace } from '@/prisma/services/workspace'
 import ChatPanel from '@/app/_components/ChatPanel'
 import { AddModelDialog } from '@/components/Dialogs/addmodeldialog'
-import { ChatProvider } from '@/app/_lib/client/chatProvider'
-import ControlBar from '@/app/_components/ChatControlBar'
+import { ChatProvider } from '@/lib/client/chatProvider'
+import ControlBar from '@/components/ChatControlBar'
 
 type WorkspaceSearchPageProps = {
   params: {
@@ -38,6 +38,7 @@ const WorkspaceSearchPage = async ({ params }: WorkspaceSearchPageProps) => {
           promptId={''}
         >
           <ControlBar
+            organizationId={organization.id}
             models={organization.llmmodels}
             prompts={organization.prompts}
             title={workspace.name}

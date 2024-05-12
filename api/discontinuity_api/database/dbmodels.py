@@ -85,3 +85,13 @@ class LLMModelDb(Base):
     deletedAt = Column(DateTime)
     updatedAt = Column(DateTime)
     organizationId = Column(String)
+
+class PromptDb(Base):
+    __tablename__ = "prompts"
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    prompt = Column(String)
+    createdAt = Column(DateTime, default=datetime.now(timezone.utc))
+    deletedAt = Column(DateTime)
+    updatedAt = Column(DateTime)
+    organizationId = Column(String)

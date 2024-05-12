@@ -26,7 +26,7 @@ export async function DELETE(
 
   // Delete workspace
   try {
-    await removeLLMModelFromOrganization(params.modelId)
+    await removeLLMModelFromOrganization(orgId, params.modelId)
   } catch (error) {
     console.log('Failed to remove model from organization', error)
     return NextResponse.json({ error: 'Failed to remove model' }, { status: 400 })

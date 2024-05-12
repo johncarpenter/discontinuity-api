@@ -12,23 +12,23 @@ import { useRouter } from 'next/navigation'
 import api from '@/lib/client/api'
 import toast from 'react-hot-toast'
 
-export type DeleteModelDialogProps = {
+export type DeletePromptDialogProps = {
   organizationId: string
-  modelId: string
+  promptId: string
   open: boolean
   onClose: () => void
 }
 
-export const DeleteModelDialog = ({
+export const DeletePromptDialog = ({
   organizationId,
-  modelId,
+  promptId,
   open,
   onClose,
-}: DeleteModelDialogProps) => {
+}: DeletePromptDialogProps) => {
   const router = useRouter()
 
-  function deleteWorkspace(organizationId: string) {
-    api(`/api/organization/${organizationId}/model/${modelId}`, {
+  function deletePrompt(organizationId: string) {
+    api(`/api/organization/${organizationId}/prompt/${promptId}`, {
       method: 'DELETE',
     })
       .then((response) => {
@@ -41,7 +41,7 @@ export const DeleteModelDialog = ({
         router.refresh()
       })
       .catch(() => {
-        toast.error('Sorry, there was an error deleting that model')
+        toast.error('Sorry, there was an error deleting that prompt')
       })
   }
 
@@ -50,12 +50,12 @@ export const DeleteModelDialog = ({
       <Dialog open={open} onClose={onClose} darkMode={true}>
         <DialogTitle>Are you sure you want to archive this model?</DialogTitle>
         <DialogDescription>
-          This model will no longer be available for use and the API Key will be removed. This
-          action cannot be undone. ref: {modelId}
+          This prompt will no longer be available for use. This action cannot be undone. ref:{' '}
+          {promptId}
         </DialogDescription>
         <DialogBody></DialogBody>
         <DialogActions>
-          <Button color="secondary" onClick={() => deleteWorkspace(organizationId)}>
+          <Button color="secondary" onClick={() => deletePrompt(organizationId)}>
             Delete
           </Button>
           <Button plain onClick={() => onClose()}>

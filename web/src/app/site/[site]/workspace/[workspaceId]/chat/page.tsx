@@ -16,6 +16,9 @@ const WorkspaceChatPage = async ({ params }: WorkspaceChatPageProps) => {
   const { organization, orgId } = await useCurrentOrganization()
   const workspace = await getWorkspace(orgId, params.workspaceId)
 
+  const defaultPrompt =
+    organization.prompts && organization.prompts[0] ? organization.prompts[0].id : ''
+
   return (
     <>
       {!organization.llmmodels || organization.llmmodels.length === 0 ? (
@@ -36,9 +39,10 @@ const WorkspaceChatPage = async ({ params }: WorkspaceChatPageProps) => {
         <ChatProvider
           link={`https://discontinuity.ai/workspace/${workspace.slug}/chat/`}
           modelId={organization.llmmodels[0].id}
-          promptId={''}
+          promptId={defaultPrompt}
         >
           <ControlBar
+            organizationId={organization.id}
             models={organization.llmmodels}
             prompts={organization.prompts}
             title={workspace.name}

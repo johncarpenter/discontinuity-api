@@ -2,9 +2,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 // eslint-disable-next-line jsx-a11y/click-events-have-key-events
 'use client'
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
+import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Fragment, useState } from 'react'
-import { LuLayoutDashboard } from 'react-icons/lu'
 import { Text } from '@/components/Base/text'
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
 import { DeleteModelDialog } from '../Dialogs/deletemodeldiaglog'
@@ -46,7 +45,7 @@ export default function ModelItemMenu({ organizationId, modelId }: ModelItemMenu
                   className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
                   onClick={() => setOpen(true)}
                 >
-                  <LuLayoutDashboard className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                  <TrashIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                   <Text>Delete Model</Text>
                 </span>
               </MenuItem>

@@ -104,9 +104,9 @@ export const workspaceMenu = (currentWorkspace?: string) => [
       },
 
       {
-        name: 'Reports (coming soon)',
-        href: '/reports',
-        description: 'Analysis and Reporting',
+        name: 'Training (coming soon)',
+        href: '/training',
+        description: 'Learning to use the system',
         enabled: false,
         visible: true,
         Icon: FolderIcon,

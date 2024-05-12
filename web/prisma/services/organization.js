@@ -25,6 +25,7 @@ export const getOrganizationById = async (clerk_id) =>
           name: true,
           prompt: true,
           createdAt: true,
+          isPrivate: true,
           creator: {
             select: {
               fullName: true,
@@ -61,76 +62,114 @@ export const getOrganizationById = async (clerk_id) =>
     },
   })
 
-export const addPromptToOrganization = async (organization_id, prompt) => {
-  const promptAdd = await prisma.prompts.create({
+export const addPromptToOrganization = async (organization_id, creatorId, prompt) => {
+  const organization = await getOrganizationFromClerkId(organization_id)
+  return await prisma.prompts.create({
     data: {
       ...prompt,
-    },
-  })
-
-  await prisma.organizations.update({
-    where: {
-      id: organization_id,
-    },
-    data: {
-      prompts: {
+      organization: {
         connect: {
-          id: promptAdd.id,
+          id: organization.id,
+        },
+      },
+      creator: {
+        connect: {
+          id: creatorId,
         },
       },
     },
   })
 }
 
-export const removePromptFromOrganization = async (prompt_id) => {
+export const removePromptFromOrganization = async (organization_id, prompt_id) => {
+  const organization = await getOrganizationFromClerkId(organization_id)
+
   await prisma.prompts.update({
     where: {
       id: prompt_id,
+      organization: {
+        id: organization.id,
+      },
     },
     data: {
       deletedAt: new Date(),
     },
   })
+}
 
-  await prisma.organizations.update({
+export const updatePrompt = async (organization_id, promptUpdate) => {
+  const organization = await getOrganizationFromClerkId(organization_id)
+
+  const promptCheck = await prisma.prompts.findFirst({
     where: {
-      prompts: {
-        some: {
-          id: prompt_id,
-        },
-      },
-    },
-    data: {
-      prompts: {
-        disconnect: {
-          id: prompt_id,
-        },
+      id: promptUpdate.id,
+      deletedAt: null,
+      organization: {
+        id: organization.id,
+        deletedAt: null,
       },
     },
   })
+
+  if (promptCheck) {
+    return await prisma.prompts.update({
+      data: {
+        name: promptUpdate.name,
+        prompt: promptUpdate.prompt,
+        isPrivate: promptUpdate.isPrivate,
+        updatedAt: new Date(),
+      },
+      where: { id: promptUpdate.id },
+    })
+  } else {
+    throw new Error('Unable to find prompt in the organization')
+  }
 }
 
-export const addLLMModelToOrganization = async (organization_id, llmmodel) => {
+export const addLLMModelToOrganization = async (organization_id, creatorId, llmmodel) => {
+  const organization = await getOrganizationFromClerkId(organization_id)
+
   return await prisma.llmmodels.create({
     data: {
       ...llmmodel,
       organization: {
         connect: {
-          id: organization_id,
+          id: organization.id,
+        },
+      },
+      creator: {
+        connect: {
+          id: creatorId,
         },
       },
     },
   })
 }
 
-export const removeLLMModelFromOrganization = async (llmmodel_id) => {
+export const removeLLMModelFromOrganization = async (organization_id, llmmodel_id) => {
+  const organization = await getOrganizationFromClerkId(organization_id)
+
   await prisma.llmmodels.update({
     where: {
       id: llmmodel_id,
+      organization: {
+        id: organization.id,
+      },
     },
     data: {
       deletedAt: new Date(),
       apikey: null,
+    },
+  })
+}
+
+const getOrganizationFromClerkId = async (clerk_id) => {
+  return await prisma.organizations.findFirst({
+    select: {
+      id: true,
+    },
+    where: {
+      clerk_id,
     },
   })
 }

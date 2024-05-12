@@ -8,21 +8,17 @@ from .workspace_retrievers import create_workspace_retriever_tool
 from discontinuity_api.utils import STANDARD_RETRIEVAL_PROMPT, STANDARD_AGENT_CHAT
 from langchain_openai import ChatOpenAI
 import logging
-from langchain.agents import AgentExecutor, create_tool_calling_agent, tool
-from langchain.agents.format_scratchpad.openai_tools import format_to_openai_tool_messages
-from langchain.agents.format_scratchpad import format_to_openai_function_messages
-from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputParser
+from langchain.agents import AgentExecutor, create_tool_calling_agent
 import pandas as pd
 from langchain.agents.agent_types import AgentType
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
-from langchain.agents.openai_assistant import OpenAIAssistantRunnable
 from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.language_models.chat_models import BaseChatModel
+from langchain_core.prompts import ChatPromptTemplate
 
 logger = logging.getLogger(__name__)
 
-async def get_agent_for_chatplus(workspaceId:str, llm:BaseChatModel  ):
+async def get_agent_for_chatplus(workspaceId:str, llm:BaseChatModel, prompt:ChatPromptTemplate = STANDARD_AGENT_CHAT):
    
     if llm is None:
         logger.warn("No LLM model provided, using default OpenAI model")
@@ -30,7 +26,7 @@ async def get_agent_for_chatplus(workspaceId:str, llm:BaseChatModel  ):
 
     tools = [TavilySearchResults()]
 
-    agent = create_tool_calling_agent(llm, tools, STANDARD_AGENT_CHAT)
+    agent = create_tool_calling_agent(llm, tools, prompt)
 
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
     

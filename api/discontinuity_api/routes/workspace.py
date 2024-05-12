@@ -6,6 +6,7 @@ from fastapi import HTTPException, Depends, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 import logging
+from discontinuity_api.utils.prompts import get_prompt_by_id
 from discontinuity_api.utils.models import get_model_by_id
 from discontinuity_api.utils.s3 import listFilesInBucket
 from discontinuity_api.database.api import getFlow
@@ -62,7 +63,7 @@ class ChatMessage(BaseModel):
     thread: Optional[str] = None
     filter: Optional[dict] = {}
     model: Optional[str] = "openai"
-    prompt: Optional[str] = "chat"
+    prompt: Optional[str] = None
 
 @router.post("/chat")
 async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
@@ -71,8 +72,10 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
 
     llmmodel = get_model_by_id(message.model)
 
+    prompt = get_prompt_by_id(message.prompt)
+
     # This is the full agent
-    agent = await get_agent_for_chatplus(workspaceId=workspace.id, llm=llmmodel)
+    agent = await get_agent_for_chatplus(workspaceId=workspace.id, llm=llmmodel, prompt=prompt)
 
     thread = message.thread or str(uuid.uuid4())
 

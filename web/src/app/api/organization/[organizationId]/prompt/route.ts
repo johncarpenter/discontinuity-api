@@ -1,4 +1,4 @@
-import { addLLMModelToOrganization } from '@/prisma/services/organization'
+import { addPromptToOrganization } from '@/prisma/services/organization'
 import { getUserById } from '@/prisma/services/user'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
@@ -18,18 +18,18 @@ export async function POST(req: NextRequest) {
 
   const data = await req.json()
 
-  const { name, source, apikey } = data
+  const { name, prompt, isPrivate } = data
 
-  if (!name || !source || !apikey) {
+  if (!name || !prompt) {
     return NextResponse.json({ error: 'Missing Parameters' }, { status: 400 })
   }
 
   const user = await getUserById(userId)
 
-  const key = await addLLMModelToOrganization(orgId, user.id, {
+  const key = await addPromptToOrganization(orgId, user.id, {
     name,
-    source,
-    apikey,
+    prompt,
+    isPrivate,
   })
 
   return NextResponse.json({ key })

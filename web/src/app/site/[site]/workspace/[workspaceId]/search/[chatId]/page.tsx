@@ -44,6 +44,7 @@ const WorkspaceChatSinglePage = async ({ params }: WorkspaceChatSinglePageProps)
           threadId={thread.id}
         >
           <ControlBar
+            organizationId={organization.id}
             models={organization.llmmodels}
             prompts={organization.prompts}
             title={thread.name}
