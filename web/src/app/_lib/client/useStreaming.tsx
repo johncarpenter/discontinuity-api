@@ -52,7 +52,7 @@ export const useStreaming = (
   const [threadId, setThreadId] = useState<string | undefined>(() => {
     if (typeof window !== 'undefined') {
       const cachedId = localStorage.getItem(`${workspaceId}-${config?.threadIdKey || ''}-threadId`)
-      if (cachedId) setThread({ ...thread, threadId: cachedId })
+
       return cachedId || undefined
     }
   })
@@ -69,10 +69,11 @@ export const useStreaming = (
   }, [config?.threadIdKey, setThread, thread, workspaceId])
 
   useEffect(() => {
+    if (threadId) setThread({ ...thread, threadId: threadId })
     if (messages.length > 0 && threadId) {
       localStorage.setItem(`${threadId}-messages`, JSON.stringify(messages))
     }
-  }, [messages, threadId])
+  }, [messages, setThread, thread, threadId])
 
   const loadInitialMessages = useCallback(() => {
     async function retrieveHistory(thread: string) {

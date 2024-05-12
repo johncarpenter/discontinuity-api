@@ -32,22 +32,20 @@ async def get_agent_for_chatplus(workspaceId:str, llm:BaseChatModel, prompt:Chat
     
     return agent_executor
 
-async def get_agent_for_workspace(workspaceId:str, filter:str = None):
+async def get_agent_for_workspace(workspaceId:str,  llm:BaseChatModel, prompt:ChatPromptTemplate = STANDARD_AGENT_CHAT,filter:str = None):
 
-    return await default_agent(workspaceId, filter)
+    return await default_agent(workspaceId=workspaceId, llm=llm, prompt=prompt, filter=filter)
 
 
-async def default_agent(workspaceId:str, filter:str = None): 
+async def default_agent(workspaceId:str, llm:BaseChatModel, prompt:ChatPromptTemplate = STANDARD_AGENT_CHAT,filter:str = None): 
     
     logger.info(f"Running default agent for workspace {workspaceId}")
-
-    llm = ChatOpenAI(streaming=True,temperature=0, model="gpt-4")
-
+   
     retriever_tool = await create_workspace_retriever_tool(workspaceId, filter)
 
     tools = [retriever_tool, ListWorkspaceFiles(workspaceId=workspaceId)]
 
-    prompt = STANDARD_AGENT_CHAT
+    llm.bind_tools(tools)
 
     agent = create_tool_calling_agent(llm, tools, prompt)   
      

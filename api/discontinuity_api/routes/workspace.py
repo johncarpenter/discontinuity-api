@@ -127,12 +127,12 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     filter, filterMessage = build_filter(message.filter)
     logger.info(f"Using filter {filter}")
     
-    # Get the vector db for the workspace
-    # This isht e rag chain
-    #chain = await get_chain_for_workspace(workspace.id, filter)
+    llmmodel = get_model_by_id(message.model)
+
+    prompt = get_prompt_by_id(message.prompt)
 
     # This is the full agent
-    agent = await get_agent_for_workspace(workspace.id, filter)
+    agent = await get_agent_for_workspace(workspaceId=workspace.id, llm=llmmodel, prompt=prompt, filter=filter)
 
     thread = message.thread or str(uuid.uuid4())
 
@@ -142,7 +142,6 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         logger.info(f"Applying filter to the System Message: {filterMessage}")
         history.add_message(SystemMessage(content=filterMessage, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
 
-    history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
 
     # async def generator():
     #     response = '' 
@@ -188,6 +187,8 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
            response = "Sorry, I am having trouble processing your request. Please try again later."
            yield stream_chunk(response, "error")
             
+        
+        history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 
 

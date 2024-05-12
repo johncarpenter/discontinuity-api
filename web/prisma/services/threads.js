@@ -5,7 +5,21 @@ export const upsertThread = async (workspaceId, name, link, creatorId, llmmodelI
 
   if (thread) {
     return await prisma.threads.update({
-      data: { name, link, llmmodelId, updatedAt: new Date() },
+      data: {
+        name,
+        link,
+        llmmodel: {
+          connect: {
+            id: llmmodelId,
+          },
+        },
+        prompt: {
+          connect: {
+            id: promptId,
+          },
+        },
+        updatedAt: new Date(),
+      },
       where: { id: thread.id },
     })
   } else {
@@ -14,8 +28,21 @@ export const upsertThread = async (workspaceId, name, link, creatorId, llmmodelI
         workspaceId,
         name,
         link,
-        creatorId,
-        llmmodelId,
+        llmmodel: {
+          connect: {
+            id: llmmodelId,
+          },
+        },
+        prompt: {
+          connect: {
+            id: promptId,
+          },
+        },
+        creator: {
+          connect: {
+            id: creatorId,
+          },
+        },
       },
     })
   }

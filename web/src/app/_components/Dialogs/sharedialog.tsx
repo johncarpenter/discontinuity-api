@@ -42,15 +42,21 @@ export function ShareDialog({ children }: ShareDialogProps) {
       api(`/api/workspace/${workspace?.id}/thread`, {
         method: 'POST',
         body: { name, shareLink, model: thread.modelId, prompt: thread.promptId },
-      }).then((response) => {
-        if (response.status === 200) {
-          toast.success('Thread saved')
-        } else {
-          toast.error('Failed to add thread')
-        }
-        setIsBusy(false)
-        setIsOpen(false)
       })
+        .then((response) => {
+          if (response.status === 200) {
+            toast.success('Thread saved')
+          } else {
+            toast.error('Failed to add thread')
+          }
+          setIsBusy(false)
+          setIsOpen(false)
+        })
+        .catch(() => {
+          setIsOpen(false)
+          setIsBusy(false)
+          toast.error('Sorry, there wan an error saving your thread')
+        })
     } catch (e) {
       setIsOpen(false)
       setIsBusy(false)

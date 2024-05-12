@@ -15,6 +15,9 @@ type WorkspaceSearchPageProps = {
 const WorkspaceSearchPage = async ({ params }: WorkspaceSearchPageProps) => {
   const { orgId, organization } = await useCurrentOrganization()
   const workspace = await getWorkspace(orgId, params.workspaceId)
+
+  const defaultPrompt =
+    organization.prompts && organization.prompts[0] ? organization.prompts[0].id : ''
   return (
     <>
       {!organization.llmmodels || organization.llmmodels.length === 0 ? (
@@ -35,7 +38,7 @@ const WorkspaceSearchPage = async ({ params }: WorkspaceSearchPageProps) => {
         <ChatProvider
           link={`https://discontinuity.ai/workspace/${workspace.slug}/search/`}
           modelId={organization.llmmodels[0].id}
-          promptId={''}
+          promptId={defaultPrompt}
         >
           <ControlBar
             organizationId={organization.id}
@@ -43,7 +46,7 @@ const WorkspaceSearchPage = async ({ params }: WorkspaceSearchPageProps) => {
             prompts={organization.prompts}
             title={workspace.name}
           />
-          <ChatPanel workspace={workspace} />
+          <ChatPanel workspace={workspace} threadView={false} />
         </ChatProvider>
       )}
     </>

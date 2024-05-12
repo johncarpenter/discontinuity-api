@@ -22,6 +22,7 @@ type ChatInputProps = {
   onHandleMessage: (message: string) => void
   fileTypeFilter?: string[]
   showFiles?: boolean
+  threadView?: boolean
 }
 
 export default function ChatInput({
@@ -30,6 +31,7 @@ export default function ChatInput({
   onReset,
   fileTypeFilter,
   showFiles = true,
+  threadView = false,
 }: ChatInputProps) {
   const [input, setInput] = useState<string>('')
 
@@ -75,9 +77,11 @@ export default function ChatInput({
                 }
               }}
             />
-            <Button onClick={onReset} plain={true} className="ml-auto mb-auto flex-0">
-              <PencilSquareIcon className="h-6 w-6 ml-auto text-white/50" />
-            </Button>
+            {!threadView && (
+              <Button onClick={onReset} plain={true} className="ml-auto mb-auto flex-0">
+                <PencilSquareIcon className="h-6 w-6 ml-auto text-white/50" />
+              </Button>
+            )}
           </div>
           <div className="grid grid-cols-2 items-center w-full outline-none focus:outline-none">
             <div className="flex flex-row w-full rounded-md  text-white/50 ">
@@ -104,7 +108,7 @@ export default function ChatInput({
               )}
             </div>
             <div className="flex flex-row ml-auto">
-              {thread.threadId && (
+              {!threadView && thread.threadId && (
                 <ShareDialog shareLink={thread.link}>
                   <div className="flex-1 flex flex-row">
                     <ShareIcon className="w-4 h-4 text-white/50 my-auto mr-2" />

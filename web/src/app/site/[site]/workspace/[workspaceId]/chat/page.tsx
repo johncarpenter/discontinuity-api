@@ -47,7 +47,7 @@ const WorkspaceChatPage = async ({ params }: WorkspaceChatPageProps) => {
             prompts={organization.prompts}
             title={workspace.name}
           />
-          <ChatPlusPanel workspace={workspace} />
+          <ChatPlusPanel workspace={workspace} threadView={false} />
         </ChatProvider>
       )}
     </>

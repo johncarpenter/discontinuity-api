@@ -3,7 +3,7 @@ import { Select } from '@/components/Base/select'
 import { useChat } from '@/lib/client/chatProvider'
 import { llmmodels, prompts } from '@prisma/client'
 import { Text } from '@/components/Base/text'
-import { PencilSquareIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { Button } from '../Base/button'
 import { EditPromptDialog } from '@/components/Dialogs/editpromptdialog'
 import { useState } from 'react'
@@ -64,14 +64,14 @@ export default function ControlBar({ organizationId, models, prompts, title }: C
                 </Select>
               </>
             )}
-            {prompts && prompts.find((prompt) => prompt.id === thread.promptId) !== null && (
+            {prompts && prompts.find((prompt) => prompt.id === thread.promptId) !== undefined && (
               <>
                 <Button className=" my-auto ml-2" plain onClick={() => setOpen(true)}>
                   <PencilSquareIcon className="h-6 w-6 text-gray-400" />
                 </Button>
                 <EditPromptDialog
                   organizationId={organizationId}
-                  prompt={prompts.find((prompt) => prompt.id === thread.promptId)}
+                  prompt={prompts.find((prompt) => prompt.id === thread.promptId) || null}
                   open={open}
                   onClose={() => setOpen(false)}
                 />

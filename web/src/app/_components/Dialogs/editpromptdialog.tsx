@@ -21,7 +21,7 @@ import { prompts } from '@prisma/client'
 
 type EditPromptDialogProps = {
   organizationId: string
-  prompt: prompts
+  prompt: prompts | null
   open: boolean
   onClose: () => void
 }
@@ -39,8 +39,8 @@ export function EditPromptDialog({ organizationId, prompt, open, onClose }: Edit
   async function updatePrompt() {
     if (handleValidation()) {
       setIsBusy(true)
-      api(`/api/organization/${organizationId}/prompt/${prompt.id}`, {
-        body: { id: prompt.id, name, prompt: promptText, isPrivate },
+      api(`/api/organization/${organizationId}/prompt/${prompt?.id}`, {
+        body: { id: prompt?.id, name, prompt: promptText, isPrivate },
         method: 'PUT',
       })
         .then(() => {

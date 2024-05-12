@@ -16,9 +16,14 @@ import { workspaces } from '@prisma/client'
 type ChatPlusPanelProps = {
   workspace: workspaces
   chatId?: string
+  threadView?: boolean
 }
 
-export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps) {
+export default function ChatPlusPanel({
+  workspace,
+  chatId,
+  threadView = false,
+}: ChatPlusPanelProps) {
   const listener: StreamListenerType = {
     onError: () => {
       setIsBusy(false)
@@ -115,6 +120,7 @@ export default function ChatPlusPanel({ workspace, chatId }: ChatPlusPanelProps)
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}
             showFiles={false}
+            threadView={threadView}
           />
         </div>
       </div>
