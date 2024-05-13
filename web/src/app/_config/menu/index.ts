@@ -84,7 +84,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
     ],
   },
   {
-    name: 'platform',
+    name: 'organization',
     menuItems: [
       {
         name: 'Workflow Editor',

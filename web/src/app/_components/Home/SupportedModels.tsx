@@ -7,8 +7,8 @@ export default function SupportedModels() {
         <div className="mx-auto max-w-2xl lg:max-w-none">
           <span className=" text-secondary-600 uppercase">manage diverse technologies</span>
 
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl pt-4">
-            Use the best AI models and tools for your projects
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl pt-4">
+            One interface for all your AI models
           </h2>
           <div className="mx-auto mt-10 grid grid-cols-4 items-center gap-x-8 gap-y-10 sm:grid-cols-6 sm:gap-x-10 lg:mx-0 lg:grid-cols-5">
             <Image

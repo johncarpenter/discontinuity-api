@@ -73,7 +73,7 @@ export const useStreaming = (
     if (messages.length > 0 && threadId) {
       localStorage.setItem(`${threadId}-messages`, JSON.stringify(messages))
     }
-  }, [messages, setThread, thread, threadId])
+  }, [messages, setThread, threadId])
 
   const loadInitialMessages = useCallback(() => {
     async function retrieveHistory(thread: string) {

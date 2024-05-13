@@ -96,6 +96,10 @@ resource "google_cloud_run_v2_service" "api" {
         name  = "UPSTASH_REDIS_REST_TOKEN"
         value = var.upstash_redis_rest_token
       }
+      env {
+        name  = "TAVILY_API_KEY"
+        value = var.tavily_api_key
+      }
     }
   }
 

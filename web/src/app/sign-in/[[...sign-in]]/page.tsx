@@ -8,8 +8,21 @@ export default function Page() {
     <>
       <MarketingLayout>
         <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2 ">
-          <div className="relative px-6 pb-10 pt-4 sm:pt-14 lg:static lg:px-8 lg:py-4">
-            <div className="mx-auto max-w-4xl lg:mx-0 lg:max-w-lg">
+          <div className="mt-6">
+            <SignIn
+              redirectUrl={'/'}
+              appearance={{
+                baseTheme: undefined,
+                elements: {
+                  footer: {
+                    display: 'none',
+                  },
+                },
+              }}
+            />
+          </div>
+          <div className="relative px-6  pt-4 sm:pt-14 lg:static lg:px-8 lg:py-4">
+            <div className="mx-auto max-w-4xl lg:mx-0 lg:max-w-lg ">
               <div className="flex flex-col space-y-5">
                 <h2 className="text-4xl font-bold ">
                   <span className="block">Log into your Bridge Dashboard</span>
@@ -20,7 +33,7 @@ export default function Page() {
                 </p>
               </div>
 
-              <dl className="mt-10 space-y-4 text-base leading-7 text-gray-800 dark:text-gray-300">
+              <dl className="lg:mt-10 space-y-4 text-base leading-7 text-gray-800 dark:text-gray-300">
                 <div className="flex gap-x-4">
                   <dt className="flex-none">
                     <span className="sr-only">Email</span>
@@ -34,18 +47,6 @@ export default function Page() {
                 </div>
               </dl>
             </div>
-          </div>
-          <div className="mt-16">
-            <SignIn
-              redirectUrl={'/'}
-              appearance={{
-                elements: {
-                  footer: {
-                    display: 'none',
-                  },
-                },
-              }}
-            />
           </div>
         </div>
         <ContactFormBeta />

@@ -85,3 +85,7 @@ variable "upstash_redis_rest_url" {
 variable "upstash_redis_rest_token" {
   type = string
 }
+
+variable "tavily_api_key" {
+  type = string
+}

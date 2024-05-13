@@ -37,7 +37,7 @@ export default function MarketingHero() {
               </div>
 
               <h1 className="text-6xl font-bold tracking-wide leading-snug text-gray-900">
-                Jump start your company-wide AI initiatives with the Bridge platform.
+                A Unified AI Workspace. <br /> Built for Teams
               </h1>
             </div>
 

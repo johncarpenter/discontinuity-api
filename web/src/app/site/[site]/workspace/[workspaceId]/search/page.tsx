@@ -45,6 +45,7 @@ const WorkspaceSearchPage = async ({ params }: WorkspaceSearchPageProps) => {
             models={organization.llmmodels}
             prompts={organization.prompts}
             title={workspace.name}
+            showShare={true}
           />
           <ChatPanel workspace={workspace} threadView={false} />
         </ChatProvider>

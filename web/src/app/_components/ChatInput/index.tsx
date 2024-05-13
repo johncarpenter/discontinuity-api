@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { PencilSquareIcon, ArrowRightCircleIcon, ShareIcon } from '@heroicons/react/24/outline'
+import { ArrowRightCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import { Text } from '@/components/Base/text'
 
 import { useState } from 'react'
@@ -11,9 +11,7 @@ import { LuUpload } from 'react-icons/lu'
 import { UploadFileDialog } from '@/components/Dialogs/uploadFiles'
 import { useFocusFiles } from '@/lib/client/workspaceProvider'
 import { StarIcon } from '@heroicons/react/20/solid'
-import { ShareDialog } from '@/components/Dialogs/sharedialog'
 import { SelectFilesDialog } from '../Dialogs/selectFiles'
-import { useChat } from '@/lib/client/chatProvider'
 
 type ChatInputProps = {
   workspaceId: string
@@ -37,8 +35,6 @@ export default function ChatInput({
 
   const [focusFiles, setFocusFiles] = useFocusFiles()
 
-  const [thread] = useChat()
-
   const onHandleMessageInternal = () => {
     setInput('')
     onHandleMessage(input)
@@ -58,7 +54,7 @@ export default function ChatInput({
 
   return (
     <>
-      <div className="flex flex-row w-full dark:bg-gray-700 dark:text-white bg-slate-700 border-1 border-slate-800 rounded-md px-4 pt-4 pb-2  text-white/50 ">
+      <div className="flex flex-row w-full dark:bg-gray-700 dark:text-white bg-slate-700 border-1 border-slate-800 px-4 pt-4 pb-2  text-white/50 ">
         {/* <LightBulbIcon className="lg:left-3 left-2 lg:top-3 top-2 w-8 h-8 flex-0 text-black/50 justify-center my-auto" /> */}
         <div className="flex-1 flex flex-col">
           <div className="flex-1 flex flex-row">
@@ -79,7 +75,7 @@ export default function ChatInput({
             />
             {!threadView && (
               <Button onClick={onReset} plain={true} className="ml-auto mb-auto flex-0">
-                <PencilSquareIcon className="h-6 w-6 ml-auto text-white/50" />
+                <XCircleIcon className="h-6 w-6 ml-auto text-white/50" />
               </Button>
             )}
           </div>
@@ -108,14 +104,6 @@ export default function ChatInput({
               )}
             </div>
             <div className="flex flex-row ml-auto">
-              {!threadView && thread.threadId && (
-                <ShareDialog shareLink={thread.link}>
-                  <div className="flex-1 flex flex-row">
-                    <ShareIcon className="w-4 h-4 text-white/50 my-auto mr-2" />
-                    <Text className="text-white/50">Save Thread</Text>
-                  </div>
-                </ShareDialog>
-              )}
               <Button
                 onClick={() => onHandleMessageInternal()}
                 plain={true}

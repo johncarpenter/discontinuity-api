@@ -196,12 +196,12 @@ export default function Sidebar({ workspaces }: SidebarProps) {
               <WorkspaceSwitcher workspaces={workspaces} />
               <ul className="flex flex-1 flex-col gap-y-7">
                 <li>
-                  <ul className="-mx-2 space-y-1">
+                  <ul className="-mx-2 space-y-2">
                     {workspaceMenu(workspace?.slug).map((menu, index) => (
                       <div key={index}>
-                        <span className="text-xs uppercase text-gray-500 ">{menu.name}</span>
+                        <span className="text-xs uppercase text-gray-500">{menu.name}</span>
                         <li>
-                          <ul className="-mx-2 space-y-1">
+                          <ul className="-mx-2 space-y-1 pt-2">
                             {menu.menuItems.map((item) => (
                               <li key={item.name}>
                                 <MenuItem
@@ -280,7 +280,7 @@ const MenuItem = ({
         href={enabled ? href : {}}
         className={classNames(
           active ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white',
-          'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6'
+          'group flex gap-x-3 rounded-md p-1 text-sm font-semibold leading-6'
         )}
       >
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
@@ -288,7 +288,7 @@ const MenuItem = ({
       </Link>
     )) ||
     (visible && !enabled && (
-      <span className="text-gray-400/60 group flex gap-x-3 p-2 text-sm font-semibold leading-6">
+      <span className="text-gray-400/60 group flex gap-x-3 p-1 text-sm font-semibold leading-6">
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
         {name}
       </span>

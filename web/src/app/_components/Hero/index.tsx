@@ -20,9 +20,6 @@ export default function Hero() {
             >
               Talk to Us
             </a>
-            <a href="/start" className="text-sm font-semibold leading-6 text-gray-900">
-              Discover Our Services <span aria-hidden="true">→</span>
-            </a>
           </div>
         </div>
         <div className="relative px-8 py-12 lg:col-span-5 lg:-mr-8 xl:absolute xl:inset-0 xl:left-1/2 xl:mr-0">

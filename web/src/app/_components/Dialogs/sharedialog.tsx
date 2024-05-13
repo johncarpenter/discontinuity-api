@@ -20,12 +20,11 @@ import toast from 'react-hot-toast'
 import { useChat } from '@/lib/client/chatProvider'
 
 type ShareDialogProps = {
-  children: React.ReactNode
-  shareLink: string
+  open: boolean
+  onClose: () => void
 }
 
-export function ShareDialog({ children }: ShareDialogProps) {
-  const [isOpen, setIsOpen] = useState(false)
+export function ShareDialog({ open, onClose }: ShareDialogProps) {
   const [isBusy, setIsBusy] = useState(false)
 
   const [thread] = useChat()
@@ -50,15 +49,15 @@ export function ShareDialog({ children }: ShareDialogProps) {
             toast.error('Failed to add thread')
           }
           setIsBusy(false)
-          setIsOpen(false)
+          onClose()
         })
         .catch(() => {
-          setIsOpen(false)
+          onClose()
           setIsBusy(false)
           toast.error('Sorry, there wan an error saving your thread')
         })
     } catch (e) {
-      setIsOpen(false)
+      onClose()
       setIsBusy(false)
       toast.error('Sorry, there wan an error saving your thread')
     }
@@ -66,10 +65,7 @@ export function ShareDialog({ children }: ShareDialogProps) {
 
   return (
     <>
-      <Button plain onClick={() => setIsOpen(true)}>
-        {children}
-      </Button>
-      <Dialog open={isOpen} onClose={setIsOpen} darkMode={true}>
+      <Dialog open={open} onClose={onClose} darkMode={true}>
         <DialogTitle>Save to Threads</DialogTitle>
         <DialogDescription></DialogDescription>
         <DialogBody>
@@ -102,7 +98,7 @@ export function ShareDialog({ children }: ShareDialogProps) {
           </Fieldset>
         </DialogBody>
         <DialogActions>
-          <Button plain onClick={() => setIsOpen(false)}>
+          <Button plain onClick={() => onClose()}>
             Cancel
           </Button>
           <Button plain disabled={isBusy} onClick={addThread}>

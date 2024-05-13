@@ -49,6 +49,7 @@ const WorkspaceChatSinglePage = async ({ params }: WorkspaceChatSinglePageProps)
             models={organization.llmmodels}
             prompts={organization.prompts}
             title={thread.name}
+            showShare={false}
           />
           <ChatPlusPanel workspace={workspace} threadView={true} />
         </ChatProvider>

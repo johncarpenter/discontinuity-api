@@ -5,13 +5,14 @@ import Card from '@/components/Card'
 import Image from 'next/image'
 import { ArrowRightIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
+import { Onboarding } from '@/components/Onboarding'
 
 export default function Switcher() {
   const { push } = useRouter()
 
   const { isLoaded, setActive, userMemberships } = useOrganizationList({
     userMemberships: {
-      infinite: true,
+      infinite: false,
     },
   })
 
@@ -25,19 +26,20 @@ export default function Switcher() {
   const EmptyOrganizations = () => (
     <div className="flex flex-col items-center justify-center h-full relative w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center">
       <div className="text-gray-400 text-2xl">
-        You are not assigned to any organizations. Please contact support@discontinuity.ai for help
+        <Onboarding />
       </div>
     </div>
   )
 
   return (
-    <main className="flex flex-col items-center justify-center w-full h-full bg-gray-200">
+    <main className="dark flex flex-col items-center justify-center w-full h-full bg-gray-800">
       <Card>
-        <div className="flex justify-end min-w-full pr-4 mt-4">
-          <UserButton />
+        <div className="flex justify-end min-w-full pr-4 my-4">
+          <UserButton showName={true} />
         </div>
 
-        <Card.Title title="Switch Organizations"> </Card.Title>
+        <h2>Let's get started</h2>
+        <Onboarding />
         {!isLoaded && <div>Loading...</div>}
         {isLoaded && userMemberships && userMemberships.data.length === 0 && <EmptyOrganizations />}
         {isLoaded && userMemberships && userMemberships.data.length > 0 && (

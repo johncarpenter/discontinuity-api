@@ -114,15 +114,15 @@ export default function ChatPlusPanel({
             })}
           </div>
         </div>
-        <div className="w-full sm:p-6 mx-auto">
-          <ChatInput
-            workspaceId={workspace.id}
-            onHandleMessage={(val) => handleNewQuery(val)}
-            onReset={() => resetChat()}
-            showFiles={false}
-            threadView={threadView}
-          />
-        </div>
+      </div>
+      <div className="w-full sm:p-4 sticky bottom-0 bg-gray-800">
+        <ChatInput
+          workspaceId={workspace.id}
+          onHandleMessage={(val) => handleNewQuery(val)}
+          onReset={() => resetChat()}
+          showFiles={false}
+          threadView={threadView}
+        />
       </div>
     </>
   )
