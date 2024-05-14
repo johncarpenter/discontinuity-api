@@ -1,5 +1,6 @@
 'use client'
 import { Text } from '@/components/Base/text'
+import { Badge } from '../Base/badge'
 
 export default function ChatEmptyState() {
   return (
@@ -14,7 +15,9 @@ export default function ChatEmptyState() {
 
         <div className="mx-auto grid max-w-3xl grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="border border-dashed border-gray-600 p-4 rounded-md w-60">
-            <Text>Web Searches</Text>
+            <Text>
+              Web Searches <Badge color="blue">Pro</Badge>
+            </Text>
           </div>
           <div className="border border-dashed border-gray-600 p-4 rounded-md w-60">
             <Text>Toggle Foundation Models</Text>

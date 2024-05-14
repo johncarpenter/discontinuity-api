@@ -94,8 +94,6 @@ export default function ChatPanel({ workspace, chatId, threadView = false }: Cha
                         </div>
                       )}
                       <RenderMarkdown content={message.content} />
-                      {index == messages.length - 1 && <div ref={messagesEndRef} />}
-
                       {message.sources?.length > 0 && (
                         <>
                           <h4 className="text-lg mt-4 dark:prose-dark">Sources</h4>
@@ -107,6 +105,7 @@ export default function ChatPanel({ workspace, chatId, threadView = false }: Cha
                 </div>
               )
             })}
+            <div ref={messagesEndRef} />
           </div>
         </div>
         <div className="w-full sm:p-4 sticky bottom-0 bg-gray-800">

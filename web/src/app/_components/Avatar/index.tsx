@@ -6,12 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import {
-  ArchiveBoxIcon,
-  ArrowRightCircleIcon,
-  UserPlusIcon,
-  XCircleIcon,
-} from '@heroicons/react/20/solid'
+import { ArrowRightCircleIcon, UserPlusIcon, XCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Text } from '@/components/Base/text'
@@ -82,15 +77,6 @@ export default function Avatar() {
               </Menu.Item>
             ))}
 
-            <Menu.Item key={98}>
-              <Link
-                href={`/organization`}
-                className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
-              >
-                <ArchiveBoxIcon className="h-6 w-6 mr-2 text-gray-400" aria-hidden="true" />
-                <Text>Organization</Text>
-              </Link>
-            </Menu.Item>
             {user && user?.organizationMemberships?.length > 1 && (
               <Menu.Item key={99}>
                 <Link

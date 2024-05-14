@@ -8,12 +8,13 @@ import { workspaceMenu } from '@/config/menu'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { workspaces } from '@prisma/client'
+import { LicenseType, workspaces } from '@prisma/client'
 import { Field } from '@/components/Base/fieldset'
 import { Select } from '@/components/Base/select'
 import { Button } from '../Base/button'
 import { useRouter } from 'next/navigation'
 import { useWorkspace } from '@/app/_lib/client/workspaceProvider'
+import { Badge } from '../Base/badge'
 
 export type SidebarProps = {
   workspaces: workspaces[]
@@ -155,6 +156,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                                           active={pathname == item.href}
                                           enabled={item.enabled}
                                           visible={item.visible}
+                                          license={item.license}
                                         />
                                       </li>
                                     ))}
@@ -212,6 +214,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                                   active={pathname == item.href}
                                   enabled={item.enabled}
                                   visible={item.visible}
+                                  license={item.license}
                                 />
                               </li>
                             ))}
@@ -261,6 +264,7 @@ type MenuItemProps = {
   active: boolean
   enabled: boolean
   visible: boolean
+  license?: LicenseType
   setSidebarOpen: (open: boolean) => void
 }
 
@@ -271,6 +275,7 @@ const MenuItem = ({
   active = false,
   enabled = true,
   visible = true,
+  license = LicenseType.TRIAL,
   setSidebarOpen,
 }: MenuItemProps) => {
   return (
@@ -284,7 +289,7 @@ const MenuItem = ({
         )}
       >
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-        {name}
+        {name} {license === LicenseType.OPEN && <Badge color="blue">Pro</Badge>}
       </Link>
     )) ||
     (visible && !enabled && (

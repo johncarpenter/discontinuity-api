@@ -9,6 +9,7 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ShareDialog } from '../Dialogs/sharedialog'
+import { Link } from '../Base/link'
 
 type ControlBarProps = {
   organizationId: string
@@ -95,8 +96,14 @@ export default function ControlBar({
               <Menu.Items className="absolute top-10 z-10 mt-5 flex w-screen max-w-min right-0 px-4">
                 <div className="w-56 shrink bg-white dark:bg-gray-800 dark:border-gray-600 rounded border text-normal p-4 text-sm font-semibold shadow-lg ring-1 ring-gray-900/5 flex flex-col items-start">
                   <Menu.Item>
-                    <Menu.Button className="block w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600">
-                      Edit Prompt
+                    <Menu.Button
+                      className="block w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
+                      onClick={() => setOpen(true)}
+                    >
+                      <div className="flex-1 flex flex-row">
+                        <PencilSquareIcon className="w-4 h-4 my-auto mr-2" />
+                        <Text>Create New Prompt</Text>
+                      </div>
                     </Menu.Button>
                   </Menu.Item>
                   {prompts.map((item) => (
@@ -130,14 +137,13 @@ export default function ControlBar({
               <Menu.Items className="absolute top-10 z-10 mt-5 flex w-screen max-w-min right-0 px-4">
                 <div className="w-56 shrink bg-white dark:bg-gray-800 dark:border-gray-600 rounded border text-normal p-4 text-sm font-semibold shadow-lg ring-1 ring-gray-900/5 flex flex-col items-start">
                   <Menu.Item>
-                    <Menu.Button
-                      className="block w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
-                      onClick={() => setOpen(true)}
-                    >
-                      <div className="flex-1 flex flex-row">
-                        <PencilSquareIcon className="w-4 h-4 my-auto mr-2" />
-                        <Text>Edit Prompt</Text>
-                      </div>
+                    <Menu.Button className="block w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <Link href="/prompts">
+                        <div className="flex-1 flex flex-row">
+                          <PencilSquareIcon className="w-4 h-4 my-auto mr-2" />
+                          <Text>Manage Prompts</Text>
+                        </div>
+                      </Link>
                     </Menu.Button>
                   </Menu.Item>
                   {showShare && (

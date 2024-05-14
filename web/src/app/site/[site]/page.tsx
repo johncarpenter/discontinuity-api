@@ -4,8 +4,8 @@ import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import SimpleCard from '@/components/SimpleCard'
 import { getWorkspaces } from '@/prisma/services/workspace'
 import { workspaces } from '@prisma/client'
-import HomeEmptyState from './empty'
 import useCurrentUser from '@/app/_lib/client/useCurrentUser'
+import { Onboarding } from '@/app/_components/Onboarding'
 
 export default async function SiteHome() {
   const { orgId } = await useCurrentOrganization()
@@ -20,7 +20,7 @@ export default async function SiteHome() {
         {workspaces.length === 0 && (
           <div className="flex h-[75vh]">
             <div className="p-4 m-auto">
-              <HomeEmptyState />
+              <Onboarding />
             </div>
           </div>
         )}

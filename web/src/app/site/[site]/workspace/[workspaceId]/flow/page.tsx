@@ -6,6 +6,8 @@ import PageHeader from '@/components/PageHeader'
 import FlowsTable from '@/components/FlowsTable'
 import { AddFlowDialog } from './addflowdialog'
 import { getWorkspace } from '@/prisma/services/workspace'
+import { LicenseType } from '@prisma/client'
+import EditorPlaceholder from '@/components/EditorPlaceholder'
 
 type WorkspaceFlowTablePageProps = {
   params: {
@@ -15,29 +17,33 @@ type WorkspaceFlowTablePageProps = {
 }
 
 const WorkspaceFlowTablePage = async ({ params }: WorkspaceFlowTablePageProps) => {
-  const { orgId } = await useCurrentOrganization()
+  const { orgId, organization } = await useCurrentOrganization()
   const workspace = await getWorkspace(orgId, params.workspaceId)
 
   return (
     <div className="">
-      <Content>
-        <PageHeader title="Models" breadcrumbs={[]} />
-        <Content.Container>
-          <Card>
-            <Card.Title
-              title={'Your custom models, agents and workflows'}
-              subtitle={
-                'Workflows are specific to your workspace and can be used to connect to external services, APIs, and databases.'
-              }
-            >
-              <Card.Action>
-                <AddFlowDialog workspaceId={workspace.id} />
-              </Card.Action>
-            </Card.Title>
-            <FlowsTable workspace={workspace} />
-          </Card>
-        </Content.Container>
-      </Content>
+      {organization.flow_endpoint === '' || organization.license !== LicenseType.OPEN ? (
+        <EditorPlaceholder />
+      ) : (
+        <Content>
+          <PageHeader title="Models" breadcrumbs={[]} />
+          <Content.Container>
+            <Card>
+              <Card.Title
+                title={'Your custom models, agents and workflows'}
+                subtitle={
+                  'Workflows are specific to your workspace and can be used to connect to external services, APIs, and databases.'
+                }
+              >
+                <Card.Action>
+                  <AddFlowDialog workspaceId={workspace.id} />
+                </Card.Action>
+              </Card.Title>
+              <FlowsTable workspace={workspace} />
+            </Card>
+          </Content.Container>
+        </Content>
+      )}
     </div>
   )
 }

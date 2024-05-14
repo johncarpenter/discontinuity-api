@@ -2,6 +2,8 @@ import useCurrentOrganization from '@/app/_lib/client/useCurrentOrganization'
 
 import jwt from 'jsonwebtoken'
 import SecureIFrame from '@/components/SecureIframe'
+import { LicenseType } from '@prisma/client'
+import EditorPlaceholder from '@/components/EditorPlaceholder'
 
 const WorkflowEditor = async () => {
   const { orgId, organization } = await useCurrentOrganization()
@@ -14,7 +16,11 @@ const WorkflowEditor = async () => {
 
   return (
     <div className="">
-      <SecureIFrame token={token} url={flowlink} />
+      {organization.flow_endpoint === '' || organization.license !== LicenseType.OPEN ? (
+        <EditorPlaceholder />
+      ) : (
+        <SecureIFrame token={token} url={flowlink} />
+      )}
     </div>
   )
 }

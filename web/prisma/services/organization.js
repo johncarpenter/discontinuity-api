@@ -1,12 +1,11 @@
 import prisma from '@/prisma/index'
 
-export const createOrganization = async (clerk_id, name, license, flow_endpoint) => {
+export const createOrganization = async (clerk_id, name, license) => {
   return await prisma.organizations.create({
     data: {
       clerk_id,
       name,
       license,
-      flow_endpoint,
     },
   })
 }

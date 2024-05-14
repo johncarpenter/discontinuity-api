@@ -18,6 +18,7 @@ export default authMiddleware({
     '/legal',
     '/api/contact',
     '/contact',
+    '/api/organization',
     '/api/ai/(.*)',
   ],
   afterAuth(auth, req) {
@@ -29,17 +30,18 @@ export default authMiddleware({
       return redirectToSignIn({ returnBackUrl: req.url })
     }
 
+    const onboardingPaths = ['/org-selection', '/api/organization']
     // redirect them to organization selection page
-    if (auth.userId && !auth.orgId && pathname !== '/org-selection') {
+    if (auth.userId && !auth.orgId && !onboardingPaths.includes(pathname)) {
       const orgSelection = new URL('/org-selection', req.url)
       return NextResponse.redirect(orgSelection)
     }
 
     // redirect them to organization selection page
-    if (auth.userId && !auth.orgSlug && pathname !== '/org-selection') {
-      const orgSelection = new URL('/org-selection', req.url)
-      return NextResponse.redirect(orgSelection)
-    }
+    // if (auth.userId && !auth.orgSlug && pathname !== '/org-selection') {
+    //   const orgSelection = new URL('/org-selection', req.url)
+    //   return NextResponse.redirect(orgSelection)
+    // }
 
     const ignorePaths = ['/api', '/trpc', '/_next', '/site', '/org-selection']
     const inPaths = ignorePaths.some((path) => pathname.startsWith(path))

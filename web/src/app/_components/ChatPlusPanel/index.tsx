@@ -69,7 +69,7 @@ export default function ChatPlusPanel({
 
   return (
     <>
-      <div className="flex flex-col  h-full w-full lg:min-h-screen min-h-[85vh]">
+      <div className="flex flex-col  h-full w-full lg:min-h-screen min-h-[70vh]">
         <div className="overflow-auto mb-8 flex-1 h-full">
           <div className="flex flex-col justify-end">
             {!isBusy && messages?.length == 0 && (
@@ -100,7 +100,7 @@ export default function ChatPlusPanel({
                         </div>
                       )}
                       <RenderMarkdown content={message.content} />
-                      {index == messages.length - 1 && <div ref={messagesEndRef} />}
+
                       {message.sources?.length > 0 && (
                         <>
                           <h4 className="text-lg mt-4 dark:prose-dark">Sources</h4>
@@ -112,6 +112,7 @@ export default function ChatPlusPanel({
                 </div>
               )
             })}
+            <div ref={messagesEndRef} />
           </div>
         </div>
       </div>

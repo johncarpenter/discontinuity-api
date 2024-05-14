@@ -1,3 +1,21 @@
-.cl-card{
-    box-shadow: none !important;
+.cl-userProfile-root > .cl-card{
+    width: 100%; 
+    @apply dark:bg-gray-700 dark:shadow-none dark:border-gray-500
+}
+
+.cl-organizationProfile-root > .cl-card{
+    width: 100%; 
+    @apply dark:bg-gray-700 dark:shadow-none dark:border-gray-500
+}
+
+.cl-userProfile-root, .cl-organizationProfile-root {
+    width: 90%;
+}
+
+.cl-userProfile-root > .cl-card > .cl-navbar {
+    @apply hidden
+}
+
+.cl-tabButton{
+    @apply text-white
 }

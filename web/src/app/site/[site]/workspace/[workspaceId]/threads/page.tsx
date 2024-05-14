@@ -3,6 +3,7 @@ import Container from '@/components/Container'
 import PageHeader from '@/components/PageHeader'
 import { getWorkspace } from '@/prisma/services/workspace'
 import ThreadsTable from '@/app/_components/ThreadsTable'
+import ThreadsEmptyState from './empty'
 
 type WorkspaceThreadsPageProps = {
   params: {
@@ -18,7 +19,7 @@ const WorkspaceThreadsPage = async ({ params }: WorkspaceThreadsPageProps) => {
   return (
     <Container>
       <PageHeader title={`Threads`} breadcrumbs={[{ href: '/workspaces', name: 'Workspaces' }]} />
-      <ThreadsTable workspace={workspace} />
+      {!workspace.threads ? <ThreadsEmptyState /> : <ThreadsTable workspace={workspace} />}
     </Container>
   )
 }

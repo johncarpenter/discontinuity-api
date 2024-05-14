@@ -1,5 +1,4 @@
 import {
-  ChartPieIcon,
   FolderIcon,
   RectangleStackIcon,
   ServerStackIcon,
@@ -7,7 +6,9 @@ import {
   ChatBubbleBottomCenterIcon,
   CubeTransparentIcon,
   QueueListIcon,
+  ArchiveBoxIcon,
 } from '@heroicons/react/24/outline'
+import { LicenseType } from '@prisma/client'
 
 import { LuLayoutDashboard } from 'react-icons/lu'
 
@@ -22,6 +23,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== undefined,
         visible: true,
         Icon: ChatBubbleBottomCenterIcon,
+        license: LicenseType.TRIAL,
       },
       {
         name: 'Document Search',
@@ -30,6 +32,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== undefined,
         visible: true,
         Icon: RectangleStackIcon,
+        license: LicenseType.TRIAL,
       },
 
       // {
@@ -47,6 +50,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== undefined,
         visible: true,
         Icon: CubeTransparentIcon,
+        license: LicenseType.OPEN,
       },
 
       {
@@ -56,6 +60,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== undefined,
         visible: true,
         Icon: QueueListIcon,
+        license: LicenseType.TRIAL,
       },
       // {
       //   name: 'Integrations',
@@ -72,6 +77,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== undefined,
         visible: true,
         Icon: ServerStackIcon,
+        license: LicenseType.TRIAL,
       },
       {
         name: 'Workspace Settings',
@@ -80,6 +86,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== undefined,
         visible: true,
         Icon: Cog8ToothIcon,
+        license: LicenseType.TRIAL,
       },
     ],
   },
@@ -93,6 +100,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: true,
         visible: true,
         Icon: LuLayoutDashboard,
+        license: LicenseType.OPEN,
       },
       {
         name: 'Manage Workspaces',
@@ -101,6 +109,25 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: true,
         visible: true,
         Icon: RectangleStackIcon,
+        license: LicenseType.TRIAL,
+      },
+      {
+        name: 'Manage Models',
+        href: '/models',
+        description: 'Manage your LLM Models',
+        enabled: true,
+        visible: true,
+        Icon: RectangleStackIcon,
+        license: LicenseType.TRIAL,
+      },
+      {
+        name: 'Manage Prompts',
+        href: '/prompts',
+        description: 'Manage your LLM Prompts',
+        enabled: true,
+        visible: true,
+        Icon: RectangleStackIcon,
+        license: LicenseType.TRIAL,
       },
 
       {
@@ -110,22 +137,25 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: false,
         visible: true,
         Icon: FolderIcon,
+        license: LicenseType.OPEN,
       },
       {
-        name: 'Analytics (coming soon)',
-        href: '/analytics',
-        description: 'Dashboards',
-        enabled: false,
+        name: 'Team Management',
+        href: `/organization`,
+        description: 'Handle team members',
+        enabled: true,
         visible: true,
-        Icon: ChartPieIcon,
+        Icon: ArchiveBoxIcon,
+        license: LicenseType.TRIAL,
       },
       {
-        name: 'Organization Settings',
+        name: 'Support',
         href: `/settings`,
         description: 'Settings for your organization',
         enabled: true,
         visible: true,
         Icon: ServerStackIcon,
+        license: LicenseType.TRIAL,
       },
     ],
   },

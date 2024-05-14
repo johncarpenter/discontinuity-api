@@ -207,7 +207,7 @@ export const useStreaming = (
                   setMessages((prevMessages) => {
                     const lastMessage = prevMessages.slice(-1)[0]
                     lastMessage.content =
-                      'There was an error processing your request. Please try again.'
+                      msg || 'There was an error processing your request. Please try again.'
                     return [...prevMessages.slice(0, -1), lastMessage]
                   })
                 }

@@ -4,6 +4,7 @@ from typing import List, Optional
 from fastapi.params import Depends
 from fastapi import HTTPException, Depends, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
+from openai import AuthenticationError
 from pydantic import BaseModel
 import logging
 from discontinuity_api.utils.prompts import get_prompt_by_id
@@ -109,7 +110,10 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
                     yield stream_chunk(sources, "data")
         except Exception as e:
            logger.error(f"Error in agent stream: {e}")
-           response = "Sorry, I am having trouble processing your request. Please try again later."
+           if(type(e) is AuthenticationError ): #Only works for OpenAI
+            response = "It looks like there is a problem with the API Key. Please check the API Key in the workspace settings."   
+           else:
+            response = "Sorry, I am having trouble processing your request. Please try again later."
            yield stream_chunk(response, "error")
             
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
@@ -184,7 +188,10 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
                     yield stream_chunk(sources, "data")
         except Exception as e:
            logger.error(f"Error in agent stream: {e}")
-           response = "Sorry, I am having trouble processing your request. Please try again later."
+           if(["API key"] in e['error']['message'] ):
+            response = "It looks like there is a problem with the API Key. Please check the API Key in the workspace settings."   
+           else:
+            response = "Sorry, I am having trouble processing your request. Please try again later."
            yield stream_chunk(response, "error")
             
         
