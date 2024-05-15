@@ -41,7 +41,7 @@ export default function Avatar() {
   const menuItems = [
     {
       name: 'Profile',
-      href: `/profile`,
+      href: `/app/profile`,
       icon: UserPlusIcon,
     },
   ]

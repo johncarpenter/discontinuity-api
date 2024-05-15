@@ -6,8 +6,8 @@ import { AddWorkspaceDialog } from '../Dialogs/addworkspacedialog'
 import { getWorkspaces } from '@/prisma/services/workspace'
 
 export async function Onboarding() {
-  const { orgId, organization } = await useCurrentOrganization()
-  const workspaces = await getWorkspaces(orgId)
+  const organization = await useCurrentOrganization()
+  const workspaces = await getWorkspaces(organization.id)
 
   return (
     <>
@@ -38,7 +38,7 @@ export async function Onboarding() {
               Consult your LLM model documentation for other API keys and endpoints.
             </Text>
           </div>
-          <AddModelDialog organizationId={organization.id} />
+          <AddModelDialog organizationId={organization?.id} />
           <ModelsTable />
         </>
       )}

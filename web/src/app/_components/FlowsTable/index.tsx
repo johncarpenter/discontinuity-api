@@ -40,9 +40,9 @@ const TypeIcon = ({ type }: { type: FlowTypes }) => {
 }
 
 export default async function FlowsTable({ workspace }: { workspace: workspaces }) {
-  const { orgId } = await useCurrentOrganization()
+  const { id } = await useCurrentOrganization()
 
-  const flowList = await getFlowLinks(workspace.id, orgId)
+  const flowList = await getFlowLinks(workspace.id, id)
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

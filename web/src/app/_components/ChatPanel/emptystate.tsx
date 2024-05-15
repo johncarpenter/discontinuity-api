@@ -15,10 +15,10 @@ export default function ChatEmptyState() {
 
         <div className="mx-auto grid max-w-3xl grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="border border-dashed border-gray-600 p-4 rounded-md w-60">
-            <Text>Summarize Documents</Text>
+            <Text>Add a file using "Add Files" below</Text>
           </div>
           <div className="border border-dashed border-gray-600 p-4 rounded-md w-60">
-            <Text>Research concepts across PDFs</Text>
+            <Text>Select "Focus Files" to narrow your search to only specific files</Text>
           </div>
         </div>
       </div>

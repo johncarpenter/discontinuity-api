@@ -1,4 +1,4 @@
-//import { auth } from '@clerk/nextjs'
+//import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { TextContentBlock } from 'openai/resources/beta/threads/messages/messages.mjs'

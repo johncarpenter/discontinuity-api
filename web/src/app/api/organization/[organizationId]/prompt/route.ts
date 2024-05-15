@@ -1,6 +1,6 @@
-import { addPromptToOrganization } from '@/prisma/services/organization'
+import { addPromptToOrganization, getOrganizationByIds } from '@/prisma/services/organization'
 import { getUserById } from '@/prisma/services/user'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 /** Add a model to the organization
@@ -12,10 +12,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
-  }
-
   const data = await req.json()
 
   const { name, prompt, isPrivate } = data
@@ -24,9 +20,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing Parameters' }, { status: 400 })
   }
 
+  const org = await getOrganizationByIds(orgId, userId)
   const user = await getUserById(userId)
 
-  const key = await addPromptToOrganization(orgId, user.id, {
+  const key = await addPromptToOrganization(org.id, user.id, {
     name,
     prompt,
     isPrivate,

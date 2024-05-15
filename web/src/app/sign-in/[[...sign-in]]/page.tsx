@@ -8,9 +8,9 @@ export default function Page() {
     <>
       <MarketingLayout>
         <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2 ">
-          <div className="mt-6">
+          <div className="mt-6 ml-6">
             <SignIn
-              redirectUrl={'/'}
+              redirectUrl={'/app'}
               appearance={{
                 baseTheme: undefined,
                 elements: {

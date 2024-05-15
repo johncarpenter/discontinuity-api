@@ -1,6 +1,8 @@
 import { createFlowLink, updateApiKey, updateFlowLink } from '@/prisma/services/flow'
+import { getOrganizationIdByIds } from '@/prisma/services/organization'
 import { getUserById } from '@/prisma/services/user'
-import { auth } from '@clerk/nextjs'
+import { getWorkspaceById } from '@/prisma/services/workspace'
+import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
@@ -17,8 +19,10 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
+  const org = await getOrganizationIdByIds(orgId, userId)
+  const wrk = await getWorkspaceById(org.id, workspaceId)
+  if (!wrk) {
+    return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
 
   const data = await req.json()
@@ -31,16 +35,7 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
 
   const user = await getUserById(userId)
 
-  const key = await createFlowLink(
-    workspaceId,
-    name,
-    endpoint,
-    apikey,
-    description,
-    tags,
-    type,
-    user.id
-  )
+  const key = await createFlowLink(wrk.id, name, endpoint, apikey, description, tags, type, user.id)
 
   return NextResponse.json({ key })
 }
@@ -55,13 +50,15 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
 export async function PUT(req: NextRequest, { params }: { params: { workspaceId: string } }) {
   const { workspaceId } = params
 
-  const { sessionId, orgId } = auth()
+  const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
+  const org = await getOrganizationIdByIds(orgId, userId)
+  const wrk = await getWorkspaceById(org.id, workspaceId)
+  if (!wrk) {
+    return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
 
   const data = await req.json()
@@ -71,10 +68,10 @@ export async function PUT(req: NextRequest, { params }: { params: { workspaceId:
   if (!id || !name || !endpoint || !type) {
     return NextResponse.json({ error: 'Missing Parameters' }, { status: 400 })
   }
-  const key = await updateFlowLink(id, orgId, workspaceId, name, endpoint, description, tags, type)
+  const key = await updateFlowLink(id, org.id, wrk.id, name, endpoint, description, tags, type)
 
   if (apikey && apikey != '') {
-    await updateApiKey(id, orgId, workspaceId, apikey)
+    await updateApiKey(id, org.id, wrk.id, apikey)
   }
 
   return NextResponse.json({ key })

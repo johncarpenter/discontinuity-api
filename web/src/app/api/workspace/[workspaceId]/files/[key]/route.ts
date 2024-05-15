@@ -1,7 +1,9 @@
 // app/api/documents/[key]/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import { S3Client, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { getOrganizationIdByIds } from '@/prisma/services/organization'
+import { getWorkspaceById } from '@/prisma/services/workspace'
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -19,16 +21,18 @@ export async function GET(
 ) {
   const { workspaceId, key } = params
 
-  const { sessionId, orgId } = auth()
+  const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
+  const org = await getOrganizationIdByIds(orgId, userId)
+  const wrk = await getWorkspaceById(org.id, workspaceId)
+  if (!wrk) {
+    return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
 
-  const keyWithPath = `${workspaceId}/${key}`
+  const keyWithPath = `${wrk.id}/${key}`
 
   const command = new GetObjectCommand({ Bucket, Key: keyWithPath })
   //const src = await getSignedUrl(s3, command, { expiresIn: 3600 })
@@ -49,16 +53,18 @@ export async function DELETE(
   console.log(params)
   const { workspaceId, key } = params
 
-  const { sessionId, orgId } = auth()
+  const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
+  const org = await getOrganizationIdByIds(orgId, userId)
+  const wrk = await getWorkspaceById(org.id, workspaceId)
+  if (!wrk) {
+    return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
 
-  const keyWithPath = `${workspaceId}/${key}`
+  const keyWithPath = `${wrk.id}/${key}`
 
   const command = new DeleteObjectCommand({ Bucket, Key: keyWithPath })
   //const src = await getSignedUrl(s3, command, { expiresIn: 3600 })

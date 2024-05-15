@@ -222,7 +222,7 @@ export default function NavBar() {
               Bridge Log in <span aria-hidden="true"></span>
             </a>
           ) : (
-            <a href="/" className="text-sm font-semibold leading-6 text-secondary-300">
+            <a href="/app" className="text-sm font-semibold leading-6 text-secondary-300">
               Your Dashboard
             </a>
           )}

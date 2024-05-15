@@ -74,6 +74,7 @@ export default function ChatPanel({ workspace, chatId, threadView = false }: Cha
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
@@ -105,7 +106,6 @@ export default function ChatPanel({ workspace, chatId, threadView = false }: Cha
                 </div>
               )
             })}
-            <div ref={messagesEndRef} />
           </div>
         </div>
         <div className="w-full sm:p-4 sticky bottom-0 bg-gray-800">

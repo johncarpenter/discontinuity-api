@@ -39,7 +39,7 @@ export default function WorkspaceItemMenu({ workspaceId, slug }: WorkspaceItemMe
               <MenuItem>
                 <Link
                   className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
-                  href={`/workspace/${slug}/settings`}
+                  href={`/app/workspace/${slug}/settings`}
                 >
                   <CodeBracketIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
                   <Text>Settings</Text>

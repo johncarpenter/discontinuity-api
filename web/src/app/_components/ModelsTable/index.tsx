@@ -5,7 +5,7 @@ import { llmmodels } from '@prisma/client'
 import ModelItemMenu from './itemtable'
 
 export default async function ModelsTable() {
-  const { organization } = await useCurrentOrganization()
+  const organization = await useCurrentOrganization()
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

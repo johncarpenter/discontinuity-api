@@ -1,6 +1,7 @@
+import { getOrganizationByIds } from '@/prisma/services/organization'
 import { getUserById } from '@/prisma/services/user'
 import { createWorkspace } from '@/prisma/services/workspace'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
@@ -15,10 +16,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
-  }
-
   const data = await req.json()
 
   const { name, description, isPrivate } = data
@@ -27,9 +24,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Name is required' }, { status: 400 })
   }
 
+  const org = await getOrganizationByIds(orgId, userId)
+
   const user = await getUserById(userId)
 
-  const workspace = await createWorkspace(orgId, name, description, user.id, isPrivate)
+  const workspace = await createWorkspace(org.id, name, description, user.id, isPrivate)
 
   return NextResponse.json({ workspace })
 }

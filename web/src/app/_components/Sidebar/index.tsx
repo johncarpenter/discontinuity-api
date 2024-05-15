@@ -15,6 +15,7 @@ import { Button } from '../Base/button'
 import { useRouter } from 'next/navigation'
 import { useWorkspace } from '@/app/_lib/client/workspaceProvider'
 import { Badge } from '../Base/badge'
+import { useOrganization } from '@/app/_lib/client/organizationProvider'
 
 export type SidebarProps = {
   workspaces: workspaces[]
@@ -24,13 +25,15 @@ export default function Sidebar({ workspaces }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const [workspace, setWorkspace] = useWorkspace()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [organization, setOrganization] = useOrganization()
 
   const router = useRouter()
 
   const changeWorkspace = (workspace: string) => {
     setWorkspace(workspaces.find((w) => w.slug === workspace) || workspaces[0])
 
-    router.push(`/workspace/${workspace}/flow`)
+    router.push(`/app/workspace/${workspace}/chat`)
     setSidebarOpen(false)
   }
 
@@ -46,6 +49,16 @@ export default function Sidebar({ workspaces }: SidebarProps) {
       }
     }
   }, [setWorkspace, workspace, workspaces, pathname])
+
+  function isVisible(license: LicenseType) {
+    if (organization?.license === LicenseType.PRO) return true
+
+    if (organization?.license === LicenseType.TEAM && license !== LicenseType.PRO) return true
+
+    if (organization?.license === LicenseType.SOLO && license === LicenseType.SOLO) return true
+
+    return false
+  }
 
   function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
     return (
@@ -65,7 +78,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
               ))}
             </Select>
           ) : (
-            <Button href="/workspaces">Manages Workspaces</Button>
+            <Button href="/app/workspaces">Manages Workspaces</Button>
           )}
         </Field>
       </div>
@@ -155,7 +168,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                                           Icon={item.Icon}
                                           active={pathname == item.href}
                                           enabled={item.enabled}
-                                          visible={item.visible}
+                                          visible={isVisible(item.license)}
                                           license={item.license}
                                         />
                                       </li>
@@ -213,7 +226,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                                   Icon={item.Icon}
                                   active={pathname == item.href}
                                   enabled={item.enabled}
-                                  visible={item.visible}
+                                  visible={isVisible(item.license)}
                                   license={item.license}
                                 />
                               </li>
@@ -275,7 +288,7 @@ const MenuItem = ({
   active = false,
   enabled = true,
   visible = true,
-  license = LicenseType.TRIAL,
+  license = LicenseType.SOLO,
   setSidebarOpen,
 }: MenuItemProps) => {
   return (
@@ -289,13 +302,13 @@ const MenuItem = ({
         )}
       >
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-        {name} {license === LicenseType.OPEN && <Badge color="blue">Pro</Badge>}
+        {name} {license === LicenseType.PRO && <Badge color="blue">Pro</Badge>}
       </Link>
     )) ||
     (visible && !enabled && (
       <span className="text-gray-400/60 group flex gap-x-3 p-1 text-sm font-semibold leading-6">
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
-        {name}
+        {name} {license === LicenseType.PRO && <Badge color="blue">Pro</Badge>}
       </span>
     )) ||
     null

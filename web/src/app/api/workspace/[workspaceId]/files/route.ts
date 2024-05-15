@@ -1,8 +1,10 @@
 // app/api/documents/route.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 import { S3Client, ListObjectsCommand } from '@aws-sdk/client-s3'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
+import { getOrganizationIdByIds } from '@/prisma/services/organization'
+import { getWorkspaceById } from '@/prisma/services/workspace'
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -18,13 +20,15 @@ const Bucket = `${process.env.AWS_BUCKET_NAME as string}`
 export async function GET(req: NextRequest, { params }: { params: { workspaceId: string } }) {
   const { workspaceId } = params
 
-  const { sessionId, orgId } = auth()
+  const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
+  const org = await getOrganizationIdByIds(orgId, userId)
+  const wrk = await getWorkspaceById(org.id, workspaceId)
+  if (!wrk) {
+    return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
 
   const response = await s3.send(new ListObjectsCommand({ Bucket, Prefix: workspaceId }))
@@ -33,9 +37,9 @@ export async function GET(req: NextRequest, { params }: { params: { workspaceId:
     return NextResponse.json([])
   }
 
-  const files = response?.Contents?.filter((file: any) => file.Key !== `${workspaceId}/`).map(
+  const files = response?.Contents?.filter((file: any) => file.Key !== `${wrk.id}/`).map(
     (file: any) => {
-      file.Key = file.Key?.replace(`${workspaceId}/`, '')
+      file.Key = file.Key?.replace(`${wrk.id}/`, '')
       return {
         ...file,
       }
@@ -55,19 +59,21 @@ export async function POST(request: NextRequest, { params }: { params: { workspa
   const { workspaceId } = params
   const { filename, contentType } = await request.json()
 
-  const { sessionId, orgId } = auth()
+  const { sessionId, orgId, userId } = auth()
   if (!sessionId) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  if (orgId === null || orgId === undefined) {
-    return NextResponse.json({}, { status: 401 })
+  const org = await getOrganizationIdByIds(orgId, userId)
+  const wrk = await getWorkspaceById(org.id, workspaceId)
+  if (!wrk) {
+    return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
 
   try {
     const { url, fields } = await createPresignedPost(s3, {
       Bucket,
-      Key: `${workspaceId}/${filename}`,
+      Key: `${wrk.id}/${filename}`,
       Conditions: [
         ['content-length-range', 0, 10485760], // up to 10 MB
         ['starts-with', '$Content-Type', contentType],

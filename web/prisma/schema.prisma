@@ -25,7 +25,8 @@ model users {
 
 model organizations {
   id            String      @id @default(cuid())
-  clerk_id      String
+  user_clerk_id String?
+  clerk_id      String?
   name          String
   license       LicenseType
   flow_endpoint String?
@@ -136,9 +137,9 @@ model prompts {
 }
 
 enum LicenseType {
-  TRIAL
-  LIMITED
-  OPEN
+  SOLO
+  TEAM
+  PRO
 }
 
 enum ModelTypes {

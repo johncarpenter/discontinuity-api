@@ -5,9 +5,9 @@ import { Field, Label } from '@/components/Base/fieldset'
 import { Select } from '@/components/Base/select'
 
 export default async function WorkspaceSwitcher() {
-  const { orgId } = await useCurrentOrganization()
+  const { id } = await useCurrentOrganization()
 
-  const workspaces = await getWorkspaces(orgId)
+  const workspaces = await getWorkspaces(id)
 
   return (
     <>

@@ -14,21 +14,33 @@ export const createApiKey = async (workspaceId, permissions, name, creatorId) =>
   })
 }
 
-export const deleteApiKey = async (id) => {
-  return await prisma.apikeys.delete({
-    where: { id },
+export const deleteApiKey = async (workspace_id, apikey_id) => {
+  await prisma.apikeys.update({
+    where: {
+      id: apikey_id,
+      workspaces: {
+        deletedAt: null,
+        id: workspace_id,
+      },
+    },
+    data: {
+      deletedAt: new Date(),
+      client_secret: '****',
+    },
   })
 }
 
 export const getApiKeys = async (id, ownerId) => {
   return await prisma.apikeys.findMany({
     select: {
+      id: true,
       name: true,
       client_id: true,
       client_secret: true,
       permissions: true,
     },
     where: {
+      deletedAt: null,
       workspaces: {
         deletedAt: null,
         id,

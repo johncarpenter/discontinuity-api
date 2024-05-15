@@ -1,6 +1,11 @@
 import prisma from '@/prisma/index'
 
 export const createUser = async (clerk_id, fullName, imageUrl) => {
+  const user = await getUserById(clerk_id)
+  if (user) {
+    return user
+  }
+
   return await prisma.users.create({
     data: {
       clerk_id,

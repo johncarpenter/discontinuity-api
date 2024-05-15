@@ -7,7 +7,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/r
 import { BeakerIcon, CodeBracketIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import { Fragment, useState } from 'react'
 import Link from 'next/link'
-import { EditFlowDialog } from '@/app/site/[site]/workspace/[workspaceId]/flow/editflowdialog'
+import { EditFlowDialog } from '@/app/app/workspace/[workspaceId]/flow/editflowdialog'
 import { LuLayoutDashboard } from 'react-icons/lu'
 import { Text } from '@/components/Base/text'
 

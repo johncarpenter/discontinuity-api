@@ -6,9 +6,9 @@ import { Text } from '@/components/Base/text'
 import { Badge } from '../Base/badge'
 
 export default async function WorkspacesTable() {
-  const { orgId } = await useCurrentOrganization()
+  const { id } = await useCurrentOrganization()
 
-  const workspaces = await getWorkspaces(orgId)
+  const workspaces = await getWorkspaces(id)
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

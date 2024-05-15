@@ -5,7 +5,7 @@ import PromptItemMenu from './itemtable'
 import { Badge } from '../Base/badge'
 
 export default async function PromptsTable() {
-  const { organization } = await useCurrentOrganization()
+  const organization = await useCurrentOrganization()
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">

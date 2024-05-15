@@ -79,7 +79,7 @@ export default function ChatPlusPanel({
                 </div>
               </div>
             )}
-
+            <div ref={messagesEndRef} />
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
@@ -112,7 +112,6 @@ export default function ChatPlusPanel({
                 </div>
               )
             })}
-            <div ref={messagesEndRef} />
           </div>
         </div>
       </div>
