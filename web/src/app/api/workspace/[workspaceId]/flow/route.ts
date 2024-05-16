@@ -1,5 +1,5 @@
 import { createFlowLink, updateApiKey, updateFlowLink } from '@/prisma/services/flow'
-import { getOrganizationIdByIds } from '@/prisma/services/organization'
+import { getOrganizationIdById } from '@/prisma/services/organization'
 import { getUserById } from '@/prisma/services/user'
 import { getWorkspaceById } from '@/prisma/services/workspace'
 import { auth } from '@clerk/nextjs/server'
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest, { params }: { params: { workspaceId:
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })

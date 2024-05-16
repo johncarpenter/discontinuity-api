@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { S3Client, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
-import { getOrganizationIdByIds } from '@/prisma/services/organization'
+import { getOrganizationIdById } from '@/prisma/services/organization'
 import { getWorkspaceById } from '@/prisma/services/workspace'
 
 const s3 = new S3Client({
@@ -26,7 +26,7 @@ export async function GET(
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
@@ -58,7 +58,7 @@ export async function DELETE(
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })

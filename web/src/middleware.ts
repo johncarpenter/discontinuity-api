@@ -1,6 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-const isAppRoute = createRouteMatcher(['/app(.*)', '/api(.*)', '/app/organization(.*)'])
+const isAppRoute = createRouteMatcher([
+  '/app(.*)',
+  '/api/workspace(.*)',
+  '/app/organization(.*)',
+  '/app/workspaces(.*)',
+])
 
 export default clerkMiddleware((auth, req) => {
   // Default protection for all app routes

@@ -1,5 +1,5 @@
 import { deleteApiKey } from '@/prisma/services/apikey'
-import { getOrganizationByIds } from '@/prisma/services/organization'
+import { getOrganizationById } from '@/prisma/services/organization'
 import { getWorkspaceById } from '@/prisma/services/workspace'
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
@@ -20,7 +20,7 @@ export async function DELETE(
     return NextResponse.json({ error: 'Organization and Model are required' }, { status: 400 })
   }
 
-  const org = await getOrganizationByIds(orgId, userId)
+  const org = await getOrganizationById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, params.workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })

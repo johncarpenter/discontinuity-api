@@ -1,6 +1,6 @@
 import prisma from '@/prisma/index'
 import slugify from 'slugify'
-import { createApiKey } from '@/prisma/services/apikey'
+import { createApiKey, deleteApiKey } from '@/prisma/services/apikey'
 
 export const countWorkspaces = async (slug) =>
   await prisma.workspaces.count({
@@ -135,6 +135,7 @@ export const archiveWorkspace = async (ownerId, id) => {
   const workspace = await getWorkspaceById(ownerId, id)
 
   if (workspace) {
+    console.log('Archiving Workspace:', id)
     await prisma.workspaces.update({
       data: { deletedAt: new Date(), slug: `${workspace.slug}-deleted` },
       where: { id: workspace.id },
@@ -149,6 +150,10 @@ export const unarchiveWorkspace = async (ownerId, id) => {
   const workspace = await getWorkspaceById(ownerId, id)
 
   if (workspace) {
+    for (const key of workspace.apikeys) {
+      await deleteApiKey(id, key.id)
+    }
+
     await prisma.workspaces.update({
       data: { deletedAt: null, slug: `${workspace.slug.replace('-deleted', '')}` },
       where: { id: workspace.id },

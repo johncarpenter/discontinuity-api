@@ -12,6 +12,7 @@ model users {
   clerk_id   String
   fullName   String
   imageUrl   String?
+  email      String?
   createdAt  DateTime?    @default(now())
   deletedAt  DateTime?
   updatedAt  DateTime?
@@ -25,7 +26,6 @@ model users {
 
 model organizations {
   id            String      @id @default(cuid())
-  user_clerk_id String?
   clerk_id      String?
   name          String
   license       LicenseType

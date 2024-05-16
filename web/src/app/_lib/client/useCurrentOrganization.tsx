@@ -1,8 +1,8 @@
 import { auth } from '@clerk/nextjs/server'
-import { getOrganizationByIds } from '@/prisma/services/organization'
+import { getOrganizationById } from '@/prisma/services/organization'
 
 export default async function useCurrentOrganization() {
   const { orgId, userId } = auth()
 
-  return await getOrganizationByIds(orgId, userId)
+  return await getOrganizationById(orgId != null ? orgId : userId)
 }

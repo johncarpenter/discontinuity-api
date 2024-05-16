@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { S3Client, ListObjectsCommand } from '@aws-sdk/client-s3'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
-import { getOrganizationIdByIds } from '@/prisma/services/organization'
+import { getOrganizationIdById } from '@/prisma/services/organization'
 import { getWorkspaceById } from '@/prisma/services/workspace'
 
 const s3 = new S3Client({
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: { workspaceId:
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest, { params }: { params: { workspa
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })

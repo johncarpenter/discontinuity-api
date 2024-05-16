@@ -1,7 +1,4 @@
-import {
-  getOrganizationByIds,
-  removeLLMModelFromOrganization,
-} from '@/prisma/services/organization'
+import { getOrganizationById, removeLLMModelFromOrganization } from '@/prisma/services/organization'
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -21,7 +18,7 @@ export async function DELETE(
     return NextResponse.json({ error: 'Organization and Model are required' }, { status: 400 })
   }
 
-  const org = await getOrganizationByIds(orgId, userId)
+  const org = await getOrganizationById(orgId != null ? orgId : userId)
 
   // TODO - Need to validate that the user can delete the model
 

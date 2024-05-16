@@ -73,6 +73,7 @@ export const useStreaming = (
     if (messages.length > 0 && threadId) {
       localStorage.setItem(`${threadId}-messages`, JSON.stringify(messages))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, setThread, threadId])
 
   const loadInitialMessages = useCallback(() => {

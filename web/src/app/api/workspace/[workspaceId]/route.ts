@@ -1,4 +1,4 @@
-import { getOrganizationIdByIds } from '@/prisma/services/organization'
+import { getOrganizationIdById } from '@/prisma/services/organization'
 import { archiveWorkspace, getWorkspaceById } from '@/prisma/services/workspace'
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
@@ -15,7 +15,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { workspace
   if (!params.workspaceId) {
     return NextResponse.json({ error: 'workspaceId is required' }, { status: 400 })
   }
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, params.workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })

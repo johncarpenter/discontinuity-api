@@ -3,7 +3,7 @@ import { getWorkspaceById } from '@/prisma/services/workspace'
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { setCookie, getCookie, hasCookie } from 'cookies-next'
-import { getOrganizationIdByIds } from '@/prisma/services/organization'
+import { getOrganizationIdById } from '@/prisma/services/organization'
 /**
  * Logs the default api token into the workspace
  *
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { workspaceId:
   }
   const { workspaceId } = params
 
-  const org = await getOrganizationIdByIds(orgId, userId)
+  const org = await getOrganizationIdById(orgId != null ? orgId : userId)
   const wrk = await getWorkspaceById(org.id, workspaceId)
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })

@@ -1,4 +1,4 @@
-import { getOrganizationByIds } from '@/prisma/services/organization'
+import { getOrganizationById } from '@/prisma/services/organization'
 import { getUserById } from '@/prisma/services/user'
 import { createWorkspace } from '@/prisma/services/workspace'
 import { auth } from '@clerk/nextjs/server'
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Name is required' }, { status: 400 })
   }
 
-  const org = await getOrganizationByIds(orgId, userId)
+  const org = await getOrganizationById(orgId != null ? orgId : userId)
 
   const user = await getUserById(userId)
 

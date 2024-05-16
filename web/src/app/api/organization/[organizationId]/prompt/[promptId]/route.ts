@@ -1,5 +1,5 @@
 import {
-  getOrganizationByIds,
+  getOrganizationById,
   removePromptFromOrganization,
   updatePrompt,
 } from '@/prisma/services/organization'
@@ -23,7 +23,7 @@ export async function DELETE(
   }
 
   console.log('Deleting prompt', params.promptId)
-  const org = await getOrganizationByIds(orgId, userId)
+  const org = await getOrganizationById(orgId != null ? orgId : userId)
 
   // Delete workspace
   try {
@@ -42,7 +42,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ id: null }, { status: 401 })
   }
 
-  const org = await getOrganizationByIds(orgId, userId)
+  const org = await getOrganizationById(orgId != null ? orgId : userId)
 
   const data = await req.json()
 

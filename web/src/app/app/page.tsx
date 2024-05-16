@@ -13,8 +13,6 @@ export default async function SiteHome() {
   const workspaces = await getWorkspaces(organization.id)
   const needsOnboarding = organization.llmmodels.length === 0 || workspaces.length === 0
 
-
-  
   return (
     <>
       <Container>

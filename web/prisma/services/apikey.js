@@ -15,6 +15,7 @@ export const createApiKey = async (workspaceId, permissions, name, creatorId) =>
 }
 
 export const deleteApiKey = async (workspace_id, apikey_id) => {
+  console.log('Removing API Key:', apikey_id)
   await prisma.apikeys.update({
     where: {
       id: apikey_id,

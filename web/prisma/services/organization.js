@@ -1,97 +1,28 @@
 import prisma from '@/prisma/index'
+import { getWorkspaces, archiveWorkspace } from './workspace'
 
-export const createOrganization = async (user_clerk_id, clerk_id, name, license) => {
+export const createOrganization = async (clerk_id, name, license) => {
   let query = {
     data: {
       name,
       license,
+      clerk_id,
     },
-  }
-  if (clerk_id) {
-    query.data.clerk_id = clerk_id
-  } else {
-    query.data.user_clerk_id = user_clerk_id
   }
 
   return await prisma.organizations.create(query)
 }
 
-export const getOrganizationIdByIds = async (clerk_id, user_clerk_id) => {
-  let query = {
+export const getOrganizationIdById = async (clerk_id) =>
+  await prisma.organizations.findFirst({
     select: {
       id: true,
     },
     where: {
       deletedAt: null,
+      clerk_id,
     },
-  }
-  if (clerk_id) {
-    query.where.clerk_id = clerk_id
-  } else {
-    query.where.user_clerk_id = user_clerk_id
-  }
-
-  return await prisma.organizations.findFirst(query)
-}
-
-export const getOrganizationByIds = async (clerk_id, user_clerk_id) => {
-  let query = {
-    select: {
-      id: true,
-      name: true,
-      clerk_id: true,
-      user_clerk_id: true,
-      license: true,
-      flow_endpoint: true,
-      prompts: {
-        select: {
-          id: true,
-          name: true,
-          prompt: true,
-          createdAt: true,
-          isPrivate: true,
-          creator: {
-            select: {
-              fullName: true,
-              imageUrl: true,
-            },
-          },
-        },
-        where: {
-          deletedAt: null,
-        },
-      },
-      llmmodels: {
-        select: {
-          id: true,
-          name: true,
-          source: true,
-          replicate_url: true,
-          createdAt: true,
-          creator: {
-            select: {
-              fullName: true,
-              imageUrl: true,
-            },
-          },
-        },
-        where: {
-          deletedAt: null,
-        },
-      },
-    },
-    where: {
-      deletedAt: null,
-    },
-  }
-  if (clerk_id) {
-    query.where.clerk_id = clerk_id
-  } else {
-    query.where.user_clerk_id = user_clerk_id
-  }
-
-  return await prisma.organizations.findFirst(query)
-}
+  })
 
 export const getOrganizationById = async (clerk_id) =>
   await prisma.organizations.findFirst({
@@ -222,6 +153,7 @@ export const addLLMModelToOrganization = async (organization_id, creatorId, llmm
 }
 
 export const removeLLMModelFromOrganization = async (organization_id, llmmodel_id) => {
+  console.log('Removing LLM Model:', llmmodel_id)
   await prisma.llmmodels.update({
     where: {
       id: llmmodel_id,
@@ -234,4 +166,28 @@ export const removeLLMModelFromOrganization = async (organization_id, llmmodel_i
       apikey: null,
     },
   })
+}
+
+export const archiveOrganization = async (organization_id) => {
+  const org = await getOrganizationById(organization_id)
+
+  if (org) {
+    console.log('Archiving Organization:', organization_id)
+    for (const model of org.llmmodels) {
+      removeLLMModelFromOrganization(organization_id, model.id)
+    }
+
+    const workspaces = await getWorkspaces(organization_id)
+    for (const workspace of workspaces) {
+      await archiveWorkspace(organization_id, workspace.id)
+    }
+
+    await prisma.organizations.update({
+      data: { deletedAt: new Date() },
+      where: { id: organization_id },
+    })
+    return organization_id
+  } else {
+    throw new Error('Unable to find organization')
+  }
 }
