@@ -16,6 +16,8 @@ import { useRouter } from 'next/navigation'
 import { flows, FlowTypes } from '@prisma/client'
 import { Textarea } from '@/app/_components/Base/textarea'
 import { Select } from '@/app/_components/Base/select'
+import toast from 'react-hot-toast'
+import { AlertText } from '@/app/_components/Base/text'
 
 type AddFlowDialogProps = {
   workspaceId: string
@@ -31,19 +33,57 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
 
   const [tags, setTags] = useState(flow?.tags || '')
   const [description, setDescription] = useState(flow?.description || '')
-  const [type, setType] = useState(flow?.type || 'flow')
+  const [type, setType] = useState(flow?.type || FlowTypes.OPENAI)
+
+  const [isBusy, setIsBusy] = useState(false)
 
   const router = useRouter()
 
   // Add workspace via API
   function addFlowLink() {
-    api(`/api/workspace/${workspaceId}/flow`, {
-      body: { name, endpoint, apikey, tags, description, type },
-      method: 'POST',
-    }).then(() => {
-      setIsOpen(false)
-      router.refresh()
-    })
+    if (handleValidation()) {
+      setIsBusy(true)
+      try {
+        api(`/api/workspace/${workspaceId}/flow`, {
+          body: { name, endpoint, apikey, tags, description, type },
+          method: 'POST',
+        })
+          .then(() => {
+            setIsOpen(false)
+            setIsBusy(false)
+            router.refresh()
+          })
+          .catch(() => {
+            setIsOpen(false)
+            setIsBusy(false)
+            toast.error('Sorry, there was an error adding that model')
+          })
+      } catch (e) {
+        setIsOpen(false)
+        setIsBusy(false)
+        toast.error('Sorry, there wan an error adding that model')
+      }
+    }
+  }
+
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  function handleValidation() {
+    let pass = true
+    if (!name || name === '') {
+      setErrors({ name: 'Name is required' })
+      pass = false
+    }
+
+    if (!endpoint || endpoint === '') {
+      setErrors({ endpoint: 'Endpoint is required' })
+      pass = false
+    }
+
+    setTimeout(() => {
+      setErrors({})
+    }, 5000)
+
+    return pass
   }
 
   return (
@@ -64,6 +104,9 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
               value={name}
               onChange={(event) => setName(event.target.value)}
             />
+            {errors['name'] && (
+              <AlertText className="text-secondary-400">Name is required</AlertText>
+            )}
           </Field>
           <Field>
             <Label>Model Description</Label>
@@ -83,7 +126,7 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
             >
               {Object.keys(FlowTypes).map((key, index) => (
                 <option key={index} value={key}>
-                  <span className="capitalize">{key.toLowerCase()}</span>
+                  {key.toLowerCase()}
                 </option>
               ))}
             </Select>
@@ -107,6 +150,9 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
               value={endpoint}
               onChange={(event) => setEndpoint(event.target.value)}
             />
+            {errors['endpoint'] && (
+              <AlertText className="text-secondary-400">Endpoint is required</AlertText>
+            )}
           </Field>
 
           <Field>
@@ -124,7 +170,9 @@ export function AddFlowDialog({ workspaceId, flow }: AddFlowDialogProps) {
           <Button plain onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={() => addFlowLink()}>Add</Button>
+          <Button disabled={isBusy} onClick={() => addFlowLink()}>
+            Add
+          </Button>
         </DialogActions>
       </Dialog>
     </>

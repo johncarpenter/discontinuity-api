@@ -34,7 +34,7 @@ def get_model_by_id(model_id:str):
         return ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4o", api_key=llmmodel.apikey) 
     elif(llmmodel.source == "GEMINI"):
         logger.info("Using Organization Gemini model")
-        return ChatGoogleGenerativeAI(streaming=True,temperature=0.8, model='gemini-pro', api_key=llmmodel.apikey)
+        return ChatGoogleGenerativeAI(streaming=True,temperature=0.8, model='gemini-pro', google_api_key=llmmodel.apikey)
     else:
         logger.warn("Using Default OpenAI model, looking for ", llmmodel.source, " model (Not implemented)")
         return ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4o")
