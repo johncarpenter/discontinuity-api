@@ -1,13 +1,15 @@
 'use client'
-import { organizations, users } from '@prisma/client'
+import { llmmodels, organizations, prompts, users } from '@prisma/client'
 import { useContext, useState } from 'react'
 
 import { createContext } from 'react'
 
 type OrganizationContextType = {
   user: users | null
-  organization: organizations | null
-  setOrganization: React.Dispatch<React.SetStateAction<organizations>>
+  organization: (organizations & { prompts: prompts[]; llmmodels: llmmodels[] }) | null
+  setOrganization: React.Dispatch<
+    React.SetStateAction<organizations & { prompts: prompts[]; llmmodels: llmmodels[] }>
+  >
   setUser: React.Dispatch<React.SetStateAction<users | null>>
 }
 
@@ -15,11 +17,13 @@ const OrganizationContext = createContext<OrganizationContextType | null>(null)
 
 type OrganizationContextProps = {
   children: React.ReactNode
-  org: organizations
+  org: organizations & { prompts: prompts[]; llmmodels: llmmodels[] }
 }
 
 export const OrganizationProvider = ({ children, org }: OrganizationContextProps) => {
-  const [organization, setOrganization] = useState<organizations>(org)
+  const [organization, setOrganization] = useState<
+    organizations & { prompts: prompts[]; llmmodels: llmmodels[] }
+  >(org)
   const [user, setUser] = useState<users | null>(null)
 
   return (

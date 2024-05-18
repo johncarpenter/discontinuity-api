@@ -1,5 +1,5 @@
 .markdown {
-    @apply prose-dark text-white/60 text-lg;    
+    @apply prose-dark text-white/60 text-sm;    
 }
 
 .markdown p {    

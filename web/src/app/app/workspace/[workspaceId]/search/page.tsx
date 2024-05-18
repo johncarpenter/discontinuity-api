@@ -2,8 +2,6 @@ import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspace } from '@/prisma/services/workspace'
 import ChatPanel from '@/app/_components/ChatPanel'
 import { AddModelDialog } from '@/components/Dialogs/addmodeldialog'
-import { ChatProvider } from '@/lib/client/chatProvider'
-import ControlBar from '@/components/ChatControlBar'
 
 type WorkspaceSearchPageProps = {
   params: {
@@ -16,8 +14,6 @@ const WorkspaceSearchPage = async ({ params }: WorkspaceSearchPageProps) => {
   const organization = await useCurrentOrganization()
   const workspace = await getWorkspace(organization.id, params.workspaceId)
 
-  const defaultPrompt =
-    organization.prompts && organization.prompts[0] ? organization.prompts[0].id : ''
   return (
     <>
       {!organization.llmmodels || organization.llmmodels.length === 0 ? (
@@ -35,20 +31,7 @@ const WorkspaceSearchPage = async ({ params }: WorkspaceSearchPageProps) => {
           </div>
         </div>
       ) : (
-        <ChatProvider
-          link={`https://discontinuity.ai/workspace/${workspace.slug}/search/`}
-          modelId={organization.llmmodels[0].id}
-          promptId={defaultPrompt}
-        >
-          <ControlBar
-            organizationId={organization.id}
-            models={organization.llmmodels}
-            prompts={organization.prompts}
-            title={workspace.name}
-            showShare={true}
-          />
-          <ChatPanel workspace={workspace} threadView={false} />
-        </ChatProvider>
+        <ChatPanel workspace={workspace} />
       )}
     </>
   )

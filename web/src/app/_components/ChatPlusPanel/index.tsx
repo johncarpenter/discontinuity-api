@@ -11,19 +11,15 @@ import ChatEmptyState from './emptystate'
 import { RenderMarkdown } from '@/lib/client/renderMarkdown'
 import ChatInput from '@/components/ChatInput'
 import { useFocusFiles } from '@/lib/client/workspaceProvider'
-import { workspaces } from '@prisma/client'
+import { threads, workspaces } from '@prisma/client'
+import { useChat } from '@/lib/client/chatProvider'
 
 type ChatPlusPanelProps = {
   workspace: workspaces
-  chatId?: string
-  threadView?: boolean
+  chatThread?: threads
 }
 
-export default function ChatPlusPanel({
-  workspace,
-  chatId,
-  threadView = false,
-}: ChatPlusPanelProps) {
+export default function ChatPlusPanel({ workspace, chatThread }: ChatPlusPanelProps) {
   const listener: StreamListenerType = {
     onError: () => {
       setIsBusy(false)
@@ -42,12 +38,27 @@ export default function ChatPlusPanel({
     listener,
     {
       threadIdKey: 'chatplus',
-      threadId: chatId,
+      threadId: chatThread?.threadId ?? undefined,
     }
   )
 
+  const [thread, setThread] = useChat()
+
   useEffect(() => {
     loadInitialMessages()
+    if (chatThread) {
+      setThread({
+        threadId: chatThread.threadId ?? undefined,
+        modelId: chatThread.llmmodelId ?? thread.modelId,
+        promptId: chatThread.promptId ?? thread.promptId,
+        link: chatThread.link,
+      })
+    } else {
+      setThread({
+        ...thread,
+        link: `https://discontinuity.ai/app/workspace/${workspace.slug}/chat/`,
+      })
+    }
   }, [])
 
   const [isBusy, setIsBusy] = useState(false)
@@ -69,7 +80,7 @@ export default function ChatPlusPanel({
 
   return (
     <>
-      <div className="flex flex-col  h-full w-full lg:min-h-screen min-h-[70vh]">
+      <div className="flex flex-col  h-full w-full min-h-screen ">
         <div className="overflow-auto mb-8 flex-1 h-full">
           <div className="flex flex-col justify-end">
             {!isBusy && messages?.length == 0 && (
@@ -79,10 +90,11 @@ export default function ChatPlusPanel({
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
+
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
+                  {index === messages.length - 1 && <div ref={messagesEndRef} />}
                   <div className="flex items-center p-2">
                     {message.role === 'user' ? (
                       <UserIcon className="h-6 w-6 text-slate-400" />
@@ -121,7 +133,7 @@ export default function ChatPlusPanel({
           onHandleMessage={(val) => handleNewQuery(val)}
           onReset={() => resetChat()}
           showFiles={false}
-          threadView={threadView}
+          threadView={thread === undefined}
         />
       </div>
     </>

@@ -3,7 +3,6 @@ import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { classNames } from '@/utils/classnames'
-import Avatar from '../Avatar'
 import { workspaceMenu } from '@/config/menu'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -16,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { useWorkspace } from '@/app/_lib/client/workspaceProvider'
 import { Badge } from '../Base/badge'
 import { useOrganization } from '@/app/_lib/client/organizationProvider'
+import ControlBar from '../ChatControlBar'
 
 export type SidebarProps = {
   workspaces: workspaces[]
@@ -51,10 +51,16 @@ export default function Sidebar({ workspaces }: SidebarProps) {
   }, [setWorkspace, workspace, workspaces, pathname])
 
   function isVisible(license: LicenseType) {
+    // Display PRO features for upsell
+    if (license === LicenseType.PRO) return true
+
+    // If a PRO license is active, display all features
     if (organization?.license === LicenseType.PRO) return true
 
-    if (organization?.license === LicenseType.TEAM && license !== LicenseType.PRO) return true
+    // Display all features for TEAM license
+    if (organization?.license === LicenseType.TEAM && license === LicenseType.TEAM) return true
 
+    // Display all features for SOLO license
     if (organization?.license === LicenseType.SOLO && license === LicenseType.SOLO) return true
 
     return false
@@ -89,7 +95,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
     <>
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
+          <Dialog as="div" className="relative z-50" onClose={setSidebarOpen}>
             <Transition.Child
               as={Fragment}
               enter="transition-opacity ease-linear duration-300"
@@ -179,9 +185,6 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                             ))}
                           </ul>
                         </li>
-                        <li className="-mx-6 mt-auto">
-                          <Avatar />
-                        </li>
                       </ul>
                     </nav>
                   </div>
@@ -191,78 +194,97 @@ export default function Sidebar({ workspaces }: SidebarProps) {
           </Dialog>
         </Transition.Root>
 
-        {/* Static sidebar for desktop */}
+        {/* Static sidebar for desktop 
+        <Transition.Root show={!sidebarOpen} as={Fragment}>
+          <Transition.Child
+            as={Fragment}
+            enter="transition ease-in-out duration-300 transform"
+            enterFrom="-translate-x-full"
+            enterTo="translate-x-0"
+            leave="transition ease-in-out duration-300 transform"
+            leaveFrom="translate-x-0"
+            leaveTo="-translate-x-full"
+          >
+            <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+              <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 bg-gradient-to-br from-primary-800 to-primary-700  dark:from-black dark:to-black">
+                <div className="flex h-16 shrink-0 items-center">
+                  <span className="sr-only">discontinuity.ai</span>
+                  <div className="mr-3 mt-3">
+                    <Image
+                      priority
+                      src="/images/bridge_logo_full.png"
+                      height={86}
+                      width={256}
+                      alt="Discontinuity AI"
+                    />
+                  </div>
+                </div>
+                <nav className="flex flex-1 flex-col">
+                  <ul className="flex flex-1 flex-col gap-y-7">
+                    <li>
+                      <ul className="-mx-2 space-y-2">
+                        {workspaceMenu(workspace?.slug).map((menu, index) => (
+                          <div key={index}>
+                            <li>
+                              <ul className="-mx-2 space-y-1 pt-2">
+                                {menu.menuItems.map((item) => (
+                                  <li key={item.name}>
+                                    <MenuItem
+                                      setSidebarOpen={setSidebarOpen}
+                                      name={item.name}
+                                      href={item.href}
+                                      Icon={item.Icon}
+                                      active={pathname == item.href}
+                                      enabled={item.enabled}
+                                      visible={isVisible(item.license)}
+                                      license={item.license}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            </li>
+                          </div>
+                        ))}
+                      </ul>
+                    </li>
 
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 bg-gradient-to-br from-primary-800 to-primary-700  dark:from-black dark:to-black">
-            <div className="flex h-16 shrink-0 items-center">
-              <span className="sr-only">discontinuity.ai</span>
-              <div className="mr-3 mt-3">
-                <Image
-                  priority
-                  src="/images/bridge_logo_full.png"
-                  height={86}
-                  width={256}
-                  alt="Discontinuity AI"
-                />
+                    <li className="-mx-6 mt-auto">
+                      <Avatar />
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
-            <nav className="flex flex-1 flex-col">
-              <WorkspaceSwitcher workspaces={workspaces} />
-              <ul className="flex flex-1 flex-col gap-y-7">
-                <li>
-                  <ul className="-mx-2 space-y-2">
-                    {workspaceMenu(workspace?.slug).map((menu, index) => (
-                      <div key={index}>
-                        <span className="text-xs uppercase text-gray-500">{menu.name}</span>
-                        <li>
-                          <ul className="-mx-2 space-y-1 pt-2">
-                            {menu.menuItems.map((item) => (
-                              <li key={item.name}>
-                                <MenuItem
-                                  setSidebarOpen={setSidebarOpen}
-                                  name={item.name}
-                                  href={item.href}
-                                  Icon={item.Icon}
-                                  active={pathname == item.href}
-                                  enabled={item.enabled}
-                                  visible={isVisible(item.license)}
-                                  license={item.license}
-                                />
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      </div>
-                    ))}
-                  </ul>
-                </li>
+          </Transition.Child>
+        </Transition.Root>*/}
 
-                <li className="-mx-6 mt-auto">
-                  <Avatar />
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
+        {/* Top bar */}
 
-        <div className="sticky top-0 z-50 flex items-center gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden">
-          <button
-            type="button"
-            className="-m-2.5 p-2.5 text-gray-400 lg:hidden"
-            onClick={() => setSidebarOpen(true)}
-          >
+        <div className="sticky top-0 z-50 flex items-center gap-x-6 bg-gray-900 px-4 py-4 shadow-sm sm:px-6">
+          <Button plain className="-m-2.5 p-2.5 text-gray-400" onClick={() => setSidebarOpen(true)}>
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
-          </button>
-          <div className="flex-1 text-sm font-semibold leading-6 text-white">
+          </Button>
+          <div className="text-sm font-semibold leading-6 text-white h-10">
             <Image
               priority
               src="/images/bridge_logo_full.png"
               height={45}
-              width={150}
+              width={130}
               alt="Discontinuity AI"
+              className="hidden lg:block"
             />
+            <Image
+              priority
+              src="/images/bridge_logo.svg"
+              height={45}
+              width={55}
+              alt="Discontinuity AI"
+              className="block lg:hidden"
+            />
+          </div>
+          <div className="flex-1">
+            <ControlBar />
           </div>
         </div>
       </div>

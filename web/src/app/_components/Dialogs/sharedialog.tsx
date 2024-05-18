@@ -40,7 +40,13 @@ export function ShareDialog({ open, onClose }: ShareDialogProps) {
     try {
       api(`/api/workspace/${workspace?.id}/thread`, {
         method: 'POST',
-        body: { name, shareLink, model: thread.modelId, prompt: thread.promptId },
+        body: {
+          name,
+          shareLink,
+          threadId: thread.threadId,
+          model: thread.modelId,
+          prompt: thread.promptId,
+        },
       })
         .then((response) => {
           if (response.status === 200) {

@@ -90,7 +90,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         yield stream_chunk({"thread":thread}, "assistant_message")
         try:
             async for chunk in agent.astream({"input":message.message, "chat_history":history.messages}): 
-                # logger.info(f"Chunk: {chunk}")   
+                logger.info(f"Chunk: {chunk}")   
                 action = list(chunk.keys())[0]
                 msg = chunk[action]
                 if action == "steps":

@@ -1,10 +1,8 @@
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspace } from '@/prisma/services/workspace'
 import { AddModelDialog } from '@/app/_components/Dialogs/addmodeldialog'
-import { ChatProvider } from '@/app/_lib/client/chatProvider'
-import ControlBar from '@/app/_components/ChatControlBar'
 import ChatPlusPanel from '@/app/_components/ChatPlusPanel'
-import { getThreadByLink } from '@/prisma/services/threads'
+import { getThreadByThreadId } from '@/prisma/services/threads'
 
 type WorkspaceChatSinglePageProps = {
   params: {
@@ -18,8 +16,7 @@ const WorkspaceChatSinglePage = async ({ params }: WorkspaceChatSinglePageProps)
   const organization = await useCurrentOrganization()
   const workspace = await getWorkspace(organization.id, params.workspaceId)
 
-  const shareLink = `https://discontinuity.ai/workspace/${workspace.slug}/chat/${params.chatId}`
-  const thread = await getThreadByLink(shareLink, workspace.id)
+  const thread = await getThreadByThreadId(params.chatId, workspace.id)
 
   return (
     <>
@@ -38,21 +35,7 @@ const WorkspaceChatSinglePage = async ({ params }: WorkspaceChatSinglePageProps)
           </div>
         </div>
       ) : (
-        <ChatProvider
-          link={thread.link}
-          modelId={thread.llmmodel.id}
-          promptId={thread.prompt.id}
-          threadId={thread.id}
-        >
-          <ControlBar
-            organizationId={organization.id}
-            models={organization.llmmodels}
-            prompts={organization.prompts}
-            title={thread.name}
-            showShare={false}
-          />
-          <ChatPlusPanel workspace={workspace} threadView={true} />
-        </ChatProvider>
+        <ChatPlusPanel workspace={workspace} chatThread={thread} />
       )}
     </>
   )

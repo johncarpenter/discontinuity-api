@@ -4,31 +4,27 @@ import { llmmodels, prompts } from '@prisma/client'
 import { Text } from '@/components/Base/text'
 import { EllipsisVerticalIcon, PencilSquareIcon, ShareIcon } from '@heroicons/react/24/outline'
 import { EditPromptDialog } from '@/components/Dialogs/editpromptdialog'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ShareDialog } from '../Dialogs/sharedialog'
 import { Link } from '../Base/link'
+import { useOrganization } from '@/app/_lib/client/organizationProvider'
+import Avatar from '@/components/Avatar'
 
-type ControlBarProps = {
-  organizationId: string
-  models: llmmodels[]
-  prompts: prompts[]
-  title: string
-  showShare: boolean
-}
-
-export default function ControlBar({
-  organizationId,
-  models,
-  prompts,
-  title,
-  showShare = true,
-}: ControlBarProps) {
+export default function ControlBar() {
   const [thread, setThread] = useChat()
+  const [organization] = useOrganization()
+
   const [open, setOpen] = useState(false)
   const [openShare, setOpenShare] = useState(false)
+
+  const [showShare, setShowShare] = useState(false)
+
+  useEffect(() => {
+    setShowShare(thread.threadId !== undefined)
+  }, [thread])
 
   function changeModel(modelId: string) {
     setThread({ ...thread, modelId: modelId })
@@ -38,15 +34,17 @@ export default function ControlBar({
   }
 
   return (
-    <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b dark:border-gray-700 border-gray-200 dark:bg-gray-800 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-      <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        <div className="flex-1">
-          <h2 className="text-normal pt-6 text-sm font-semibold ">{title.substring(0, 30)}</h2>
-        </div>
-        <div className="flex items-center gap-x-4 lg:gap-x-6">
+    <div className="flex shrink-0 items-center gap-x-4 ">
+      <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6  dark:text-white text-gray-800 justify-end">
+        <div className="flex items-center gap-x-4 lg:gap-x-6 ">
           <Menu>
-            <Menu.Button className="inline-flex items-center gap-x-1 text-sm font-semibold dark:border-gray-700 border-gray-200 dark:bg-gray-800 bg-white text-white leading-6 ">
-              <span>{models.find((model) => model.id == thread.modelId)?.name}</span>
+            <Menu.Button className="inline-flex items-center gap-x-1 text-sm font-semibold text-normal leading-6 ">
+              <span>
+                {
+                  organization?.llmmodels.find((model: llmmodels) => model.id == thread.modelId)
+                    ?.name
+                }
+              </span>
               <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
             </Menu.Button>
 
@@ -61,7 +59,7 @@ export default function ControlBar({
             >
               <Menu.Items className="absolute top-10 z-10 mt-5 flex w-screen max-w-min -translate-x-1/2 px-4">
                 <div className="w-56 shrink bg-white dark:bg-gray-800 dark:border-gray-600 rounded border text-normal p-4 text-sm font-semibold shadow-lg ring-1 ring-gray-900/5 flex flex-col items-start">
-                  {models.map((item) => (
+                  {organization?.llmmodels.map((item: llmmodels) => (
                     <Menu.Item key={item.id}>
                       <Menu.Button
                         className="block w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
@@ -79,8 +77,10 @@ export default function ControlBar({
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
 
           <Menu>
-            <Menu.Button className="inline-flex items-center gap-x-1 text-sm font-semibold dark:border-gray-700 border-gray-200 dark:bg-gray-800 bg-white text-white leading-6 ">
-              <span>{prompts.find((model) => model.id == thread.promptId)?.name}</span>
+            <Menu.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 ">
+              <span>
+                {organization?.prompts.find((model: prompts) => model.id == thread.promptId)?.name}
+              </span>
               <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
             </Menu.Button>
 
@@ -102,11 +102,11 @@ export default function ControlBar({
                     >
                       <div className="flex-1 flex flex-row">
                         <PencilSquareIcon className="w-4 h-4 my-auto mr-2" />
-                        <Text>Create New Prompt</Text>
+                        <Text>Edit Prompt</Text>
                       </div>
                     </Menu.Button>
                   </Menu.Item>
-                  {prompts.map((item) => (
+                  {organization?.prompts.map((item: prompts) => (
                     <Menu.Item key={item.id}>
                       <Menu.Button
                         className="block w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600"
@@ -121,7 +121,7 @@ export default function ControlBar({
             </Transition>
           </Menu>
           <Menu>
-            <Menu.Button className="inline-flex items-center gap-x-1 text-sm font-semibold dark:border-gray-700 border-gray-200 dark:bg-gray-800 bg-white text-white leading-6 ">
+            <Menu.Button className="inline-flex items-center gap-x-1 text-sm font-semibold  leading-6 ">
               <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
             </Menu.Button>
 
@@ -138,7 +138,7 @@ export default function ControlBar({
                 <div className="w-56 shrink bg-white dark:bg-gray-800 dark:border-gray-600 rounded border text-normal p-4 text-sm font-semibold shadow-lg ring-1 ring-gray-900/5 flex flex-col items-start">
                   <Menu.Item>
                     <Menu.Button className="block w-full p-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600">
-                      <Link href="/prompts">
+                      <Link href="/app/prompts">
                         <div className="flex-1 flex flex-row">
                           <PencilSquareIcon className="w-4 h-4 my-auto mr-2" />
                           <Text>Manage Prompts</Text>
@@ -163,14 +163,15 @@ export default function ControlBar({
               </Menu.Items>
             </Transition>
           </Menu>
+          <Avatar />
         </div>
       </div>
       <ShareDialog open={openShare} onClose={() => setOpenShare(false)} />
       <EditPromptDialog
         open={open}
         onClose={() => setOpen(false)}
-        organizationId={organizationId}
-        prompt={prompts.find((model) => model.id == thread.promptId) || null}
+        organizationId={organization?.id || ''}
+        prompt={organization?.prompts.find((model: prompts) => model.id == thread.promptId) || null}
       />
     </div>
   )

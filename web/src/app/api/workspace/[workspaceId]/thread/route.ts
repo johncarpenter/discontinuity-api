@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
 
   const data = await req.json()
 
-  const { name, shareLink, model, prompt } = data
+  const { name, shareLink, model, prompt, threadId } = data
 
   if (!shareLink) {
     return NextResponse.json({ error: 'Missing Parameters' }, { status: 400 })
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest, { params }: { params: { workspaceId
 
   const user = await getUserById(userId)
 
-  const key = await upsertThread(wrk.id, name, shareLink, user.id, model, prompt)
+  const key = await upsertThread(wrk.id, name, shareLink, threadId, user.id, model, prompt)
 
   return NextResponse.json({ key })
 }

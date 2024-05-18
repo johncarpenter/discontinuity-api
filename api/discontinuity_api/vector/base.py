@@ -86,7 +86,7 @@ def get_redis_history(session_id:str) -> VectorStore:
     TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 
     history = UpstashRedisChatMessageHistory(
-        url=URL, token=TOKEN, ttl=10, session_id=session_id
+        url=URL, token=TOKEN, session_id=session_id
     )
 
     return history

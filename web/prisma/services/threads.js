@@ -1,13 +1,22 @@
 import prisma from '@/prisma/index'
 
-export const upsertThread = async (workspaceId, name, link, creatorId, llmmodelId, promptId) => {
-  const thread = await getThreadByLink(link, workspaceId)
+export const upsertThread = async (
+  workspaceId,
+  name,
+  link,
+  threadId,
+  creatorId,
+  llmmodelId,
+  promptId
+) => {
+  const thread = await getThreadByThreadId(threadId, workspaceId)
 
   if (thread) {
     return await prisma.threads.update({
       data: {
         name,
         link,
+        threadId,
         llmmodel: {
           connect: {
             id: llmmodelId,
@@ -28,21 +37,10 @@ export const upsertThread = async (workspaceId, name, link, creatorId, llmmodelI
         workspaceId,
         name,
         link,
-        llmmodel: {
-          connect: {
-            id: llmmodelId,
-          },
-        },
-        prompt: {
-          connect: {
-            id: promptId,
-          },
-        },
-        creator: {
-          connect: {
-            id: creatorId,
-          },
-        },
+        threadId,
+        llmmodelId,
+        promptId,
+        creatorId,
       },
     })
   }
@@ -62,12 +60,13 @@ export const deleteThread = async (id, workspaceId) => {
   }
 }
 
-export const getThreadByLink = async (link, workspaceId) => {
+export const getThreadByThreadId = async (threadId, workspaceId) => {
   return await prisma.threads.findFirst({
     select: {
       id: true,
       name: true,
       link: true,
+      threadId: true,
       createdAt: true,
       updatedAt: true,
       llmmodel: {
@@ -84,7 +83,7 @@ export const getThreadByLink = async (link, workspaceId) => {
       },
     },
     where: {
-      link,
+      threadId,
       deletedAt: null,
       workspaces: {
         deletedAt: null,
@@ -100,6 +99,7 @@ export const getThread = async (id, workspaceId) => {
       id: true,
       name: true,
       link: true,
+      threadId: true,
       createdAt: true,
       updatedAt: true,
       llmmodel: {
@@ -132,6 +132,7 @@ export const getThreads = async (id, ownerId) => {
       id: true,
       name: true,
       link: true,
+      threadId: true,
     },
     where: {
       workspaces: {

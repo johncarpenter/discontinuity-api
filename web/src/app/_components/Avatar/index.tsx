@@ -14,7 +14,7 @@ import { Text } from '@/components/Base/text'
 export function AvatarImage() {
   const { user } = useUser()
   return (
-    <div className="flex items-center">
+    <div className="flex items-end">
       <div>
         <Image
           className="inline-block h-9 w-9 rounded-full ring-1 ring-primary-200"
@@ -24,11 +24,11 @@ export function AvatarImage() {
           height={36}
         />
       </div>
-      <div className="ml-3">
+      {/* <div className="ml-3">
         <p className="text-sm font-medium text-white group-hover:text-gray-900">
           {user?.fullName ? user.fullName : user?.emailAddresses[0].emailAddress}
         </p>
-      </div>
+      </div> */}
     </div>
   )
 }
@@ -47,9 +47,9 @@ export default function Avatar() {
   ]
 
   return (
-    <Menu as="div" className="relative inline-block w-full p-2 text-left dark">
+    <Menu as="div" className="p-2 text-right dark ">
       <div>
-        <Menu.Button className="justify-left inline-flex w-full gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold shadow-sm hover:bg-gray-500">
+        <Menu.Button className="rounded-md  text-sm font-semibold shadow-sm hover:bg-gray-500">
           <AvatarImage />
         </Menu.Button>
       </div>
@@ -63,7 +63,7 @@ export default function Avatar() {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute bottom-full right-0 z-10 mt-2 w-56 origin-top-right rounded-md divide-y divide-gray-200 dark:divide-gray-600/60 border bg-white dark:bg-black dark:border-gray-500 shadow sm:rounded-lg p-2 ">
+        <Menu.Items className="absolute z-10 right-5 mt-2 w-56 origin-top-right p-2 bg-white dark:bg-gray-800 dark:border-gray-600 rounded border text-normal p-4 text-sm font-semibold shadow-lg ring-1 ring-gray-900/5 ">
           <div className="py-1 space-y-2">
             {menuItems.map((item, index) => (
               <Menu.Item key={index}>

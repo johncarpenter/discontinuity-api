@@ -1,7 +1,9 @@
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
+from pydantic import BaseModel, Field
 from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.database.api import getPrompt
 import logging
+from langchain.output_parsers import PydanticOutputParser
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +60,10 @@ Question:
 {input}
 """
 
+TAVILY_PROMPT = """
+Your tools: 
+tavily_search_results_json is a tool that searches the web for information based on the user's question. It returns the top 5 search results in JSON format. Only use the tool if the user asks for a web search. 
+"""
 
 
 def get_prompt_by_id(prompt_id:str):
@@ -69,9 +75,29 @@ def get_prompt_by_id(prompt_id:str):
     session = next(get_db())
     prompt = getPrompt(session=session, prompt_id=prompt_id)
 
+    
     if prompt is None:
         logger.info("Using Standard Agent Chat (unable to find prompt)")
         return STANDARD_AGENT_CHAT
     else:
         logger.info(f"Using Custom Prompt {prompt.id}-{prompt.name}")
-        return build_agent_chat_prompt(prompt.prompt)
+        prompt.prompt = prompt.prompt + "\n" + TAVILY_PROMPT
+
+        template = build_agent_chat_prompt(prompt.prompt)
+
+        #template.partial(format_instructions=getMemoryParser().get_format_instructions())
+
+        return template
+
+
+def getMemoryParser():
+    
+    return PydanticOutputParser(pydantic_object=Memory)
+
+
+class Memory(BaseModel):
+    """ Information about the context of the conversation """
+
+    sentiment: str = Field(None, description="The sentiment of the conversation")
+    context: str = Field(None, description="The context of the conversation")
+

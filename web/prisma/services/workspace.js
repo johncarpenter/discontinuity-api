@@ -45,6 +45,28 @@ export const getWorkspace = async (ownerId, slug) =>
           imageUrl: true,
         },
       },
+      threads: {
+        select: {
+          id: true,
+          name: true,
+          link: true,
+          llmmodel: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          prompt: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+        where: {
+          deletedAt: null,
+        },
+      },
       apikeys: {
         select: {
           name: true,

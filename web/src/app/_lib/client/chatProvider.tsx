@@ -39,7 +39,7 @@ export const ChatProvider = ({ children, link, modelId, promptId, threadId }: Ch
 export const useChat = () => {
   const context = useContext(ChatContext)
   if (context === undefined || context === null) {
-    throw new Error('useWorkspace must be used within a ChatProvider')
+    throw new Error('useChat must be used within a ChatProvider')
   }
   return [context.thread, context.setThread] as const
 }

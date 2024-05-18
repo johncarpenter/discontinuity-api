@@ -22,7 +22,7 @@ async def get_agent_for_chatplus(workspaceId:str, llm:BaseChatModel, prompt:Chat
    
     if llm is None:
         logger.warn("No LLM model provided, using default OpenAI model")
-        llm = ChatOpenAI(streaming=True,temperature=0, model="gpt-4")
+        llm = ChatOpenAI(streaming=True,temperature=0, model="gpt-4o")
 
     tools = [TavilySearchResults()]
 
@@ -48,6 +48,7 @@ async def default_agent(workspaceId:str, llm:BaseChatModel, prompt:ChatPromptTem
     llm.bind_tools(tools)
 
     agent = create_tool_calling_agent(llm, tools, prompt)   
+
      
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
     
@@ -80,3 +81,5 @@ def load_dataframe(workspaceId:str, file:str = None):
    data = downloadFileFromBucket(s3_client=s3Client(), bucket=os.getenv('AWS_BUCKET_NAME'), folder=workspaceId, object_name=file)
 
    return pd.read_csv(io.StringIO(data)) # use additional arguments as needed
+
+

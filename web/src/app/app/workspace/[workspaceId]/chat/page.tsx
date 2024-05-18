@@ -1,8 +1,6 @@
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspace } from '@/prisma/services/workspace'
 import ChatPlusPanel from '@/components/ChatPlusPanel'
-import { ChatProvider } from '@/lib/client/chatProvider'
-import ControlBar from '@/components/ChatControlBar'
 import { AddModelDialog } from '@/components/Dialogs/addmodeldialog'
 
 type WorkspaceChatPageProps = {
@@ -15,9 +13,6 @@ type WorkspaceChatPageProps = {
 const WorkspaceChatPage = async ({ params }: WorkspaceChatPageProps) => {
   const organization = await useCurrentOrganization()
   const workspace = await getWorkspace(organization.id, params.workspaceId)
-
-  const defaultPrompt =
-    organization.prompts && organization.prompts[0] ? organization.prompts[0].id : ''
 
   return (
     <>
@@ -36,20 +31,7 @@ const WorkspaceChatPage = async ({ params }: WorkspaceChatPageProps) => {
           </div>
         </div>
       ) : (
-        <ChatProvider
-          link={`https://discontinuity.ai/workspace/${workspace.slug}/chat/`}
-          modelId={organization.llmmodels[0].id}
-          promptId={defaultPrompt}
-        >
-          <ControlBar
-            organizationId={organization.id}
-            models={organization.llmmodels}
-            prompts={organization.prompts}
-            title={workspace.name}
-            showShare={true}
-          />
-          <ChatPlusPanel workspace={workspace} threadView={false} />
-        </ChatProvider>
+        <ChatPlusPanel workspace={workspace} />
       )}
     </>
   )
