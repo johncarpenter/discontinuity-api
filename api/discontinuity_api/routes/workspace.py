@@ -82,8 +82,6 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
 
     history = get_redis_history(session_id=thread)
 
-   
-
     async def generator():
         response = '' 
         sources = []
@@ -338,8 +336,6 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     payload = {"question": message.message, "overrideConfig": overrideConfig}
 
     ## Reformat the output to be more readable
-
-    
 
     history = get_redis_history(session_id=thread)
 

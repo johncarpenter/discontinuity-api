@@ -1,5 +1,5 @@
 import Sidebar from '@/components/Sidebar'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Toaster } from 'react-hot-toast'
 import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import { getWorkspaces } from '@/prisma/services/workspace'
@@ -31,19 +31,21 @@ export default async function AuthLayout({ children }: AuthProps) {
               promptId={organization.prompts[0].id}
             >
               <div className="dark dark:[color-scheme:dark] dark:prose-dark">
-                <div className="flex flex-col min-h-screen bg-slate-50  dark:bg-gray-800">
+                <div className="flex flex-col min-h-screen bg-slate-50  dark:bg-black">
                   <>
                     <header className="sticky top-0 z-50 ">
                       <Sidebar workspaces={workspaces} />
                     </header>
-                    <main className="lg:pl-8 relative">
+                    <main className="relative lg:mx-5">
                       <Toaster
                         position="top-right"
                         toastOptions={{
                           style: { minWidth: '450px', background: '#121212', color: '#ffffff' },
                         }}
                       />
-                      <div>{children}</div>
+                      <div>
+                        <Suspense fallback={<Loading />}>{children}</Suspense>
+                      </div>
                     </main>
                   </>
                 </div>
