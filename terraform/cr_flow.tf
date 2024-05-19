@@ -59,7 +59,7 @@ resource "google_cloud_run_v2_service" "flow" {
 
       env {
         name  = "BLOB_STORAGE_PATH"
-        value = "/mnt/bucket"
+        value = "/mnt/bucket/storage"
       }
 
       env {

@@ -31,7 +31,7 @@ export default async function SiteHome() {
               title={workspace.name + (workspace.isPrivate ? ' (Private)' : '')}
               subtitle={workspace.description ?? ''}
               cta={'Go to Discover'}
-              href={`/workspace/${workspace.slug}/chat`}
+              href={`/app/workspace/${workspace.slug}/chat`}
               src={'/images/course_1.png'}
               alt={''}
             />
