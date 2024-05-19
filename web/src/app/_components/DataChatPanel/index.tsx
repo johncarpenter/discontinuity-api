@@ -11,14 +11,15 @@ import ChatEmptyState from './emptystate'
 import { RenderMarkdown } from '@/lib/client/renderMarkdown'
 import ChatInput from '@/components/ChatInput'
 import { useFocusFiles } from '@/lib/client/workspaceProvider'
-import { workspaces } from '@prisma/client'
+import { threads, workspaces } from '@prisma/client'
+import { useChat } from '@/lib/client/chatProvider'
 
 type DataChatPanelProps = {
   workspace: workspaces
-  chatId?: string
+  chatThread?: threads
 }
 
-export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps) {
+export default function DataChatPanel({ workspace, chatThread }: DataChatPanelProps) {
   const listener: StreamListenerType = {
     onError: () => {
       setIsBusy(false)
@@ -31,29 +32,33 @@ export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps)
     },
   }
 
-  const [threadId] = useState<string | undefined>(() => {
-    if (chatId) return chatId
-
-    if (typeof window !== 'undefined') {
-      const cachedId = localStorage.getItem(`${workspace.id}-data-threadId`)
-      return cachedId || undefined
-    }
-    return undefined
-  })
-
   const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
     `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/data`,
     workspace.id,
     listener,
     {
       threadIdKey: 'data',
-      threadId,
+      threadId: chatThread?.threadId ?? undefined,
     }
   )
 
+  const [thread, setThread] = useChat()
+
   useEffect(() => {
-    setFocusFiles([])
     loadInitialMessages()
+    if (chatThread) {
+      setThread({
+        threadId: chatThread.threadId ?? undefined,
+        modelId: chatThread.llmmodelId ?? thread.modelId,
+        promptId: chatThread.promptId ?? thread.promptId,
+        link: chatThread.link,
+      })
+    } else {
+      setThread({
+        ...thread,
+        link: `https://discontinuity.ai/app/workspace/${workspace.slug}/data/`,
+      })
+    }
   }, [])
 
   const [isBusy, setIsBusy] = useState(false)
@@ -63,7 +68,7 @@ export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps)
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const [focusFiles, setFocusFiles] = useFocusFiles()
+  const [focusFiles] = useFocusFiles()
 
   const handleNewQuery = (message: string) => {
     addUserMessage(message, { files: focusFiles })
@@ -75,19 +80,21 @@ export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps)
 
   return (
     <>
-      <div className="flex flex-col  h-full w-full lg:min-h-screen min-h-[85vh]">
-        <div className="px-4 overflow-auto mb-16 flex-1 h-full">
+      <div className="flex flex-col  h-full w-full min-h-screen ">
+        <div className="overflow-auto mb-8 flex-1 h-full">
           <div className="flex flex-col justify-end">
             {!isBusy && messages?.length == 0 && (
-              <div className="flex h-[75vh]">
+              <div className="flex h-[70vh]">
                 <div className="p-4 m-auto">
                   <ChatEmptyState />
                 </div>
               </div>
             )}
+
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
+                  {index === messages.length - 1 && <div ref={messagesEndRef} />}
                   <div className="flex items-center p-2">
                     {message.role === 'user' ? (
                       <UserIcon className="h-6 w-6 text-slate-400" />
@@ -105,7 +112,6 @@ export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps)
                         </div>
                       )}
                       <RenderMarkdown content={message.content} />
-                      {index == messages.length - 1 && <div ref={messagesEndRef} />}
 
                       {message.sources?.length > 0 && (
                         <>
@@ -120,15 +126,16 @@ export default function DataChatPanel({ workspace, chatId }: DataChatPanelProps)
             })}
           </div>
         </div>
-        <div className="w-full sm:p-6 mx-auto">
-          <ChatInput
-            shareLink={`https://discontinuity.ai/workspace/${workspace.slug}/data/${threadId}`}
-            workspaceId={workspace.id}
-            onHandleMessage={(val) => handleNewQuery(val)}
-            onReset={() => resetChat()}
-            fileTypeFilter={['csv', 'json', 'xlsx']}
-          />
-        </div>
+      </div>
+      <div className="w-full sm:p-4 sticky bottom-0 bg-gray-800">
+        <ChatInput
+          workspaceId={workspace.id}
+          onHandleMessage={(val) => handleNewQuery(val)}
+          onReset={() => resetChat()}
+          showFiles={true}
+          threadView={thread === undefined}
+          fileTypeFilter={['.csv', '.tsv', '.json', '.xml']}
+        />
       </div>
     </>
   )

@@ -222,7 +222,6 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
 
     history = get_redis_history(session_id=thread)
 
-    history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
    
     async def generator():
         response = '' 
@@ -255,6 +254,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         #    response = "Sorry, I am having trouble processing your request. Please try again later."
         #    yield stream_chunk(response, "error")
             
+        history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 
 

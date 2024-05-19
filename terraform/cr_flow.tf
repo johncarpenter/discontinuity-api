@@ -111,3 +111,13 @@ resource "google_storage_bucket" "default" {
   name     = "discontinuity-flow-storage"
   location = "US"
 }
+
+# the default compute engine service account in my project also needs
+# bucket access permissions (Cloud Run uses it)
+resource "google_storage_bucket_iam_member" "default-sa-compute" {
+  depends_on = [google_storage_bucket.default]
+
+  bucket = google_storage_bucket.default.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:851964371214-compute@developer.gserviceaccount.com"
+}

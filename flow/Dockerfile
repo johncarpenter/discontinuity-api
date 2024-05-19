@@ -19,9 +19,9 @@ ENV DATABASE_NAME=flowise
 ENV DATABASE_USER=flow
 #ENV OVERRIDE_DATABASE=false
 ENV AWS_REGION=us-west-2
-ENV APIKEY_PATH — /mnt/bucket/apikeys
-ENV LOG_PATH — /mnt/bucket/logs
-ENV SECRETKEY_PATH — /mnt/bucket/secretkeys
+ENV APIKEY_PATH=/mnt/bucket/apikeys
+ENV LOG_PATH=/mnt/bucket/logs
+ENV SECRETKEY_PATH=/mnt/bucket/secretkeys
 
 #ENV STORAGE_TYPE=s3
 

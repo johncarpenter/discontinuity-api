@@ -35,14 +35,14 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         license: LicenseType.SOLO,
       },
 
-      // {
-      //   name: 'Data Analysis',
-      //   href: `/workspace/${currentWorkspace}/data`,
-      //   description: 'Analyze your documents',
-      //   enabled: currentWorkspace !== '',
-      //   visible: true,
-      //   Icon: ChatBubbleBottomCenterIcon,
-      // },
+      {
+        name: 'Data Analysis',
+        href: `/app/workspace/${currentWorkspace}/data`,
+        description: 'Analyze your documents',
+        enabled: currentWorkspace !== '',
+        visible: true,
+        Icon: ChatBubbleBottomCenterIcon,
+      },
       {
         name: 'Workflows',
         href: `/app/workspace/${currentWorkspace}/flow`,
