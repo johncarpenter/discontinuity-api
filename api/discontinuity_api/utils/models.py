@@ -43,6 +43,7 @@ def get_model_by_id(model_id:str):
 def get_openai_model(model_id:str):
     session = next(get_db())
     llmmodel = getLLMModel(session=session, model_id=model_id)
+    session.close()
     if llmmodel.source == "OPENAI":
         return OpenAI(api_key=llmmodel.apikey)
     else:
