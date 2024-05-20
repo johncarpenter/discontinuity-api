@@ -95,3 +95,16 @@ class PromptDb(Base):
     deletedAt = Column(DateTime)
     updatedAt = Column(DateTime)
     organizationId = Column(String)
+
+
+class FileDb(Base):
+    __tablename__ = "files"
+    id = Column(String, primary_key=True)
+    filename = Column(String)
+    oai_fileid = Column(String)
+    createdAt = Column(DateTime, default=datetime.now(timezone.utc))
+    deletedAt = Column(DateTime)
+    updatedAt = Column(DateTime)
+    workspaceId = Column(String, ForeignKey("workspaces.id"))
+
+    workspace = relationship("WorkspaceDb")

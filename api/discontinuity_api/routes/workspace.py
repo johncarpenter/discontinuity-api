@@ -1,16 +1,18 @@
+import base64
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
 from fastapi.params import Depends
 from fastapi import HTTPException, Depends, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
-from openai import AuthenticationError
+from openai import AuthenticationError, OpenAI
+
 from pydantic import BaseModel
 import logging
 from discontinuity_api.utils.prompts import get_prompt_by_id
-from discontinuity_api.utils.models import get_model_by_id
+from discontinuity_api.utils.models import get_model_by_id, get_openai_model
 from discontinuity_api.utils.s3 import listFilesInBucket
-from discontinuity_api.database.api import getFlow
+from discontinuity_api.database.api import getFiles, getFlow, getPrompt
 from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.tools import get_agent_for_workspace, get_data_agent_for_workspace, get_agent_for_chatplus
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
@@ -27,6 +29,7 @@ import requests
 from sse_starlette.sse import EventSourceResponse
 import json
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain.agents.openai_assistant.base import OpenAIAssistantRunnable
 
 from qdrant_client import models
 
@@ -205,54 +208,87 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     logger.info(f"Streaming Data Agent for {workspace.id}")
    
     # Check that the files exist in the workspace
-    if not message.filter['files']:
+    if not message.thread and not message.filter['files']:
         raise HTTPException(status_code=400, detail="No files provided")
     
-    allFiles = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET_NAME'), folder=f"{workspace.id}/")
-    allFileNames = [file['Key'].split("/")[-1] for file in allFiles]
-    for file in message.filter['files']:
-        if file not in  allFileNames:
-            raise HTTPException(status_code=400, detail=f"File {file} not found in workspace")
+    try:
+        session = next(get_db())
+        prompt = getPrompt(session=session, prompt_id=message.prompt)
+    
+        client = get_openai_model(message.model)
+
+        # Need a way to cache this? Workspace maybe?
+        assistantId = "asst_XhBVJXoLL9xQGuAgUcasg37g"
+    except Exception as e:
+        logger.error(f"Error in agent stream: {e}")
+        raise HTTPException(status_code=400, detail="OpenAI models are required for data agents")
+
+    if not message.thread:
+        allFiles = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET_NAME'), folder=f"{workspace.id}/")
+        allFileNames = [file['Key'].split("/")[-1] for file in allFiles]
+        for file in message.filter['files']:
+            if file not in  allFileNames:
+                raise HTTPException(status_code=400, detail=f"File {file} not found in workspace")
+            
+        session = next(get_db())
+        oaifiles = getFiles(session=session, filenames=message.filter['files'], workspace_id=workspace.id)
+        logger.info(f"Files: {[oaifile.oai_fileid for oaifile in oaifiles]}")
 
         
-    # This is the full agent
-    agent = get_data_agent_for_workspace(workspace.id, message.filter['files'])
+        client.beta.assistants.update(
+            assistant_id=assistantId,
+            instructions=prompt.prompt if prompt else "You are a helpful data anaylst. Your goal is to work with the user to intepret the data provided and answer any questions they may have. Reason through all your thinking before providing an answer.",
+            tool_resources={"code_interpreter": {"file_ids": [oaifile.oai_fileid for oaifile in oaifiles]}},
+            )
 
-    thread = message.thread or str(uuid.uuid4())
+        # assistant = client.beta.assistants.create(
+        #     instructions=prompt if prompt else "You are a helpful data anaylst. Your goal is to work with the user to intepret the data provided and answer any questions they may have. Reason through all your thinking before providing an answer.",
+        #     name="discontinuity-data-agent",
+        #     tools=[{"type": "code_interpreter"}],
+        #     tool_resources={"code_interpreter": {"file_ids": [oaifile.oai_fileid for oaifile in oaifiles]}},
+        #     model="gpt-4o"
+        # )
+
+      
+    # This is the full agent
+    
+    thread = message.thread or client.beta.threads.create().id
 
     history = get_redis_history(session_id=thread)
-
    
     async def generator():
         response = '' 
         sources = []
-        msg = message.message + "\n\nuUse File with ID:file-HwAG7GjI5P4xWhtKzaLnxImv"
         yield stream_chunk({"thread":thread}, "assistant_message")
-        #try:
-        for chunk in agent.stream({"input":msg, "chat_history":history.messages}): 
-            logger.info(f"Chunk: {chunk}")   
-            action = list(chunk.keys())[0]
-            msg = chunk[action]
-            if action == "steps":
-            
-                for agentstep in msg:
-                    logger.info(f"Tool Log: {agentstep.action.log}")
-                    
-                    if(agentstep.observation):
-                        logger.info(f"Tool Observation: {agentstep.observation}")
-                        if('context' in agentstep.observation):                             
-                            docs = agentstep.observation['context']
-                            sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
-                            yield stream_chunk(sources, "data")
-                    # else:# Tool observation
-                    #     yield stream_chunk(agentstep.observation, "text")  
-            elif action == "output":
-                response += msg
-                yield stream_chunk(msg, "text")
-        #except Exception as e:
-        #    logger.error(f"Error in agent stream: {e}")
-        #    response = "Sorry, I am having trouble processing your request. Please try again later."
-        #    yield stream_chunk(response, "error")
+        try:
+            client.beta.threads.messages.create(thread_id=thread, content=message.message, role="user")
+            stream = client.beta.threads.runs.create(
+                thread_id=thread,
+                assistant_id=assistantId,
+                stream=True
+            ) 
+
+            for event in stream:
+                #logger.info(f"Event: {event}")
+                action = event.data.object            
+                if action == "thread.message.delta":
+                    for delta in event.data.delta.content:
+                        if(delta.type == "text"):
+                            msg = delta.text.value
+                            response += msg                
+                            yield stream_chunk(msg, "text")
+                        elif(delta.type == "image_file"):                            
+                            raw = client.files.content(delta.image_file.file_id)
+                            logger.info(f"Image: {raw}")
+                            msg = f"![{delta.image_file.file_id}](data:image/png;base64,{base64.b64encode(raw.content).decode(raw.encoding)})"
+                            response += msg
+                            yield stream_chunk(msg, "text")
+        except Exception as e:
+            logger.error(f"Error in agent stream: {e}")
+            response = "Sorry, I am having trouble processing your request. Please try again later."
+            yield stream_chunk(response, "error")
+                      
+      
             
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))

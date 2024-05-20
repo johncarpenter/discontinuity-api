@@ -15,6 +15,12 @@ import {
   TokenTextSplitter,
 } from "langchain/text_splitter";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import {
+  FileStatusType,
+  addFileId,
+  getFirstOpenAIKey,
+  upsertFileStatus,
+} from "./db";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -91,41 +97,62 @@ export async function handler(event: S3Event) {
   // Extract the file name and extension
   const file = key.split("/").pop() || "";
   const ext = file.split(".").pop() || "";
+  try {
+    // Update the status of the file to processing
+    upsertFileStatus(folder, file, FileStatusType.PROCESSING);
 
-  let documents: Document<Record<string, any>>[] = [];
+    let documents: Document<Record<string, any>>[] = [];
 
-  const tmpFile = await downloadS3fileLocally(bucket, key);
+    const tmpFile = await downloadS3fileLocally(bucket, key);
 
-  if (pdfType.includes(ext.toLowerCase())) {
-    console.log("Processing with embedded pdf");
-    // Extract the document from the S3 object using unstructured API
-    documents = await extractDocumentsPdf(tmpFile);
-  } else if (unstructuredFileTypes.includes(ext.toLowerCase())) {
-    console.log("Processing with unstructured API");
-    // Extract the document from the S3 object using unstructured API
-    documents = await extractDocumentsUsingUnstructured(tmpFile);
-  } else if (audioFileTypes.includes(ext.toLowerCase())) {
-    documents = await extractDocumentsFromAudio(tmpFile);
-  } else if (imageFileTypes.includes(ext.toLowerCase())) {
-    documents = await extractDocumentsFromImages(tmpFile);
-  } else if (dataFileTypes.includes(ext.toLowerCase())) {
-    console.log("Data files are excluded from the embedding process.");
-    return;
-  } else {
-    console.error(`Unsupported file type: ${ext}`);
-    return;
+    if (pdfType.includes(ext.toLowerCase())) {
+      console.log("Processing with embedded pdf");
+      // Extract the document from the S3 object using unstructured API
+      documents = await extractDocumentsPdf(tmpFile);
+    } else if (unstructuredFileTypes.includes(ext.toLowerCase())) {
+      console.log("Processing with unstructured API");
+      // Extract the document from the S3 object using unstructured API
+      documents = await extractDocumentsUsingUnstructured(tmpFile);
+    } else if (audioFileTypes.includes(ext.toLowerCase())) {
+      documents = await extractDocumentsFromAudio(tmpFile);
+    } else if (imageFileTypes.includes(ext.toLowerCase())) {
+      documents = await extractDocumentsFromImages(tmpFile);
+    } else if (dataFileTypes.includes(ext.toLowerCase())) {
+      console.log("Data files are excluded from the embedding process.");
+      // upload these to the assistants api
+      const openaikey = await getFirstOpenAIKey(folder);
+      if (openaikey) {
+        // upload the file to the assistants api
+        const fileId = await uploadFileToAssistantsApi(tmpFile, openaikey);
+        await addFileId(folder, file, fileId);
+        upsertFileStatus(folder, file, FileStatusType.INDEXED);
+      } else {
+        console.error("No OpenAI key found for workspace");
+        upsertFileStatus(folder, file, FileStatusType.ERROR);
+      }
+      return;
+    } else {
+      console.error(`Unsupported file type: ${ext}`);
+      upsertFileStatus(folder, file, FileStatusType.ERROR);
+      return;
+    }
+
+    // Append metadata
+    appendMetadata(documents, bucket, file, key, ext);
+
+    // Split large documents
+    documents = await splitLargeDocuments(documents);
+
+    // Calculate the embedding vector
+    await calculateEmbeddingQdrant(folder, documents);
+
+    console.log("Embedding calculated for file");
+    // Update the status of the file to processing
+    upsertFileStatus(folder, file, FileStatusType.INDEXED);
+  } catch (error) {
+    console.error("Error processing file", error);
+    upsertFileStatus(folder, file, FileStatusType.ERROR);
   }
-
-  // Append metadata
-  appendMetadata(documents, bucket, file, key, ext);
-
-  // Split large documents
-  documents = await splitLargeDocuments(documents);
-
-  // Calculate the embedding vector
-  await calculateEmbeddingQdrant(folder, documents);
-
-  console.log("Embedding calculated for file");
 }
 
 async function downloadS3fileLocally(bucket: string, key: string) {
@@ -349,10 +376,26 @@ async function calculateEmbeddingFaiss(
   await persistVectorStore(vectorstore, folder);
 }
 
+async function uploadFileToAssistantsApi(tmpFile: string, openaikey: any) {
+  console.log(
+    "Uploading file to OpenAI Assistants API ",
+    openaikey?.substring(0, 5),
+    " file:",
+    tmpFile
+  );
+  const openai = new OpenAI({ apiKey: openaikey });
+  const file = await openai.files.create({
+    file: fs.createReadStream(tmpFile),
+    purpose: "assistants",
+  });
+  return file.id;
+}
+
 // export for testing
 export {
   extractDocumentsUsingUnstructured,
   downloadS3fileLocally,
   extractDocumentsFromAudio,
   extractDocumentsFromImages,
+  uploadFileToAssistantsApi,
 };

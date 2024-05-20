@@ -24,11 +24,11 @@
 .markdown table{
     border-collapse: collapse;
     width: 100%;
-    @apply bg-slate-200 text-sm;
+    @apply bg-gray-800 text-sm m-4;
 }
 
 .markdown td, .markdown th{
-    border: 1px solid #ddd;
+    @apply border border-gray-600 p-4;
     padding: 8px;
 }
 

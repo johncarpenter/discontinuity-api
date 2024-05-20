@@ -1,7 +1,8 @@
+from typing import List
 from discontinuity_api.models.prompt import Prompt
 from discontinuity_api.models.llmmodel import LLMModel
-from .dbmodels import ApiKeyDb, FlowDb, PromptDb, WorkspaceDb, LLMModelDb
-from discontinuity_api.models import ApiKey, Workspace, Flow
+from .dbmodels import ApiKeyDb, FileDb, FlowDb, PromptDb, WorkspaceDb, LLMModelDb
+from discontinuity_api.models import ApiKey, Workspace, Flow, File
 from sqlalchemy.orm import Session
 
 
@@ -52,7 +53,7 @@ def get_workspace(session: Session, api_key_id: int) -> Workspace:
         ]
     )
 
-def getFlow(session: Session, flow_id: int) -> Workspace:
+def getFlow(session: Session, flow_id: str) -> Workspace:
     flow = (
         session.query(FlowDb)
         .join(WorkspaceDb)
@@ -71,7 +72,7 @@ def getFlow(session: Session, flow_id: int) -> Workspace:
         endpoint=flow.endpoint,
     )
 
-def getLLMModel(session: Session, model_id: int)-> LLMModel:
+def getLLMModel(session: Session, model_id: str)-> LLMModel:
     model = (
         session.query(LLMModelDb)
         .filter(LLMModelDb.id == model_id)
@@ -88,7 +89,7 @@ def getLLMModel(session: Session, model_id: int)-> LLMModel:
         source=model.source,
     )
 
-def getPrompt(session: Session, prompt_id: int)-> Prompt:
+def getPrompt(session: Session, prompt_id: str)-> Prompt:
     prompt = (
         session.query(PromptDb)
         .filter(PromptDb.id == prompt_id)
@@ -103,3 +104,16 @@ def getPrompt(session: Session, prompt_id: int)-> Prompt:
         name=prompt.name,
         prompt=prompt.prompt
     )
+
+def getFiles(session: Session, workspace_id: str, filenames: List[str]) -> List[File]:
+    files = (
+        session.query(FileDb)
+        .filter(FileDb.workspaceId == workspace_id, FileDb.filename.in_(filenames))
+        .all()
+    )
+
+    if files is None:
+        return None
+    
+    return files
+

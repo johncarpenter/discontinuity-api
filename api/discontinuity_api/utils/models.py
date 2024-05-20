@@ -2,6 +2,7 @@
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
+from openai import OpenAI
 from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.database.api import getLLMModel
 
@@ -38,3 +39,11 @@ def get_model_by_id(model_id:str):
     else:
         logger.warn("Using Default OpenAI model, looking for ", llmmodel.source, " model (Not implemented)")
         return ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4o")
+
+def get_openai_model(model_id:str):
+    session = next(get_db())
+    llmmodel = getLLMModel(session=session, model_id=model_id)
+    if llmmodel.source == "OPENAI":
+        return OpenAI(api_key=llmmodel.apikey)
+    else:
+        raise Exception("Model is not an OpenAI model")

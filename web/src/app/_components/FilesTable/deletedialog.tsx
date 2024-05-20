@@ -27,7 +27,7 @@ export const DeleteDialog = ({ workspaceId, filename }: DeleteDialogProps) => {
     api(`/api/workspace/${workspaceId}/files/${filename}`, {
       method: 'DELETE',
     }).then((response) => {
-      if (response.ok) {
+      if (response.status === 200) {
         toast.success('File deleted')
       } else {
         toast.error('Failed to delete file')

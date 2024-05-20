@@ -22,6 +22,7 @@ model users {
   threads    threads[]
   llmmodels  llmmodels[]
   prompts    prompts[]
+  files      files[]
 }
 
 model organizations {
@@ -86,6 +87,7 @@ model workspaces {
   threads   threads[]
   creator   users?    @relation(fields: [creatorId], references: [id])
   creatorId String?
+  files     files[]
 }
 
 model threads {
@@ -109,7 +111,7 @@ model threads {
 model llmmodels {
   id             String        @id @default(cuid())
   name           String?
-  source          ModelTypes    @default(OPENAI)
+  source         ModelTypes    @default(OPENAI)
   replicate_url  String?
   apikey         String?
   createdAt      DateTime?     @default(now())
@@ -135,6 +137,29 @@ model prompts {
   creator        users?        @relation(fields: [creatorId], references: [id])
   creatorId      String?
   threads        threads[]
+}
+
+model files {
+  id          String         @id @default(cuid())
+  filename    String
+  oai_fileid  String?
+  status      FileStatusType @default(PROCESSING)
+  createdAt   DateTime?      @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime?
+  workspaceId String
+  workspaces  workspaces     @relation(fields: [workspaceId], references: [id])
+  creator     users?         @relation(fields: [creatorId], references: [id])
+  creatorId   String?
+
+  @@unique([filename, workspaceId])
+}
+
+enum FileStatusType {
+  PROCESSING
+  INDEXED
+  ERROR
+  UNPROCESSED
 }
 
 enum LicenseType {

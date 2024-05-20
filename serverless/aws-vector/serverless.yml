@@ -21,6 +21,7 @@ provider:
     DATABASE_URL: ${env:DATABASE_URL}
     QDRANT_API_KEY: ${env:QDRANT_API_KEY}
     QDRANT_URL: ${env:QDRANT_URL}
+    DB_CONNECTION: ${env:DB_CONNECTION}
 
   iamRoleStatements:
     - Effect: Allow

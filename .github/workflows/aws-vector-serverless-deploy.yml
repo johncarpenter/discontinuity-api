@@ -39,3 +39,4 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           QDRANT_API_KEY: ${{ secrets.QDRANT_API_KEY }}
           QDRANT_URL: ${{ secrets.QDRANT_URL }}
+          DB_CONNECTION: ${{ secrets.DB_CONNECTION }}

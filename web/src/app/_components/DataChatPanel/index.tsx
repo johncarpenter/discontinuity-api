@@ -94,7 +94,7 @@ export default function DataChatPanel({ workspace, chatThread }: DataChatPanelPr
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
-                  {index === messages.length - 1 && <div ref={messagesEndRef} />}
+                  {index === messages.length - 2 && <div ref={messagesEndRef} />}
                   <div className="flex items-center p-2">
                     {message.role === 'user' ? (
                       <UserIcon className="h-6 w-6 text-slate-400" />
@@ -134,7 +134,7 @@ export default function DataChatPanel({ workspace, chatThread }: DataChatPanelPr
           onReset={() => resetChat()}
           showFiles={true}
           threadView={thread === undefined}
-          fileTypeFilter={['.csv', '.tsv', '.json', '.xml']}
+          fileTypeFilter={['csv', 'tsv', 'json', 'xml']}
         />
       </div>
     </>

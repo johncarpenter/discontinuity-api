@@ -1,6 +1,9 @@
 import { S3Event } from "aws-lambda";
 import { getQdrantClient, getQdrantVectorStore } from "./utils";
+import { archiveFile, getFileID, getFirstOpenAIKey } from "./db";
+import OpenAI from "openai";
 
+const dataFileTypes = ["csv", "tsv", "json", "xml", "xlsx"];
 /**
  * Triggered when an AWS Object is uploaded to the S3 bucket (specified in the serverless.yml file)
  * The document is then extracted and the embedding vector is calculated and stored in the database
@@ -20,6 +23,20 @@ export async function handler(event: S3Event) {
   const file = key.split("/").pop() || "";
 
   const ext = file.split(".").pop() || "";
+
+  archiveFile(folder, file);
+
+  if (dataFileTypes.includes(ext)) {
+    const openaikey = await getFirstOpenAIKey(folder);
+    if (openaikey) {
+      console.log("Deleting file from OpenAI Assistant:", file);
+      const id = await getFileID(folder, file);
+      if (id) {
+        const openai = new OpenAI({ apiKey: openaikey });
+        await openai.files.del(id);
+      }
+    }
+  }
 
   try {
     const filter = {

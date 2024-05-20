@@ -4,6 +4,7 @@ import {
   extractDocumentsUsingUnstructured,
   extractDocumentsFromImages,
   handler,
+  uploadFileToAssistantsApi,
 } from "../../src/embedding";
 import exp from "constants";
 
@@ -31,6 +32,18 @@ describe("Embeddings are created when new files are added to s3", () => {
     // Assert the expected result
     // Add your assertions here
   }, 30000);
+
+  it("can add files to openai assistants", async () => {
+    // Call the handler function
+    const result = await uploadFileToAssistantsApi(
+      path.join(__dirname, "test.csv"),
+      process.env.OPENAI_API_KEY
+    );
+    // Assert the expected result
+    expect(result).not.toBeNull();
+    expect(result).toContain("file-");
+    // Add your assertions here
+  });
 });
 
 const event = {
