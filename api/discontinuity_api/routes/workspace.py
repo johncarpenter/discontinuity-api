@@ -94,23 +94,26 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         try:
             async for chunk in agent.astream({"input":message.message, "chat_history":history.messages}): 
                 logger.info(f"Chunk: {chunk}")   
-                action = list(chunk.keys())[0]
-                msg = chunk[action]
-                if action == "steps":
-                    for agentstep in msg:
-                        logger.info(f"Tool Log: {agentstep.action.log}")
-                        if(agentstep.observation):
-                            #logger.info(f"Tool Observation: {agentstep.observation}")
-                            if('context' in agentstep.observation):                             
-                                docs = agentstep.observation['context']
-                                sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
+                msg = chunk.content
+                response += msg
+                yield stream_chunk(msg, "text")
+                # action = list(chunk.keys())[0]
+                # msg = chunk[action]
+                # if action == "steps":
+                #     for agentstep in msg:
+                #         logger.info(f"Tool Log: {agentstep.action.log}")
+                #         if(agentstep.observation):
+                #             #logger.info(f"Tool Observation: {agentstep.observation}")
+                #             if('context' in agentstep.observation):                             
+                #                 docs = agentstep.observation['context']
+                #                 sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
     
-                        # else:# Tool observation
-                        #     yield stream_chunk(agentstep.observation, "text")  
-                elif action == "output":
-                    response += msg
-                    yield stream_chunk(msg, "text")
-                    yield stream_chunk(sources, "data")
+                #         # else:# Tool observation
+                #         #     yield stream_chunk(agentstep.observation, "text")  
+                # elif action == "output":
+                #     response += msg
+                #     yield stream_chunk(msg, "text")
+                #     yield stream_chunk(sources, "data")
         except Exception as e:
            logger.error(f"Error in agent stream: {e}")
            if(type(e) is AuthenticationError ): #Only works for OpenAI
@@ -122,7 +125,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
   
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
-        session.close()
+
 
     return EventSourceResponse(generator())
 
@@ -201,7 +204,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
-        session.close()
+
 
     return EventSourceResponse(generator())
 
@@ -294,8 +297,6 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
             
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
-
-        session.close()
 
     return EventSourceResponse(generator())
 

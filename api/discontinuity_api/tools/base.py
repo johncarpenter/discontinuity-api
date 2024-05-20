@@ -1,6 +1,7 @@
 import os
 import io
 from typing import List
+from discontinuity_api.utils.prompts import TOOL_PROMPT
 from discontinuity_api.utils.s3 import downloadFileFromBucket, s3Client
 from discontinuity_api.tools.files import Config, ListWorkspaceFiles
 from discontinuity_api.tools.agent_response import AgentResponse, parse
@@ -8,13 +9,14 @@ from .workspace_retrievers import create_workspace_retriever_tool
 from discontinuity_api.utils import STANDARD_RETRIEVAL_PROMPT, STANDARD_AGENT_CHAT
 from langchain_openai import ChatOpenAI
 import logging
-from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain.agents import AgentExecutor, create_tool_calling_agent, create_self_ask_with_search_agent
 import pandas as pd
 from langchain.agents.agent_types import AgentType
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.tools.tavily_search import TavilySearchResults, TavilyAnswer
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.prompts import ChatPromptTemplate
+from langchain import hub
 
 logger = logging.getLogger(__name__)
 
@@ -24,13 +26,18 @@ async def get_agent_for_chatplus(workspaceId:str, llm:BaseChatModel, prompt:Chat
         logger.warn("No LLM model provided, using default OpenAI model")
         llm = ChatOpenAI(streaming=True,temperature=0, model="gpt-4o")
 
-    tools = [TavilySearchResults()]
+    # tools = []
 
-    agent = create_tool_calling_agent(llm, tools, prompt)
-
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+    # prompt = hub.pull("hwchase17/self-ask-with-search")
     
-    return agent_executor
+
+    # agent = create_self_ask_with_search_agent(llm, tools, prompt)
+
+    # agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False, handle_parsing_errors=True)
+    
+    # return agent_executor
+
+    return prompt | llm
 
 async def get_agent_for_workspace(workspaceId:str,  llm:BaseChatModel, prompt:ChatPromptTemplate = STANDARD_AGENT_CHAT,filter:str = None):
 

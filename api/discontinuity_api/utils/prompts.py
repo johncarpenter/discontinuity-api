@@ -66,6 +66,40 @@ Your tools:
 tavily_search_results_json is a tool that searches the web for information based on the user's question. It returns the top 5 search results in JSON format. Only use the tool if the user asks for a web search. 
 """
 
+TOOL_PROMPT = """
+TOOLS:
+
+------
+
+Assistant has access to the following tools:
+
+{tools}
+
+To use a tool, please use the following format:
+
+```
+
+Thought: Do I need to use a tool? Yes
+
+Action: the action to take, should be one of [{tool_names}]
+
+Action Input: the input to the action
+
+Observation: the result of the action
+
+```
+
+When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
+
+```
+
+Thought: Do I need to use a tool? No
+
+Final Answer: [your response here]
+
+```
+"""
+
 
 def get_prompt_by_id(session: Session, prompt_id:str):
     
@@ -81,7 +115,6 @@ def get_prompt_by_id(session: Session, prompt_id:str):
         return STANDARD_AGENT_CHAT
     else:
         logger.info(f"Using Custom Prompt {prompt.id}-{prompt.name}")
-        prompt.prompt = prompt.prompt + "\n" + TAVILY_PROMPT
 
         template = build_agent_chat_prompt(prompt.prompt)
 

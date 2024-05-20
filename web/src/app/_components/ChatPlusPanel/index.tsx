@@ -94,7 +94,7 @@ export default function ChatPlusPanel({ workspace, chatThread }: ChatPlusPanelPr
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
-                  {index === messages.length - 1 && <div ref={messagesEndRef} />}
+                  {index === messages.length - 3 && <div ref={messagesEndRef} />}
                   <div className="flex items-center p-2">
                     {message.role === 'user' ? (
                       <UserIcon className="h-6 w-6 text-slate-400" />
