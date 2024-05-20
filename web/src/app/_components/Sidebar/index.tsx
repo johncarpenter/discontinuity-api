@@ -174,7 +174,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                                           Icon={item.Icon}
                                           active={pathname == item.href}
                                           enabled={item.enabled}
-                                          visible={isVisible(item.license)}
+                                          visible={isVisible(item.license ?? LicenseType.SOLO)}
                                           license={item.license}
                                         />
                                       </li>
