@@ -12,7 +12,7 @@ import logging
 from discontinuity_api.utils.prompts import get_prompt_by_id
 from discontinuity_api.utils.models import get_model_by_id, get_openai_model
 from discontinuity_api.utils.s3 import listFilesInBucket
-from discontinuity_api.database.api import getFiles, getFlow, getPrompt
+from discontinuity_api.database.api import getFiles, getFlow, getLLMModel, getPrompt
 from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.tools import get_agent_for_workspace, get_data_agent_for_workspace, get_agent_for_chatplus
 from discontinuity_api.workers.chains import retrieval_qa, aretrieval_qa, get_chain_for_workspace
@@ -74,9 +74,11 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     logger.info(f"Streaming Chat for {workspace.id}")
 
 
-    llmmodel = get_model_by_id(message.model)
+    session = next(get_db()) 
+    
+    llmmodel = get_model_by_id(session=session, model_id=message.model)
 
-    prompt = get_prompt_by_id(message.prompt)
+    prompt = get_prompt_by_id(session=session, prompt_id=message.prompt)
 
     # This is the full agent
     agent = await get_agent_for_chatplus(workspaceId=workspace.id, llm=llmmodel, prompt=prompt)
@@ -120,7 +122,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
   
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
-
+        session.close()
 
     return EventSourceResponse(generator())
 
@@ -131,11 +133,12 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
    
     filter, filterMessage = build_filter(message.filter)
     logger.info(f"Using filter {filter}")
+
+    session = next(get_db()) 
     
-    llmmodel = get_model_by_id(message.model)
+    llmmodel = get_model_by_id(session=session, model_id=message.model)
 
-    prompt = get_prompt_by_id(message.prompt)
-
+    prompt = get_prompt_by_id(session=session, prompt_id=message.prompt)
     # This is the full agent
     agent = await get_agent_for_workspace(workspaceId=workspace.id, llm=llmmodel, prompt=prompt, filter=filter)
 
@@ -198,7 +201,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
-
+        session.close()
 
     return EventSourceResponse(generator())
 
@@ -212,10 +215,10 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         raise HTTPException(status_code=400, detail="No files provided")
     
     try:
-        session = next(get_db())
+        session = next(get_db()) 
         prompt = getPrompt(session=session, prompt_id=message.prompt)
-    
-        client = get_openai_model(message.model)
+     
+        client = get_openai_model(session=session, model_id=message.model)
 
         # Need a way to cache this? Workspace maybe?
         assistantId = "asst_XhBVJXoLL9xQGuAgUcasg37g"
@@ -230,7 +233,6 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
             if file not in  allFileNames:
                 raise HTTPException(status_code=400, detail=f"File {file} not found in workspace")
             
-        session = next(get_db())
         oaifiles = getFiles(session=session, filenames=message.filter['files'], workspace_id=workspace.id)
         logger.info(f"Files: {[oaifile.oai_fileid for oaifile in oaifiles]}")
 
@@ -293,6 +295,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
 
+        session.close()
 
     return EventSourceResponse(generator())
 
@@ -355,6 +358,7 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
 
     session = next(get_db())
     flow = getFlow(session=session, flow_id=flow_id)
+    session.close()
 
     if not flow:
         raise HTTPException(status_code=404, detail="Flow not found")

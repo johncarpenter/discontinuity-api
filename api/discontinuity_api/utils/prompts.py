@@ -4,6 +4,7 @@ from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.database.api import getPrompt
 import logging
 from langchain.output_parsers import PydanticOutputParser
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
@@ -66,13 +67,12 @@ tavily_search_results_json is a tool that searches the web for information based
 """
 
 
-def get_prompt_by_id(prompt_id:str):
+def get_prompt_by_id(session: Session, prompt_id:str):
     
     if not prompt_id:
         logger.info("Using Standard Agent Chat (no prompt provided)")
         return STANDARD_AGENT_CHAT
     
-    session = next(get_db())
     prompt = getPrompt(session=session, prompt_id=prompt_id)
 
     

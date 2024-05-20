@@ -5,11 +5,12 @@ from langchain_openai import ChatOpenAI
 from openai import OpenAI
 from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.database.api import getLLMModel
+from sqlalchemy.orm import Session
 
 import logging
 logger = logging.getLogger(__name__)
 
-def get_model_by_id(model_id:str):
+def get_model_by_id(session: Session, model_id:str):
     """
     Get the model by id. Possible sources are;
     OPENAI
@@ -23,8 +24,7 @@ def get_model_by_id(model_id:str):
 
     if not model_id:
         return ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4o") 
-    
-    session = next(get_db())
+  
     llmmodel = getLLMModel(session=session, model_id=model_id)
 
     if llmmodel is None:
@@ -40,10 +40,9 @@ def get_model_by_id(model_id:str):
         logger.warn("Using Default OpenAI model, looking for ", llmmodel.source, " model (Not implemented)")
         return ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4o")
 
-def get_openai_model(model_id:str):
-    session = next(get_db())
+def get_openai_model(session: Session, model_id:str):
+
     llmmodel = getLLMModel(session=session, model_id=model_id)
-    session.close()
     if llmmodel.source == "OPENAI":
         return OpenAI(api_key=llmmodel.apikey)
     else:
