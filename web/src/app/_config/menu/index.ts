@@ -42,6 +42,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== '',
         visible: true,
         Icon: ChatBubbleBottomCenterIcon,
+        license: LicenseType.PRO,
       },
       {
         name: 'Workflows',
