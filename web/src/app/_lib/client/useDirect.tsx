@@ -133,15 +133,10 @@ export const useDirect = (
             }),
           })
 
-          if (!response.ok) {
-            // Server down errors
-            throw new Error('Failed to fetch')
-          }
-
           const data = await response.json()
 
-          if (data?.success === false) {
-            throw new Error(data.message)
+          if (data?.detail) {
+            throw new Error(data.detail)
           }
 
           const resultText = data.json
@@ -167,7 +162,9 @@ export const useDirect = (
             listener?.onError?.(error)
             setMessages((prevMessages) => {
               const lastMessage = prevMessages.slice(-1)[0]
-              lastMessage.content = 'There was an error processing your request. Please try again'
+              lastMessage.content =
+                'There was an error processing your request. Please try again\n\nRef: ' +
+                error.message
               return [...prevMessages.slice(0, -1), lastMessage]
             })
             listener?.onBusy?.(false)

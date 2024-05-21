@@ -77,7 +77,7 @@ export default async function FlowsTable({ workspace }: { workspace: workspaces 
             </div>
 
             <div className="flex flex-none items-center gap-x-4">
-              <Button type="plain" href={`/workspace/${workspace.slug}/flow/${flow.id}`}>
+              <Button type="plain" href={`/app/workspace/${workspace.slug}/flow/${flow.id}`}>
                 Launch<span className="sr-only">, {flow.name}</span>
               </Button>
 

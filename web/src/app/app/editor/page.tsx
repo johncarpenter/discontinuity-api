@@ -15,7 +15,7 @@ const WorkflowEditor = async () => {
   const flowlink = organization.flow_endpoint
 
   return (
-    <div className="">
+    <div className="mt-18">
       {organization.flow_endpoint === '' || organization.license !== LicenseType.PRO ? (
         <EditorPlaceholder />
       ) : (

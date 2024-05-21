@@ -46,7 +46,7 @@ export default function ItemMenu({ workspaceId, slug, flow }: ItemMenuProps) {
             <div className="py-2">
               <MenuItem>
                 <Link
-                  href={`/workspace/${slug}/flow/${flow.id}`}
+                  href={`/app/workspace/${slug}/flow/${flow.id}`}
                   className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   <BeakerIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -67,7 +67,7 @@ export default function ItemMenu({ workspaceId, slug, flow }: ItemMenuProps) {
               {flow?.endpoint.includes('flow.discontinuity.ai') && (
                 <MenuItem>
                   <Link
-                    href={`/workspace/${slug}/flow/${flow.id}/editor`}
+                    href={`/app/workspace/${slug}/flow/${flow.id}/editor`}
                     className="flex flex-row px-3 py-1 text-sm leading-6 text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <LuLayoutDashboard className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />

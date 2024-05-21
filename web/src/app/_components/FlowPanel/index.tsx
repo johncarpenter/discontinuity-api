@@ -22,7 +22,7 @@ export default function FlowPanel({ workspace, flow, chatId }: FlowPanelProps) {
   const listener: DirectListenerType = {
     onError: (error: Error) => {
       setIsBusy(false)
-      if (error?.message.includes('uthoriz')) {
+      if (error?.message?.includes('uthoriz')) {
         toast.error(
           'You are not authorized to access this flow. Check your API is correct on the flow server'
         )
@@ -66,7 +66,7 @@ export default function FlowPanel({ workspace, flow, chatId }: FlowPanelProps) {
 
   return (
     <>
-      <div className="flex flex-col  bg-gray-50 dark:bg-gray-800 dark:text-white h-full w-full lg:min-h-screen min-h-[85vh]">
+      <div className="flex flex-col  h-full w-full min-h-screen ">
         <div className="px-4 overflow-auto mb-16 flex-1 h-full overflow-y-scroll">
           <div className="flex flex-col justify-end">
             {!isBusy && messages?.length == 0 && (
@@ -79,6 +79,7 @@ export default function FlowPanel({ workspace, flow, chatId }: FlowPanelProps) {
             {messages?.map((message, index) => {
               return (
                 <div key={index} className="flex p-4 items-start">
+                  {index === messages.length - 3 && <div ref={messagesEndRef} />}
                   <div className="flex items-center p-2">
                     {message.role === 'user' ? (
                       <UserIcon className="h-6 w-6 text-slate-400" />
@@ -113,14 +114,11 @@ export default function FlowPanel({ workspace, flow, chatId }: FlowPanelProps) {
         </div>
         <div className="w-full sm:p-6 mx-auto">
           <ChatInput
-            shareLink={
-              thread
-                ? `https://discontinuity.ai/workspace/${workspace.slug}/flow/${flow.id}/${thread}`
-                : undefined
-            }
             workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}
             onReset={() => resetChat()}
+            showFiles={false}
+            threadView={thread === undefined}
           />
         </div>
       </div>

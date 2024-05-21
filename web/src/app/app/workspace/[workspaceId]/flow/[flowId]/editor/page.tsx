@@ -30,7 +30,7 @@ const WorkflowNoCode = async ({ params }: WorkspaceFlowPageProps) => {
   })
 
   return (
-    <div className="">
+    <div className="mt-18">
       <SecureIFrame token={token} url={flowlink} />
     </div>
   )

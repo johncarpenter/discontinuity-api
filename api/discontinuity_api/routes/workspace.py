@@ -93,7 +93,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         yield stream_chunk({"thread":thread}, "assistant_message")
         try:
             async for chunk in agent.astream({"input":message.message, "chat_history":history.messages}): 
-                logger.info(f"Chunk: {chunk}")   
+                #logger.info(f"Chunk: {chunk}")   
                 msg = chunk.content
                 response += msg
                 yield stream_chunk(msg, "text")
@@ -359,7 +359,6 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
 
     session = next(get_db())
     flow = getFlow(session=session, flow_id=flow_id)
-    session.close()
 
     if not flow:
         raise HTTPException(status_code=404, detail="Flow not found")
@@ -386,17 +385,22 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
     try:
         response = requests.post(flow.endpoint, json=payload, headers=headers)    
         data = response.json()
-        if "json" in data:
-            history.add_ai_message(AIMessage(content=data["json"], created=datetime.now().isoformat(), id=str(uuid.uuid4())))
-        else:
-            history.add_ai_message(AIMessage(content=data["text"], created=datetime.now().isoformat(), id=str(uuid.uuid4())))
-
-
-        return data
-
+        logger.info(f"Flow response: {data}")
     except requests.exceptions.RequestException as e:
         logger.error(f"Error in flow request: {e}")
         raise HTTPException(status_code=501, detail="Flow API not available")
+    
+    if data["success"] == False:
+        raise HTTPException(status_code=501, detail=data['message'])
+    elif "json" in data:
+        history.add_ai_message(AIMessage(content=data["json"], created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+    elif "text" in data:
+        history.add_ai_message(AIMessage(content=data["text"], created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+
+
+    return data
+
+ 
     
 
 @router.post("/file")
