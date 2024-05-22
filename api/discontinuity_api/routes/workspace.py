@@ -230,7 +230,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         raise HTTPException(status_code=400, detail="OpenAI models are required for data agents")
 
     if not message.thread:
-        allFiles = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET_NAME'), folder=f"{workspace.id}/")
+        allFiles = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET'), folder=f"{workspace.id}/")
         allFileNames = [file['Key'].split("/")[-1] for file in allFiles]
         for file in message.filter['files']:
             if file not in  allFileNames:
