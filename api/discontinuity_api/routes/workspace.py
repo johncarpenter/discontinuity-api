@@ -390,7 +390,8 @@ def queryflow(flow_id: str, message: Message, workspace=Depends(JWTBearer())):
         logger.error(f"Error in flow request: {e}")
         raise HTTPException(status_code=501, detail="Flow API not available")
     
-    if data["success"] == False:
+    logger.info(f"Flow response: {data}")
+    if "success" in data and data["success"] == False:
         raise HTTPException(status_code=501, detail=data['message'])
     elif "json" in data:
         history.add_ai_message(AIMessage(content=data["json"], created=datetime.now().isoformat(), id=str(uuid.uuid4())))
