@@ -51,7 +51,7 @@ class ListWorkspaceFiles(BaseTool):
         logger.debug(f"Running workspace file list tool for workspace {self.workspaceId}")  
         logger.debug(f"Filter: {filter}") 
 
-        files = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET_NAME'), folder=f"{self.workspaceId}/")
+        files = listFilesInBucket(s3_client=s3Client(),bucket=os.getenv('AWS_BUCKET'), folder=f"{self.workspaceId}/")
         if(files is None or len(files) == 0):
             return "No files found in workspace"
 

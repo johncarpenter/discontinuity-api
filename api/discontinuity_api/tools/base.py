@@ -56,6 +56,8 @@ async def default_agent(workspaceId:str, llm:BaseChatModel, prompt:ChatPromptTem
 
     agent = create_tool_calling_agent(llm, tools, prompt)   
 
+    logger.info(f"Using prompt {prompt.messages}")
+
      
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
     
@@ -85,7 +87,7 @@ def default_data_agent(workspaceId:str, files:List[str] = []):
 def load_dataframe(workspaceId:str, file:str = None):
    # Load the file from s3
    logger.info(f"Loading file {file} from workspace {workspaceId}")
-   data = downloadFileFromBucket(s3_client=s3Client(), bucket=os.getenv('AWS_BUCKET_NAME'), folder=workspaceId, object_name=file)
+   data = downloadFileFromBucket(s3_client=s3Client(), bucket=os.getenv('AWS_BUCKET'), folder=workspaceId, object_name=file)
 
    return pd.read_csv(io.StringIO(data)) # use additional arguments as needed
 

@@ -77,7 +77,7 @@ def get_qdrant_vector_db(table_name: str, embeddings=OpenAIEmbeddings()
     return qdrant
 
 
-def get_redis_history(session_id:str) -> VectorStore:
+def get_redis_history(session_id:str) -> UpstashRedisChatMessageHistory:
 
     if not os.getenv("UPSTASH_REDIS_REST_URL") or not os.getenv("UPSTASH_REDIS_REST_TOKEN"):
         raise Exception("Redis Env not set")

@@ -5,6 +5,7 @@ from typing import List, Optional
 from fastapi.params import Depends
 from fastapi import HTTPException, Depends, Request, status
 from fastapi.responses import JSONResponse, StreamingResponse
+from langchain_google_genai import ChatGoogleGenerativeAI
 from openai import AuthenticationError, OpenAI
 
 from pydantic import BaseModel
@@ -30,6 +31,7 @@ from sse_starlette.sse import EventSourceResponse
 import json
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain.agents.openai_assistant.base import OpenAIAssistantRunnable
+from langchain.prompts import SystemMessagePromptTemplate
 
 from qdrant_client import models
 
@@ -142,6 +144,10 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
     llmmodel = get_model_by_id(session=session, model_id=message.model)
 
     prompt = get_prompt_by_id(session=session, prompt_id=message.prompt)
+
+    prompt.append(SystemMessagePromptTemplate.from_template(filterMessage))
+
+    
     # This is the full agent
     agent = await get_agent_for_workspace(workspaceId=workspace.id, llm=llmmodel, prompt=prompt, filter=filter)
 
@@ -149,9 +155,16 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
 
     history = get_redis_history(session_id=thread)
 
-    if filterMessage:                
-        logger.info(f"Applying filter to the System Message: {filterMessage}")
-        history.add_message(SystemMessage(content=filterMessage, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+    logger.info(f"Using history {history.messages}")
+
+    # https://github.com/langchain-ai/langchain/issues/14700
+    # Remove system messages from the history for gemini models
+    # This means previous texts that are referenced may not show up in history?
+
+    # if filterMessage and type(llmmodel) is not ChatGoogleGenerativeAI:            
+    #     logger.info(f"Applying filter to the System Message: {filterMessage}")
+    #     history.add_message(SystemMessage(content=filterMessage, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
+
 
 
     # async def generator():
@@ -175,7 +188,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         yield stream_chunk({"thread":thread}, "assistant_message")
         try:
             async for chunk in agent.astream({"input":message.message, "chat_history":history.messages}): 
-                # logger.info(f"Chunk: {chunk}")   
+            #    logger.info(f"Chunk: {chunk}")   
                 action = list(chunk.keys())[0]
                 msg = chunk[action]
                 if action == "steps":
@@ -186,7 +199,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
                             if('context' in agentstep.observation):                             
                                 docs = agentstep.observation['context']
                                 sources = reduceSourceDocumentsToUniqueFiles(sources=docs)                
-    
+
                         # else:# Tool observation
                         #     yield stream_chunk(agentstep.observation, "text")  
                 elif action == "output":
@@ -194,17 +207,19 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
                     yield stream_chunk(msg, "text")
                     yield stream_chunk(sources, "data")
         except Exception as e:
-           logger.error(f"Error in agent stream: {e}")
-           if(["API key"] in e['error']['message'] ):
-            response = "It looks like there is a problem with the API Key. Please check the API Key in the workspace settings."   
-           else:
-            response = "Sorry, I am having trouble processing your request. Please try again later."
-           yield stream_chunk(response, "error")
+            logger.error(f"Error in agent stream: {e}")
+
+                # If the error is an authentication error, it is likely an API key issue
+            if type(e) is AuthenticationError:
+                response = "It looks like there is a problem with the API Key. Please check the API Key in the workspace settings."
+            else:
+                response = "Sorry, I am having trouble processing your request. Please try again later."
+            yield stream_chunk(response, "error")
             
         
         history.add_user_message(HumanMessage(content=message.message, created=datetime.now().isoformat(), id=str(uuid.uuid4())))
         history.add_ai_message(AIMessage(content=response, created=datetime.now().isoformat(), id=str(uuid.uuid4()), additional_kwargs={"sources":sources}))
-
+       
 
     return EventSourceResponse(generator())
 
