@@ -33,7 +33,7 @@ export default function ChatPanel({ workspace, chatThread }: ChatPanelProps) {
   }
 
   const { messages, addUserMessage, resetChat, loadInitialMessages } = useStreaming(
-    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/chat`,
+    `${process.env.NEXT_PUBLIC_DSC_API_URL}/workspace/search`,
     workspace.id,
     listener,
     {
