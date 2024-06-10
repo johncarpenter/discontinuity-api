@@ -36,7 +36,7 @@ export default async function AuthLayout({ children }: AuthProps) {
                     <header className="sticky top-0 z-50 ">
                       <Sidebar workspaces={workspaces} />
                     </header>
-                    <main className="relative lg:mx-5">
+                    <main className="relative lg:mx-5 lg:pl-72">
                       <Toaster
                         position="top-right"
                         toastOptions={{

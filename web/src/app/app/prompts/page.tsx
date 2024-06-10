@@ -11,12 +11,14 @@ const PromptsPage = async () => {
 
   return (
     <Container>
-      <PageHeader title="Manage your Prompts" breadcrumbs={[]} />
+      <PageHeader title="Manage your Prompt Templates" breadcrumbs={[]} />
 
       <Card>
         <Card.Title
-          title={'Your Prompt'}
-          subtitle={'Prompts are a simple and fast way to configure the output from your models.'}
+          title={'Templates'}
+          subtitle={
+            'Prompt templates are a collection of prompts that can be shared across your organization.'
+          }
         >
           <Card.Action>
             <AddPromptDialog organizationId={organization.id} />

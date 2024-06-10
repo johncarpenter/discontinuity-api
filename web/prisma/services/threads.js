@@ -133,12 +133,43 @@ export const getThreads = async (id, ownerId) => {
       name: true,
       link: true,
       threadId: true,
+      creator: {
+        select: {
+          fullName: true,
+        },
+      },
     },
     where: {
       workspaces: {
         deletedAt: null,
         id,
         ownerId,
+      },
+    },
+  })
+}
+
+export const getThreadsForUser = async (userId, id, ownerId) => {
+  return await prisma.threads.findMany({
+    select: {
+      id: true,
+      name: true,
+      link: true,
+      threadId: true,
+      creator: {
+        select: {
+          fullName: true,
+        },
+      },
+    },
+    where: {
+      workspaces: {
+        deletedAt: null,
+        id,
+        ownerId,
+      },
+      creator: {
+        id: userId,
       },
     },
   })

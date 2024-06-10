@@ -35,7 +35,7 @@ export default function ControlBar() {
 
   return (
     <div className="flex shrink-0 items-center gap-x-4 ">
-      <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6  dark:text-white text-gray-800 justify-end">
+      <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6 dark:text-white text-gray-800 justify-end">
         <div className="flex items-center gap-x-4 lg:gap-x-6 ">
           <Menu>
             <Menu.Button className="inline-flex items-center gap-x-1 text-sm font-semibold text-normal leading-6 ">

@@ -127,7 +127,7 @@ export default function DataChatPanel({ workspace, chatThread }: DataChatPanelPr
           </div>
         </div>
       </div>
-      <div className="w-full sm:p-4 sticky bottom-0 bg-gray-800">
+      <div className="w-full sm:p-4 sticky bottom-0 ">
         <ChatInput
           workspaceId={workspace.id}
           onHandleMessage={(val) => handleNewQuery(val)}

@@ -155,6 +155,7 @@ model files {
   @@unique([filename, workspaceId])
 }
 
+
 enum FileStatusType {
   PROCESSING
   INDEXED

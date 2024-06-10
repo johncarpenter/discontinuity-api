@@ -124,7 +124,7 @@ export default function ChatPanel({ workspace, chatThread }: ChatPanelProps) {
             })}
           </div>
         </div>
-        <div className="w-full sm:p-4 sticky bottom-0 bg-gray-800">
+        <div className="w-full sm:p-4 sticky bottom-0 px-4 py-4 rounded-2xl ">
           <ChatInput
             workspaceId={workspace.id}
             onHandleMessage={(val) => handleNewQuery(val)}

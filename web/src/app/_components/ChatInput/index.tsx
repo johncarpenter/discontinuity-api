@@ -54,7 +54,7 @@ export default function ChatInput({
 
   return (
     <>
-      <div className="flex flex-row w-full dark:bg-gray-800 dark:text-white bg-slate-700 border-1 border-slate-800 px-4 pt-4 pb-2  text-white/50 ">
+      <div className="flex flex-row w-full dark:bg-gray-800/90 dark:text-white bg-slate-700 border-1 border-slate-800 px-4 pt-4 pb-2 rounded-2xl text-white/50 ">
         {/* <LightBulbIcon className="lg:left-3 left-2 lg:top-3 top-2 w-8 h-8 flex-0 text-black/50 justify-center my-auto" /> */}
         <div className="flex-1 flex flex-col">
           <div className="flex-1 flex flex-row">

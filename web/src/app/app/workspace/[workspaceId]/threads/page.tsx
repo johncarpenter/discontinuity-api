@@ -2,8 +2,9 @@ import useCurrentOrganization from '@/lib/client/useCurrentOrganization'
 import Container from '@/components/Container'
 import PageHeader from '@/components/PageHeader'
 import { getWorkspace } from '@/prisma/services/workspace'
-import ThreadsTable from '@/app/_components/ThreadsTable'
+import ThreadsTable from '@/components/ThreadsTable'
 import ThreadsEmptyState from './empty'
+import Card from '@/components/Card'
 
 type WorkspaceThreadsPageProps = {
   params: {
@@ -22,7 +23,17 @@ const WorkspaceThreadsPage = async ({ params }: WorkspaceThreadsPageProps) => {
         title={`Threads`}
         breadcrumbs={[{ href: '/app/workspaces', name: 'Workspaces' }]}
       />
-      {!workspace.threads ? <ThreadsEmptyState /> : <ThreadsTable workspace={workspace} />}
+      <Card>
+        <Card.Title
+          title={'Personal Threads'}
+          subtitle={
+            'Threads are a way to share chat sessions within a team. Your threads are private to your workspace.'
+          }
+        >
+          <Card.Action></Card.Action>
+        </Card.Title>
+        {!workspace.threads ? <ThreadsEmptyState /> : <ThreadsTable workspace={workspace} />}
+      </Card>
     </Container>
   )
 }

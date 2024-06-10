@@ -6,7 +6,11 @@ import {
   ChatBubbleBottomCenterIcon,
   CubeTransparentIcon,
   QueueListIcon,
-  ArchiveBoxIcon,
+  ChartBarSquareIcon,
+  CommandLineIcon,
+  CodeBracketSquareIcon,
+  UsersIcon,
+  LightBulbIcon,
 } from '@heroicons/react/24/outline'
 import { LicenseType } from '@prisma/client'
 
@@ -41,7 +45,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         description: 'Analyze your documents',
         enabled: currentWorkspace !== '',
         visible: true,
-        Icon: ChatBubbleBottomCenterIcon,
+        Icon: ChartBarSquareIcon,
         license: LicenseType.PRO,
       },
       {
@@ -52,16 +56,6 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         visible: true,
         Icon: CubeTransparentIcon,
         license: LicenseType.PRO,
-      },
-
-      {
-        name: 'Threads',
-        href: `/app/workspace/${currentWorkspace}/threads`,
-        description: 'Organize your works',
-        enabled: currentWorkspace !== undefined,
-        visible: true,
-        Icon: QueueListIcon,
-        license: LicenseType.SOLO,
       },
       // {
       //   name: 'Integrations',
@@ -87,6 +81,20 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         enabled: currentWorkspace !== undefined,
         visible: true,
         Icon: Cog8ToothIcon,
+        license: LicenseType.SOLO,
+      },
+    ],
+  },
+  {
+    name: 'Personal',
+    menuItems: [
+      {
+        name: 'My Threads',
+        href: `/app/workspace/${currentWorkspace}/threads`,
+        description: 'Your work in progress',
+        enabled: currentWorkspace !== undefined,
+        visible: true,
+        Icon: QueueListIcon,
         license: LicenseType.SOLO,
       },
     ],
@@ -118,16 +126,16 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         description: 'Manage your LLM Models',
         enabled: true,
         visible: true,
-        Icon: RectangleStackIcon,
+        Icon: CodeBracketSquareIcon,
         license: LicenseType.SOLO,
       },
       {
-        name: 'Manage Prompts',
+        name: 'Manage Prompt Templates',
         href: '/app/prompts',
         description: 'Manage your LLM Prompts',
         enabled: true,
         visible: true,
-        Icon: RectangleStackIcon,
+        Icon: CommandLineIcon,
         license: LicenseType.SOLO,
       },
 
@@ -146,7 +154,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         description: 'Handle team members',
         enabled: true,
         visible: true,
-        Icon: ArchiveBoxIcon,
+        Icon: UsersIcon,
         license: LicenseType.TEAM,
       },
       {
@@ -155,7 +163,7 @@ export const workspaceMenu = (currentWorkspace?: string) => [
         description: 'Settings for your organization',
         enabled: true,
         visible: true,
-        Icon: ServerStackIcon,
+        Icon: LightBulbIcon,
         license: LicenseType.SOLO,
       },
     ],
