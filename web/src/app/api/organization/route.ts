@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   const data = await req.json()
 
-  const license = LicenseType.TEAM
+  const license = LicenseType.SOLO
 
   const { name } = data
 

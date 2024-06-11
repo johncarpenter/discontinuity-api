@@ -60,7 +60,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
     // Display all features for SOLO license
     if (organization?.license === LicenseType.SOLO && license === LicenseType.SOLO) return true
 
-    return false
+    return true
   }
 
   // function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
@@ -105,22 +105,25 @@ export default function Sidebar({ workspaces }: SidebarProps) {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </Button>
           <div className="text-sm font-semibold leading-6 text-white h-10">
-            <Image
-              priority
-              src="/images/bridge_logo.svg"
-              height={45}
-              width={55}
-              className="lg:hidden"
-              alt="Discontinuity AI"
-            />
-            <Image
-              priority
-              src="/images/bridge_logo_full.png"
-              height={45}
-              width={160}
-              className="hidden lg:block"
-              alt="Discontinuity AI"
-            />
+            <Link href="/app" className="flex items-center gap-x-2">
+              <span className="sr-only">Discontinuity AI</span>
+              <Image
+                priority
+                src="/images/bridge_logo.svg"
+                height={45}
+                width={55}
+                className="lg:hidden"
+                alt="Discontinuity AI"
+              />
+              <Image
+                priority
+                src="/images/bridge_logo_full.png"
+                height={45}
+                width={160}
+                className="hidden lg:block"
+                alt="Discontinuity AI"
+              />
+            </Link>
           </div>
           <div className="flex-1">
             <ControlBar />

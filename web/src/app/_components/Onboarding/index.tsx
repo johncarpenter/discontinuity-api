@@ -9,13 +9,16 @@ export async function Onboarding() {
   const organization = await useCurrentOrganization()
   const workspaces = await getWorkspaces(organization.id)
 
+  const hasLLM = organization.llmmodels && organization.llmmodels.length > 0
+  const hasWorkspaces = workspaces && workspaces.length > 0
+
   return (
     <>
-      {organization.llmmodels && organization.llmmodels.length > 0 ? null : (
+      {hasLLM ? null : (
         <>
           <div className="text-base leading-7 text-gray-700 lg:max-w-lg pb-8">
             <p className="text-base font-semibold leading-7 text-secondary-600 uppercase">
-              Add a foundation model
+              First, Add a Foundational Model
             </p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-normal sm:text-4xl">
               You will need to add an LLM Model to your organization to get started.
@@ -42,11 +45,11 @@ export async function Onboarding() {
           <ModelsTable />
         </>
       )}
-      {workspaces && workspaces.length > 0 ? null : (
+      {hasLLM && !hasWorkspaces && (
         <>
           <div className="text-base leading-7 text-gray-700 lg:max-w-lg pb-8">
             <p className="text-base font-semibold leading-7 text-secondary-600 uppercase">
-              Add a Workspace
+              Next, Add a Workspace
             </p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-normal sm:text-4xl">
               Create a Workspace to begin your AI journey.

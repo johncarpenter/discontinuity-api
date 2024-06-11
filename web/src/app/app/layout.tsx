@@ -27,8 +27,8 @@ export default async function AuthLayout({ children }: AuthProps) {
           <OrganizationProvider org={organization}>
             <ChatProvider
               link={''}
-              modelId={organization.llmmodels[0].id}
-              promptId={organization.prompts[0].id}
+              modelId={organization?.llmmodels[0]?.id}
+              promptId={organization?.prompts[0]?.id}
             >
               <div className="dark dark:[color-scheme:dark] dark:prose-dark">
                 <div className="flex flex-col min-h-screen bg-slate-50  dark:bg-black">
