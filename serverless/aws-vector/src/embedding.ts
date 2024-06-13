@@ -99,7 +99,7 @@ export async function handler(event: S3Event) {
   const ext = file.split(".").pop() || "";
   try {
     // Update the status of the file to processing
-    upsertFileStatus(folder, file, FileStatusType.PROCESSING);
+    await upsertFileStatus(folder, file, FileStatusType.PROCESSING);
 
     let documents: Document<Record<string, any>>[] = [];
 

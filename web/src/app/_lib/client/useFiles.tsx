@@ -1,11 +1,7 @@
 'use client'
 
+import { files } from '@prisma/client'
 import useSWR from 'swr'
-
-interface File {
-  Key: string
-  LastModified: string
-}
 
 type useFilesProps = {
   workspaceId: string
@@ -13,20 +9,24 @@ type useFilesProps = {
 }
 
 export default function useFiles({ workspaceId, fileTypeFilter }: useFilesProps) {
-  const { data, error, isLoading } = useSWR<File[]>(`/api/workspace/${workspaceId}/files`)
-
-  const files = data?.filter((file) => file.Key?.endsWith('/') === false) as File[]
+  const { data, error, isLoading } = useSWR<files[]>(
+    `/api/workspace/${workspaceId}/files`,
+    (resource, init) => fetch(resource, init).then((res) => res.json()),
+    { refreshInterval: 1000 }
+  )
 
   if (fileTypeFilter) {
     return {
-      files: files?.filter((file) => fileTypeFilter.includes(file.Key.split('.').pop() as string)),
+      files: data?.filter((file) =>
+        fileTypeFilter.includes(file.filename.split('.').pop() as string)
+      ),
       isLoading,
       isError: error,
     }
   }
 
   return {
-    files: files,
+    files: data,
     isLoading,
     isError: error,
   }

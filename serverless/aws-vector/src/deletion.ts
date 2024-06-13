@@ -19,12 +19,15 @@ export async function handler(event: S3Event) {
   const key = decodeURIComponent(
     event.Records[0].s3.object.key.replace(/\+/g, " ")
   );
+  // Extract the folders
   const folder = key.split("/")[0];
+
+  // Extract the file name and extension
   const file = key.split("/").pop() || "";
 
   const ext = file.split(".").pop() || "";
 
-  archiveFile(folder, file);
+  await archiveFile(folder, file);
 
   if (dataFileTypes.includes(ext)) {
     const openaikey = await getFirstOpenAIKey(folder);

@@ -25,7 +25,7 @@ export default function Switcher() {
     if (setActive) {
       setActive({ organization: orgId })
     }
-    push('/')
+    push('/app')
   }
 
   const [name, setName] = useState('')

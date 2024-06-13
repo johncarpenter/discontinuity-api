@@ -15,6 +15,7 @@ import clsx from 'clsx'
 import { ArrowLeftIcon, ArrowRightIcon, DocumentIcon } from '@heroicons/react/24/outline'
 import { Text } from '@/components/Base/text'
 import useFiles from '@/app/_lib/client/useFiles'
+import { files } from '@prisma/client'
 import { useFocusFiles } from '@/app/_lib/client/workspaceProvider'
 import { Pagination } from '@/components/Base/pagination'
 import { LuUpload } from 'react-icons/lu'
@@ -80,30 +81,30 @@ export function SelectFilesDialog({
           {isLoading && <Text>Loading...</Text>}
           {isError && <Text>Error loading files</Text>}
           {files?.length == 0 && <Text className="m-6">No files found</Text>}
-          {getPagedFiles()?.map((file) => (
-            <div key={file.Key} className="flex flex-col  justify-between m-4">
+          {getPagedFiles()?.map((file: files) => (
+            <div key={file.filename} className="flex flex-col  justify-between m-4">
               <Button
                 onClick={() => {
-                  toggleFile(file.Key)
+                  toggleFile(file.filename)
                 }}
                 plain
               >
                 <div className="flex flex-1 items-center">
                   <DocumentIcon className="h-6 w-6 mr-2" />
-                  <Text>{file.Key}</Text>
+                  <Text>{file.filename}</Text>
                 </div>
 
                 <StarIcon
                   className={clsx(
                     'h-5 w-5',
-                    focusFiles?.includes(file.Key) ? 'text-secondary-500' : 'text-lighter'
+                    focusFiles?.includes(file.filename) ? 'text-secondary-500' : 'text-lighter'
                   )}
                 />
               </Button>
             </div>
           ))}
 
-          {files?.length > 10 && (
+          {files && files?.length > 10 && (
             <>
               <div className="flex-grow border-t dark:border-gray-700 border-gray-400"></div>
               <Pagination className="grow dark:text-gray-400 text-gray-700 pt-6">

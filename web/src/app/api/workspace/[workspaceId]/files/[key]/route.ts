@@ -4,6 +4,8 @@ import { auth } from '@clerk/nextjs/server'
 import { S3Client, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { getOrganizationIdById } from '@/prisma/services/organization'
 import { getWorkspaceById } from '@/prisma/services/workspace'
+import { upsertFileStatus } from '@/prisma/services/files'
+import { FileStatusType } from '@prisma/client'
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -50,7 +52,6 @@ export async function DELETE(
   _: NextRequest,
   { params }: { params: { workspaceId: string; key: string } }
 ) {
-  console.log(params)
   const { workspaceId, key } = params
 
   const { sessionId, orgId, userId } = auth()
@@ -63,6 +64,8 @@ export async function DELETE(
   if (!wrk) {
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
+
+  await upsertFileStatus(workspaceId, key, FileStatusType.PROCESSING)
 
   const keyWithPath = `${wrk.id}/${key}`
 

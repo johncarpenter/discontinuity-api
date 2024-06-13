@@ -1,10 +1,12 @@
 // app/api/documents/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { S3Client, ListObjectsCommand } from '@aws-sdk/client-s3'
+import { S3Client } from '@aws-sdk/client-s3'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 import { getOrganizationIdById } from '@/prisma/services/organization'
 import { getWorkspaceById } from '@/prisma/services/workspace'
+import { FileStatusType } from '@prisma/client'
+import { getFilesForWorkspace, upsertFileStatus } from '@/prisma/services/files'
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -31,20 +33,22 @@ export async function GET(req: NextRequest, { params }: { params: { workspaceId:
     return NextResponse.json({ error: 'Workspace not found' }, { status: 404 })
   }
 
-  const response = await s3.send(new ListObjectsCommand({ Bucket, Prefix: workspaceId }))
+  // const response = await s3.send(new ListObjectsCommand({ Bucket, Prefix: workspaceId }))
 
-  if (!response?.Contents) {
-    return NextResponse.json([])
-  }
+  // if (!response?.Contents) {
+  //   return NextResponse.json([])
+  // }
 
-  const files = response?.Contents?.filter((file: any) => file.Key !== `${wrk.id}/`).map(
-    (file: any) => {
-      file.Key = file.Key?.replace(`${wrk.id}/`, '')
-      return {
-        ...file,
-      }
-    }
-  )
+  // const files = response?.Contents?.filter((file: any) => file.Key !== `${wrk.id}/`).map(
+  //   (file: any) => {
+  //     file.Key = file.Key?.replace(`${wrk.id}/`, '')
+  //     return {
+  //       ...file,
+  //     }
+  //   }
+  // )
+
+  const files = await getFilesForWorkspace(wrk.id)
 
   return NextResponse.json(files ?? [])
 }
@@ -71,6 +75,9 @@ export async function POST(request: NextRequest, { params }: { params: { workspa
   }
 
   try {
+    // Update the record in the db
+    await upsertFileStatus(workspaceId, filename, FileStatusType.PROCESSING)
+
     const { url, fields } = await createPresignedPost(s3, {
       Bucket,
       Key: `${wrk.id}/${filename}`,

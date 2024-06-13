@@ -152,7 +152,7 @@ model files {
   creator     users?         @relation(fields: [creatorId], references: [id])
   creatorId   String?
 
-  @@unique([filename, workspaceId])
+  @@unique([filename, workspaceId], name:"workspaceId_filename")
 }
 
 

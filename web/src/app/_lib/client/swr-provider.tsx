@@ -10,7 +10,6 @@ export const SWRProvider = ({ children }: SWRProviderProps) => {
   return (
     <SWRConfig
       value={{
-        refreshInterval: 10000,
         fetcher: (resource, init) => fetch(resource, init).then((res) => res.json()),
       }}
     >

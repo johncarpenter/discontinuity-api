@@ -65,7 +65,7 @@ export default function Switcher() {
       .then((response) => {
         console.log('response', response)
         if (response.status === 200) {
-          push('/')
+          push('/app')
         } else {
           setErrors({ name: 'We are having some problems creating the organization' })
         }
