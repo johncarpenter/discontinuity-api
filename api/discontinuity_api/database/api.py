@@ -1,8 +1,9 @@
 from typing import List
+from discontinuity_api.models.organization import OrganizationType
 from discontinuity_api.models.prompt import Prompt
 from discontinuity_api.models.llmmodel import LLMModel
-from .dbmodels import ApiKeyDb, FileDb, FlowDb, PromptDb, WorkspaceDb, LLMModelDb
-from discontinuity_api.models import ApiKey, Workspace, Flow, File
+from .dbmodels import ApiKeyDb, FileDb, FlowDb, PromptDb, WorkspaceDb, LLMModelDb, OrganizationDb
+from discontinuity_api.models import ApiKey, Workspace, Flow, File, Organization
 from sqlalchemy.orm import Session
 
 
@@ -26,6 +27,62 @@ def find_api_key(session: Session, client_id: str, client_secret) -> ApiKey:
         client_secret=api_key.client_secret,
         permissions=permissions,
     )
+
+
+
+def get_organization(session: Session, owner_id: str) -> Workspace:
+    organization = (
+        session.query(OrganizationDb)
+        .filter(OrganizationDb.clerk_id == owner_id)
+        .first()
+    )
+
+    # throw an error?
+    if organization is None:
+        return None
+    
+    if owner_id.startswith("org_"):
+        return Organization(id=organization.id , name=organization.name, type=OrganizationType.ORGANIZATION)
+    else:
+        return Organization(id=organization.id , name="Individual", type=OrganizationType.INDIVIDUAL)
+
+## This will retrieve the workspaces for either the user account or the organization
+def get_workspaces_for_account(session: Session, owner_id: str) -> list[Workspace]:
+    workspaces = (
+        session.query(WorkspaceDb)
+        .filter(WorkspaceDb.ownerId == owner_id)
+        .all()
+    )
+
+    if workspaces is None:
+        return None
+    
+    return [
+        Workspace(
+            id=workspace.id,
+            name=workspace.name,
+            slug=workspace.slug,
+        )
+        for workspace in workspaces]
+
+
+def get_workspace_for_account(session: Session, workspace_id:str, owner_id: str) -> list[Workspace]:
+    workspace = (
+        session.query(WorkspaceDb)
+        .filter(WorkspaceDb.ownerId == owner_id, WorkspaceDb.id == workspace_id)
+        .first()
+    )
+
+    if workspace is None:
+        return None
+    
+    return Workspace(
+            id=workspace.id,
+            name=workspace.name,
+            slug=workspace.slug,
+        )
+    
+
 
 
 def get_workspace(session: Session, api_key_id: int) -> Workspace:

@@ -25,6 +25,7 @@ def login(client: ClientIdSecret, session: Session = Depends(get_db)):
         session=session, client_id=client.client_id, client_secret=client.client_secret
     )
 
+    # Should we be adding a salt here? 
     if apiKey is not None:
         return signJWT(apiKey.id, expires=365*24*60*60)  # 1 year ex
 

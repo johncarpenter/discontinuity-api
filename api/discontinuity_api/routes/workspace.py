@@ -239,7 +239,27 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
         client = get_openai_model(session=session, model_id=message.model)
 
         # Need a way to cache this? Workspace maybe?
-        assistantId = "asst_XhBVJXoLL9xQGuAgUcasg37g"
+        #assistantId = "asst_XhBVJXoLL9xQGuAgUcasg37g"
+
+        assistants = client.beta.assistants.list()
+
+        # Find the assistant for the workspace with the name "discontinuity-data-agent"
+        assistant = next((assistant for assistant in assistants if assistant.name == "discontinuity-data-agent"), None)
+        
+        if not assistant:
+            logger.info(f"Creating new openai data assistant for workspace {workspace.id}")
+            assistant = client.beta.assistants.create(
+                instructions=prompt.prompt if prompt else "You are a helpful data anaylst. Your goal is to work with the user to intepret the data provided and answer any questions they may have. Reason through all your thinking before providing an answer.",
+                name="discontinuity-data-agent",
+                tools=[{"type": "code_interpreter"}],
+            #    tool_resources={"code_interpreter": {"file_ids": [oaifile.oai_fileid for oaifile in oaifiles]}},
+                model="gpt-4o"
+            )
+
+        logger.info(f"Using assistant {assistant.id}")
+        
+        assistantId = assistant.id
+
     except Exception as e:
         logger.error(f"Error in agent stream: {e}")
         raise HTTPException(status_code=400, detail="OpenAI models are required for data agents")
@@ -261,13 +281,7 @@ async def ask(message:ChatMessage, workspace=Depends(JWTBearer())):
             tool_resources={"code_interpreter": {"file_ids": [oaifile.oai_fileid for oaifile in oaifiles]}},
             )
 
-        # assistant = client.beta.assistants.create(
-        #     instructions=prompt if prompt else "You are a helpful data anaylst. Your goal is to work with the user to intepret the data provided and answer any questions they may have. Reason through all your thinking before providing an answer.",
-        #     name="discontinuity-data-agent",
-        #     tools=[{"type": "code_interpreter"}],
-        #     tool_resources={"code_interpreter": {"file_ids": [oaifile.oai_fileid for oaifile in oaifiles]}},
-        #     model="gpt-4o"
-        # )
+        
 
       
     # This is the full agent

@@ -47,3 +47,8 @@ gcloud builds submit --tag gcr.io/discontinuity-ai/discontinuity-api:latest
 
 
 gcloud auth application-default login
+
+
+Tests
+
+pytest -v [python file] -s -k [filter] 

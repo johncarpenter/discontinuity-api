@@ -108,3 +108,13 @@ class FileDb(Base):
     workspaceId = Column(String, ForeignKey("workspaces.id"))
 
     workspace = relationship("WorkspaceDb")
+
+
+class OrganizationDb(Base):
+    __tablename__ = "organizations"
+    id = Column(String, primary_key=True)
+    name = Column(String)
+    clerk_id = Column(String)
+    createdAt = Column(DateTime, default=datetime.now(timezone.utc))
+    deletedAt = Column(DateTime)
+    updatedAt = Column(DateTime)

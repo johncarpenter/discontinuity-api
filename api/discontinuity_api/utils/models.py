@@ -2,6 +2,7 @@
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from openai import OpenAI
 from discontinuity_api.database.dbmodels import get_db
 from discontinuity_api.database.api import getLLMModel
@@ -36,6 +37,9 @@ def get_model_by_id(session: Session, model_id:str):
     elif(llmmodel.source == "GEMINI"):
         logger.info("Using Organization Gemini model")
         return ChatGoogleGenerativeAI(streaming=True,temperature=0.8, model='gemini-pro', google_api_key=llmmodel.apikey)
+    elif(llmmodel.source == "ANTHROPIC"):
+        logger.info("Using Organization Anthropic model")
+        return ChatAnthropic(streaming=True,temperature=0.8, model='claude-3-5-sonnet-20240620', api_key=llmmodel.apikey)
     else:
         logger.warn("Using Default OpenAI model, looking for ", llmmodel.source, " model (Not implemented)")
         return ChatOpenAI(streaming=True,temperature=0.8, model="gpt-4o")

@@ -13,6 +13,8 @@ import { useWorkspace } from '@/app/_lib/client/workspaceProvider'
 import { Badge } from '../Base/badge'
 import { useOrganization } from '@/app/_lib/client/organizationProvider'
 import ControlBar from '../ChatControlBar'
+import { Field } from '../Base/fieldset'
+import { Select } from '../Base/select'
 
 export type SidebarProps = {
   workspaces: workspaces[]
@@ -27,12 +29,10 @@ export default function Sidebar({ workspaces }: SidebarProps) {
 
   //const router = useRouter()
 
-  // const changeWorkspace = (workspace: string) => {
-  //   setWorkspace(workspaces.find((w) => w.slug === workspace) || workspaces[0])
-
-  //   router.push(`/app/workspace/${workspace}/chat`)
-  //   setSidebarOpen(false)
-  // }
+  const changeWorkspace = (slug: string) => {
+    const newWorkspace = workspaces.find((w) => w.name === slug)
+    if (newWorkspace) setWorkspace(newWorkspace)
+  }
 
   const pathname = usePathname()
 
@@ -40,9 +40,9 @@ export default function Sidebar({ workspaces }: SidebarProps) {
     if (workspaces.length > 0 && !workspace) {
       setWorkspace(workspaces[0])
       const path = pathname.split('/')
-      if (path[1] === 'workspace') {
-        const workspace = workspaces.find((w) => w.slug === path[2])
-        if (workspace) setWorkspace(workspace)
+      if (path[2] === 'workspace') {
+        const wrkspace = workspaces.find((w) => w.slug === path[3])
+        if (wrkspace) setWorkspace(wrkspace)
       }
     }
   }, [setWorkspace, workspace, workspaces, pathname])
@@ -63,30 +63,30 @@ export default function Sidebar({ workspaces }: SidebarProps) {
     return true
   }
 
-  // function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
-  //   return (
-  //     <div className="mb-4 -mx-2">
-  //       <span className="text-xs uppercase text-gray-500 ">current workspace</span>
-  //       <Field className="dark mt-2">
-  //         {workspaces.length > 0 ? (
-  //           <Select
-  //             name="status"
-  //             value={workspace?.slug}
-  //             onChange={(e) => changeWorkspace(e.target.value)}
-  //           >
-  //             {workspaces.map((workspace: workspaces) => (
-  //               <option key={workspace.id} value={workspace.slug}>
-  //                 {workspace.name}
-  //               </option>
-  //             ))}
-  //           </Select>
-  //         ) : (
-  //           <Button href="/app/workspaces">Manages Workspaces</Button>
-  //         )}
-  //       </Field>
-  //     </div>
-  //   )
-  // }
+  function WorkspaceSwitcher({ workspaces }: { workspaces: workspaces[] }) {
+    return (
+      <div className="mb-4 -mx-2">
+        <span className="text-xs uppercase text-gray-500 ">current workspace</span>
+        <Field className="dark mt-2">
+          {workspaces.length > 0 ? (
+            <Select
+              name="status"
+              value={workspace?.name}
+              onChange={(e) => changeWorkspace(e.target.value)}
+            >
+              {workspaces.map((workspace: workspaces) => (
+                <option key={workspace.id} value={workspace.slug}>
+                  {workspace.name}
+                </option>
+              ))}
+            </Select>
+          ) : (
+            <Button href="/app/workspaces">Manages Workspaces</Button>
+          )}
+        </Field>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -135,6 +135,7 @@ export default function Sidebar({ workspaces }: SidebarProps) {
         <div className="hidden lg:fixed lg:top-16 lg:bottom-0 lg:z-40 lg:flex lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto px-6 bg-gray-900">
             <nav className="flex flex-1 flex-col">
+              <WorkspaceSwitcher workspaces={workspaces} />
               <ul className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul className="-mx-2 space-y-2">
@@ -213,8 +214,8 @@ export default function Sidebar({ workspaces }: SidebarProps) {
                       </button>
                     </div>
                   </Transition.Child>
-                  {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-2 ring-1 ring-white/10 pt-16">
+                    <WorkspaceSwitcher workspaces={workspaces} />
                     <nav className="flex flex-1 flex-col">
                       <ul className="flex flex-1 flex-col gap-y-9">
                         <li>

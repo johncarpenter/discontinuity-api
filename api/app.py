@@ -7,7 +7,7 @@ load_dotenv()
 
 from typing import Any, Dict, List, Union
 from enum import Enum
-from fastapi import FastAPI, Security, Depends, FastAPI, HTTPException, Request
+from fastapi import FastAPI, Security, Depends, FastAPI, HTTPException, Request, status
 from fastapi.security.api_key import APIKeyQuery, APIKeyHeader, APIKey
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_422_UNPROCESSABLE_ENTITY
 from fastapi.middleware.cors import CORSMiddleware
 
-from discontinuity_api.routes import auth_router, admin_router, discontinuity_router, workspace_router
+from discontinuity_api.routes import user_router, auth_router, admin_router, discontinuity_router, workspace_router
 from discontinuity_api.vector import load_local_vector_db
 
 from dotenv import load_dotenv
@@ -63,6 +63,13 @@ async def log_requests(request: Request, call_next):
     return response
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+	exc_str = f'{exc}'.replace('\n', ' ').replace('   ', ' ')
+	logging.error(f"{request}: {exc_str}")
+	content = {'status_code': 10422, 'message': exc_str, 'data': None}
+	return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
 @app.get("/", include_in_schema=False)
 async def root():
     return RedirectResponse(url="/docs")
@@ -84,3 +91,6 @@ app.include_router(router=discontinuity_router)
 
 # Workspace routes
 app.include_router(router=workspace_router)
+
+# Workspace routes
+app.include_router(router=user_router)
