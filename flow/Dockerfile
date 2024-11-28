@@ -30,7 +30,7 @@ ENV DISABLE_FLOWISE_TELEMETRY=true
 #ENV S3_STORAGE_REGION=us-west-2
 
 # Latest version of flowise 1.6.6 updated Apr 26, 2024
-RUN npm install -g flowise@1.6.6
+RUN npm install -g flowise@2.2.0
 
 WORKDIR /data
 
